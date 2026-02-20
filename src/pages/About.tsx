@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Shield, ChevronDown, Bot, CircuitBoard, Code2, ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function About() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -167,9 +168,9 @@ export default function About() {
                             <h2 className="text-3xl font-display mb-4">The Architects</h2>
                             <p className="text-sm text-[var(--text-secondary)]">The minds behind the machine. A collective of engineers, designers, and strategists.</p>
                         </div>
-                        <a href="#" className="hidden md:flex items-center text-[10px] text-[var(--accent-orange)] font-mono uppercase tracking-widest hover:text-[var(--accent-orange-hover)]">
+                        <Link to="/contact" className="hidden md:flex items-center text-[10px] text-[var(--accent-orange)] font-mono uppercase tracking-widest hover:text-[var(--accent-orange-hover)]">
                             View All Agents <ArrowRight size={14} className="ml-2" />
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 perspective-1000">
@@ -228,12 +229,12 @@ export default function About() {
                         The future doesn't wait. Initiate the protocol to begin your transformation into a digitally optimized entity.
                     </p>
                     <div className="flex gap-4">
-                        <a href="/contact" className="btn btn-primary px-8 flex items-center gap-2">
+                        <Link to="/contact" className="btn btn-primary px-8 flex items-center gap-2">
                             INITIATE PROTOCOL <ArrowRight size={16} />
-                        </a>
-                        <a href="/services" className="btn btn-outline px-8">
+                        </Link>
+                        <Link to="/services" className="btn btn-outline px-8">
                             READ DOCUMENTATION
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

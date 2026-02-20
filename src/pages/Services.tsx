@@ -1,4 +1,5 @@
 import { Layers, Lightbulb, Workflow } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Services() {
     return (
@@ -26,12 +27,12 @@ export default function Services() {
                 </p>
 
                 <div className="flex gap-4">
-                    <button className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8">
+                    <Link to="/contact" className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8 flex items-center justify-center">
                         Initialize Project +
-                    </button>
-                    <button className="btn btn-outline uppercase text-xs tracking-widest px-8">
+                    </Link>
+                    <Link to="/pricing" className="btn btn-outline uppercase text-xs tracking-widest px-8 flex items-center justify-center">
                         View Systems
-                    </button>
+                    </Link>
                 </div>
             </div>
 

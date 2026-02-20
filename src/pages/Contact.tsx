@@ -103,15 +103,15 @@ export default function Contact() {
                         </div>
                         <h3 className="text-lg font-bold mb-4">Network Protocols</h3>
                         <div className="flex gap-3">
-                            <button className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
+                            <a href="https://talos.design" target="_blank" rel="noreferrer" className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
                                 <Globe size={18} />
-                            </button>
-                            <button className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
                                 <Network size={18} />
-                            </button>
-                            <button className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
+                            </a>
+                            <a href="https://github.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded border border-[var(--border-color)] bg-[rgba(255,255,255,0.05)] flex items-center justify-center hover:bg-[var(--accent-cyan)] hover:text-black transition-colors">
                                 <Code size={18} />
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

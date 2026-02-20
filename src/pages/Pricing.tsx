@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, Sliders, Settings2, Info, ArrowRight, Zap, Shield, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function Pricing() {
     const [isAnnual, setIsAnnual] = useState(false);
@@ -97,7 +98,7 @@ export default function Pricing() {
                         <li className="flex gap-3 items-center"><CheckCircle2 size={16} className="text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors shrink-0" /> Community Support</li>
                         <li className="flex gap-3 items-center opacity-50"><CheckCircle2 size={16} className="shrink-0" /> API Access</li>
                     </ul>
-                    <button className="btn btn-outline w-full hover:bg-[var(--accent-orange)] hover:text-black hover:border-[var(--accent-orange)] transition-all">Select Initiate</button>
+                    <Link to="/contact" className="btn btn-outline w-full hover:bg-[var(--accent-orange)] hover:text-black hover:border-[var(--accent-orange)] transition-all flex items-center justify-center">Select Initiate</Link>
                 </motion.div>
 
                 {/* Tier 2: Popular */}
@@ -129,7 +130,7 @@ export default function Pricing() {
                         <li className="flex gap-3 items-center font-medium"><CheckCircle2 size={16} className="text-[var(--accent-cyan)] shrink-0" /> Custom Model Training</li>
                         <li className="flex gap-3 items-center font-medium"><CheckCircle2 size={16} className="text-[var(--accent-cyan)] shrink-0" /> SSO & Security Audit</li>
                     </ul>
-                    <button className="btn w-full bg-[var(--accent-cyan)] text-black hover:bg-white hover:shadow-[0_0_20px_var(--accent-cyan-glow)] transition-all">Initialize Titan</button>
+                    <Link to="/contact" className="btn w-full bg-[var(--accent-cyan)] text-black hover:bg-white hover:shadow-[0_0_20px_var(--accent-cyan-glow)] transition-all flex items-center justify-center">Initialize Titan</Link>
                 </motion.div>
 
                 {/* Tier 3 */}
@@ -152,7 +153,7 @@ export default function Pricing() {
                         <li className="flex gap-3 items-center"><CheckCircle2 size={16} className="text-[#c084fc] shrink-0" /> White-glove Onboarding</li>
                         <li className="flex gap-3 items-center"><CheckCircle2 size={16} className="text-[#c084fc] shrink-0" /> Strict SLA Guarantees</li>
                     </ul>
-                    <button className="btn btn-outline w-full hover:bg-[rgba(192,132,252,0.1)] hover:border-[#c084fc] hover:text-[#c084fc] transition-colors mt-auto flex items-center justify-center gap-2">Contact Sales <ArrowRight size={16} /></button>
+                    <Link to="/contact" className="btn btn-outline w-full hover:bg-[rgba(192,132,252,0.1)] hover:border-[#c084fc] hover:text-[#c084fc] transition-colors mt-auto flex items-center justify-center gap-2">Contact Sales <ArrowRight size={16} /></Link>
                 </motion.div>
             </div>
 
@@ -298,11 +299,11 @@ export default function Pricing() {
                             </div>
                         </div>
 
-                        <button className="btn btn-outline border-[var(--border-color-light)] w-full flex items-center justify-center font-mono text-sm tracking-widest hover:bg-[rgba(0,229,255,0.1)] hover:border-[var(--accent-cyan)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] transition-all py-5 group relative overflow-hidden">
+                        <Link to="/contact" className="btn btn-outline border-[var(--border-color-light)] w-full flex items-center justify-center font-mono text-sm tracking-widest hover:bg-[rgba(0,229,255,0.1)] hover:border-[var(--accent-cyan)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] transition-all py-5 group relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(0,229,255,0.1)] to-transparent translate-x-[-100%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
                             <Settings2 size={18} className="mr-3 text-[var(--text-secondary)] group-hover:text-[var(--accent-cyan)] transition-colors" />
                             COMPILE_PACKAGE
-                        </button>
+                        </Link>
                         <p className="text-[10px] text-center text-[var(--text-muted)] mt-4 font-mono">Generates a hardware provisioning manifest.</p>
                     </div>
                 </div>
