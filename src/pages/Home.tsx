@@ -1,5 +1,5 @@
-
 import { LayoutGrid, Bot, Settings, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
@@ -51,9 +51,9 @@ export default function Home() {
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Tailwind</span>
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Framer Motion</span>
               </div>
-              <a href="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
+              <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 Explore Architecture <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -77,9 +77,9 @@ export default function Home() {
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">LangChain</span>
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Pinecone</span>
               </div>
-              <a href="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
+              <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 View Integration <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -103,9 +103,9 @@ export default function Home() {
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Zapier</span>
                 <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">AWS Lambda</span>
               </div>
-              <a href="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
+              <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 See Workflows <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -118,8 +118,8 @@ export default function Home() {
             <p className="text-[var(--text-secondary)]">Schedule a free consultation to discuss your infrastructure.</p>
           </div>
           <div className="flex gap-4 relative z-10">
-            <a href="/pricing" className="btn btn-outline py-3 px-8">View Pricing</a>
-            <a href="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">Book a Call</a>
+            <Link to="/pricing" className="btn btn-outline py-3 px-8">View Pricing</Link>
+            <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">Book a Call</Link>
           </div>
         </div>
       </div>

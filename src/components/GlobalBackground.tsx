@@ -66,9 +66,6 @@ export function GlobalBackground() {
                                 ease: "linear",
                                 delay: path.delay,
                             }}
-                            style={{
-                                filter: `drop-shadow(0 0 8px ${path.color})`
-                            }}
                         />
                     </g>
                 ))}
