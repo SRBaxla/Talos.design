@@ -8,7 +8,7 @@ import Contact from './pages/Contact';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Talos.design/">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
