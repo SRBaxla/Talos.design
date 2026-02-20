@@ -1,0 +1,55 @@
+import { Hexagon, Twitter, Github } from 'lucide-react';
+
+export function Footer() {
+    return (
+        <footer className="border-t border-[var(--border-color)] mt-32 bg-[var(--bg-surface)] pt-24 pb-12">
+            <div className="container">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 px-4">
+                    <div className="col-span-1 md:col-span-1 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Hexagon className="text-[var(--accent-orange)]" size={24} />
+                            <span className="font-display font-bold text-lg tracking-tight">Talos.design</span>
+                        </div>
+                        <p className="text-[var(--text-secondary)] text-sm max-w-[200px]">
+                            Building the digital infrastructure for the next generation of business.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold mb-6">Services</h4>
+                        <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
+                            <li><a href="#" className="hover:text-white transition-colors">Web Design</a></li>
+                            <li><a href="#" className="hover:text-white transition-colors">AI Chatbots</a></li>
+                            <li><a href="#" className="hover:text-white transition-colors">Automation</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold mb-6">Company</h4>
+                        <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
+                            <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                            <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                            <li><a href="#" className="hover:text-white transition-colors">Legal</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold mb-6">Connect</h4>
+                        <div className="flex gap-4 text-[var(--text-muted)]">
+                            <a href="#" className="hover:text-white transition-colors"><Twitter size={20} /></a>
+                            <a href="#" className="hover:text-white transition-colors"><Github size={20} /></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border-t border-[var(--border-color)] pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[var(--text-muted)]">
+                    <p>© {new Date().getFullYear()} Talos.design. All rights reserved.</p>
+                    <div className="flex gap-6 mt-4 md:mt-0">
+                        <a href="#" className="hover:text-white">Privacy Policy</a>
+                        <a href="#" className="hover:text-white">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}
