@@ -1,5 +1,6 @@
 import { LayoutGrid, Bot, Settings, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (
@@ -10,20 +11,34 @@ export default function Home() {
 
         {/* HERO CONTENT */}
         <div className="container relative z-10 flex flex-col items-center pt-20 pb-10">
-          <div className="badge badge-online mb-12 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="badge badge-online mb-12 shadow-[0_0_15px_rgba(34,197,94,0.2)]"
+          >
             Systems Online
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl text-center mb-6 max-w-5xl tracking-tight leading-[1.1]">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl lg:text-8xl text-center mb-6 max-w-5xl tracking-tight leading-[1.1]"
+          >
             Engineering the <br />
             <span className="text-gradient-orange drop-shadow-[0_0_20px_rgba(245,158,11,0.2)]">Future of Work</span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-xl text-[var(--text-secondary)] text-center max-w-3xl leading-relaxed py-4 backdrop-blur-sm rounded-3xl">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-[var(--text-secondary)] text-center max-w-3xl leading-relaxed py-4 backdrop-blur-sm rounded-3xl"
+          >
             We deploy intelligent agents and automate your critical workflows with
             cutting-edge AI solutions. Scale your ambition with digital infrastructure
             built for tomorrow.
-          </p>
+          </motion.p>
         </div>
       </div>
 
@@ -32,7 +47,12 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           {/* Card 1 */}
-          <div className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group"
+          >
             <div className="flex justify-between items-start mb-8">
               <div className="w-12 h-12 rounded-lg bg-[rgba(245,158,11,0.1)] flex items-center justify-center text-[var(--accent-orange)] group-hover:scale-110 shadow-[0_0_15px_rgba(245,158,11,0.0)] group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all">
                 <LayoutGrid size={24} />
@@ -55,10 +75,16 @@ export default function Home() {
                 Explore Architecture <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Card 2 */}
-          <div className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group"
+          >
             <div className="flex justify-between items-start mb-8">
               <div className="w-12 h-12 rounded-lg bg-[rgba(245,158,11,0.1)] flex items-center justify-center text-[var(--accent-orange)] group-hover:scale-110 shadow-[0_0_15px_rgba(245,158,11,0.0)] group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all">
                 <Bot size={24} />
@@ -81,10 +107,16 @@ export default function Home() {
                 View Integration <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Card 3 */}
-          <div className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="glass-panel p-8 flex flex-col transition-all duration-300 hover:border-[var(--accent-orange)] hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:-translate-y-2 group"
+          >
             <div className="flex justify-between items-start mb-8">
               <div className="w-12 h-12 rounded-lg bg-[rgba(245,158,11,0.1)] flex items-center justify-center text-[var(--accent-orange)] group-hover:scale-110 shadow-[0_0_15px_rgba(245,158,11,0.0)] group-hover:shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all">
                 <Settings size={24} />
@@ -107,11 +139,16 @@ export default function Home() {
                 See Workflows <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Footer CTA Section */}
-        <div className="w-full max-w-5xl mt-32 border border-[var(--border-color)] p-10 md:px-14 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8 mb-16 rounded-3xl bg-[rgba(255,255,255,0.01)] backdrop-blur-sm relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="w-full max-w-5xl mt-32 border border-[var(--border-color)] p-10 md:px-14 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8 mb-16 rounded-3xl bg-[rgba(255,255,255,0.01)] backdrop-blur-sm relative overflow-hidden"
+        >
           <div className="absolute inset-0 bg-gradient-to-r from-[rgba(245,158,11,0.03)] to-transparent pointer-events-none"></div>
           <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
             <h2 className="text-3xl font-display mb-2">Ready to automate?</h2>
@@ -121,7 +158,7 @@ export default function Home() {
             <Link to="/pricing" className="btn btn-outline py-3 px-8">View Pricing</Link>
             <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">Book a Call</Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
