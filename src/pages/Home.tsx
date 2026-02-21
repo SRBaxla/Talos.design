@@ -142,6 +142,183 @@ export default function Home() {
           </motion.div>
         </div>
 
+        {/* ═══════ CASE STUDY — Project Types We Can Build ═══════ */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="w-full max-w-5xl mt-32"
+        >
+          <div className="flex items-center gap-4 mb-2">
+            <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
+            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Case Studies</span>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+            <h2 className="text-4xl font-display uppercase tracking-tight">
+              What We Can <span className="text-[var(--accent-cyan)]">Create</span>
+            </h2>
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 text-sm text-[var(--accent-cyan)] font-medium hover:text-white transition-colors"
+            >
+              Explore All Services <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Case 1 — Hospitality */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass-panel p-6 flex flex-col group hover:border-[rgba(0,229,255,0.3)] transition-all"
+            >
+              <span className="text-[10px] font-mono bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] px-3 py-1 rounded-full border border-[rgba(0,229,255,0.2)] self-start mb-5">Hospitality</span>
+              <h3 className="text-lg font-display font-bold mb-2">Hotel & Restaurant Systems</h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
+                Automated booking engines, reservation management, guest CRM, menu systems, and real-time availability dashboards for hospitality businesses.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Booking</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">CRM</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Dashboard</span>
+              </div>
+              <Link to="/projects/automation" className="text-xs text-[var(--accent-cyan)] flex items-center gap-1 group-hover:gap-2 transition-all">
+                Learn More <ArrowRight size={12} />
+              </Link>
+            </motion.div>
+
+            {/* Case 2 — E-Commerce */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass-panel p-6 flex flex-col group hover:border-[rgba(245,158,11,0.3)] transition-all"
+            >
+              <span className="text-[10px] font-mono bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)] px-3 py-1 rounded-full border border-[rgba(245,158,11,0.2)] self-start mb-5">E-Commerce</span>
+              <h3 className="text-lg font-display font-bold mb-2">Online Stores & Brand Sites</h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
+                High-converting storefronts, product catalogs, payment integration, inventory management, and marketing automation for online retail.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Storefront</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Payments</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">SEO</span>
+              </div>
+              <Link to="/projects/presence" className="text-xs text-[var(--accent-orange)] flex items-center gap-1 group-hover:gap-2 transition-all">
+                Learn More <ArrowRight size={12} />
+              </Link>
+            </motion.div>
+
+            {/* Case 3 — Professional Services */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass-panel p-6 flex flex-col group hover:border-[rgba(192,132,252,0.3)] transition-all"
+            >
+              <span className="text-[10px] font-mono bg-[rgba(192,132,252,0.1)] text-[#c084fc] px-3 py-1 rounded-full border border-[rgba(192,132,252,0.2)] self-start mb-5">Professional Services</span>
+              <h3 className="text-lg font-display font-bold mb-2">Consultation & SaaS Platforms</h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
+                Appointment scheduling, client portals, document management, AI chatbots, and custom workflow automation for service-based businesses.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Scheduling</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">AI Chat</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Workflow</span>
+              </div>
+              <Link to="/projects/custom" className="text-xs text-[#c084fc] flex items-center gap-1 group-hover:gap-2 transition-all">
+                Learn More <ArrowRight size={12} />
+              </Link>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* ═══════ PUBLISHED PROJECTS — Completed Portfolio ═══════ */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="w-full max-w-5xl mt-32"
+        >
+          <div className="flex items-center gap-4 mb-2">
+            <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange-glow)]"></span>
+            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Published Projects</span>
+          </div>
+          <h2 className="text-4xl font-display uppercase tracking-tight mb-3">
+            Delivered & <span className="text-[var(--accent-orange)]">Live</span>
+          </h2>
+          <p className="text-sm text-[var(--text-secondary)] mb-12 max-w-2xl">
+            Projects we've built, delivered, and deployed. Each one is live and running in production.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Portfolio 1 — Hotel Website */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass-panel p-6 flex flex-col group hover:border-[rgba(245,158,11,0.3)] transition-all relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-[0.04] blur-[60px] rounded-full pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] font-mono bg-[rgba(34,197,94,0.1)] text-green-400 px-3 py-1 rounded-full border border-[rgba(34,197,94,0.2)]">● Live</span>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Delivered Dec 2025</span>
+                </div>
+                <h3 className="text-lg font-display font-bold mb-2">Boutique Hotel — Full Digital Suite</h3>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4">
+                  Complete digital overhaul for a 40-room boutique hotel. Includes custom website, booking engine, real-time availability dashboard, guest CRM, and automated email/SMS notifications.
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Website</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Booking</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">CRM</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Notifications</span>
+                </div>
+                <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
+                  <span>Presence + Automation</span>
+                  <span>•</span>
+                  <span>6 week build</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Portfolio 2 — Talos.design */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass-panel p-6 flex flex-col group hover:border-[rgba(0,229,255,0.3)] transition-all relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-cyan)] opacity-[0.04] blur-[60px] rounded-full pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] font-mono bg-[rgba(34,197,94,0.1)] text-green-400 px-3 py-1 rounded-full border border-[rgba(34,197,94,0.2)]">● Live</span>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Delivered Feb 2026</span>
+                </div>
+                <h3 className="text-lg font-display font-bold mb-2">Talos.design — Studio Portfolio</h3>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4">
+                  Our own studio website. Built with React, Framer Motion, and a custom design system. Features dynamic project pages, interactive pricing calculator, and a fully responsive dark-mode interface.
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">React</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Framer Motion</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Design System</span>
+                </div>
+                <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
+                  <span>Custom Build</span>
+                  <span>•</span>
+                  <span>4 week build</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
         {/* Footer CTA Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}

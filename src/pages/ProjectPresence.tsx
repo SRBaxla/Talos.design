@@ -1,6 +1,6 @@
 import {
     Globe, Palette, Search, Share2, FileText, BarChart3,
-    Server, ArrowRight, ArrowLeft, CheckCircle2, DollarSign
+    Server, ArrowRight, ArrowLeft, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,49 +9,42 @@ const FEATURES = [
     {
         icon: Globe,
         title: 'Custom Website Design & Development',
-        price: 999,
         description:
             'A blazing-fast, responsive website built from scratch — no templates. Tailored to your brand, optimized for every screen size, and engineered for performance.',
     },
     {
         icon: Palette,
         title: 'Brand Identity System',
-        price: 499,
         description:
             'Logo, color palette, typography, and design guidelines that give your business a cohesive, premium visual identity across every touchpoint.',
     },
     {
         icon: Search,
         title: 'SEO & Performance Optimization',
-        price: 399,
         description:
             'On-page SEO, structured data, Core Web Vitals optimization, and keyword strategy to make sure your audience finds you first.',
     },
     {
         icon: Share2,
         title: 'Social Media CI/CD Automation',
-        price: 349,
         description:
             'We automate the deployment pipeline for your social media content — scheduling, cross-posting, and analytics integration. You create the content; we handle the infrastructure.',
     },
     {
         icon: FileText,
         title: 'Content Management System',
-        price: 449,
         description:
             'An intuitive CMS so you can update pages, publish blog posts, and manage media without touching a line of code.',
     },
     {
         icon: BarChart3,
         title: 'Analytics & Reporting Dashboard',
-        price: 299,
         description:
             "Real-time visitor analytics, conversion tracking, and custom dashboards so you always know what is working.",
     },
     {
         icon: Server,
         title: 'Domain & Hosting Setup',
-        price: 199,
         description:
             'We handle domain registration, SSL certificates, CDN configuration, and hosting deployment — your site is live and secure from day one.',
     },
@@ -143,45 +136,7 @@ export default function ProjectPresence() {
                 ))}
             </div>
 
-            {/* Pricing Breakdown */}
-            <motion.div {...fadeUp} transition={{ delay: 0.45 }} className="mb-6">
-                <div className="flex items-center gap-4 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange-glow)]"></span>
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Pricing Estimate // 01.5</span>
-                </div>
-                <h2 className="text-3xl font-display uppercase tracking-tight">Investment</h2>
-            </motion.div>
 
-            <motion.div
-                {...fadeUp}
-                transition={{ delay: 0.48 }}
-                className="glass-panel p-8 max-w-2xl mb-24 border border-[rgba(245,158,11,0.15)]"
-            >
-                <div className="space-y-4 font-mono text-sm mb-6">
-                    {FEATURES.map((f) => (
-                        <div key={f.title} className="flex justify-between items-center group">
-                            <span className="text-[var(--text-secondary)] group-hover:text-white transition-colors">{f.title}</span>
-                            <span className="tabular-nums text-[var(--text-muted)]">${f.price}</span>
-                        </div>
-                    ))}
-                </div>
-                <div className="border-t border-[rgba(245,158,11,0.2)] pt-4 flex justify-between items-baseline">
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Package Total</span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-display font-bold text-[var(--accent-orange)]">
-                            ${FEATURES.reduce((s, f) => s + f.price, 0).toLocaleString()}
-                        </span>
-                        <span className="text-xs text-[var(--text-muted)] font-mono">one-time</span>
-                    </div>
-                </div>
-                <p className="text-[10px] text-[var(--text-muted)] font-mono mt-3">* Starting estimate. Final quote based on project scope and complexity.</p>
-                <div className="mt-4 pt-4 border-t border-[rgba(245,158,11,0.1)]">
-                    <Link to="/pricing" className="flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors">
-                        <DollarSign size={12} />
-                        View ongoing maintenance plans →
-                    </Link>
-                </div>
-            </motion.div>
 
             {/* Benefits */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">

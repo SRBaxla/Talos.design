@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
     Globe, Palette, Search, Share2, FileText, BarChart3, Server,
     CalendarCheck, MessageSquareText, Package, Bell, Users,
-    ArrowRight, ArrowLeft, CheckCircle2, Circle, Wrench, DollarSign
+    ArrowRight, ArrowLeft, CheckCircle2, Circle, Wrench
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,26 +12,25 @@ interface Feature {
     icon: React.ComponentType<{ size?: number; className?: string }>;
     title: string;
     shortDesc: string;
-    price: number;
 }
 
 const PRESENCE_FEATURES: Feature[] = [
-    { id: 'website', icon: Globe, title: 'Custom Website', shortDesc: 'Responsive site built from scratch', price: 999 },
-    { id: 'brand', icon: Palette, title: 'Brand Identity', shortDesc: 'Logo, colors, typography system', price: 499 },
-    { id: 'seo', icon: Search, title: 'SEO Optimization', shortDesc: 'On-page SEO & performance tuning', price: 399 },
-    { id: 'social', icon: Share2, title: 'Social Media CI/CD', shortDesc: 'Automated content deployment', price: 349 },
-    { id: 'cms', icon: FileText, title: 'Content Management', shortDesc: 'Easy-to-use CMS dashboard', price: 449 },
-    { id: 'analytics-p', icon: BarChart3, title: 'Analytics Dashboard', shortDesc: 'Visitor & conversion tracking', price: 299 },
-    { id: 'hosting', icon: Server, title: 'Domain & Hosting', shortDesc: 'SSL, CDN, deployment pipeline', price: 199 },
+    { id: 'website', icon: Globe, title: 'Custom Website', shortDesc: 'Responsive site built from scratch' },
+    { id: 'brand', icon: Palette, title: 'Brand Identity', shortDesc: 'Logo, colors, typography system' },
+    { id: 'seo', icon: Search, title: 'SEO Optimization', shortDesc: 'On-page SEO & performance tuning' },
+    { id: 'social', icon: Share2, title: 'Social Media CI/CD', shortDesc: 'Automated content deployment' },
+    { id: 'cms', icon: FileText, title: 'Content Management', shortDesc: 'Easy-to-use CMS dashboard' },
+    { id: 'analytics-p', icon: BarChart3, title: 'Analytics Dashboard', shortDesc: 'Visitor & conversion tracking' },
+    { id: 'hosting', icon: Server, title: 'Domain & Hosting', shortDesc: 'SSL, CDN, deployment pipeline' },
 ];
 
 const AUTOMATION_FEATURES: Feature[] = [
-    { id: 'booking', icon: CalendarCheck, title: 'Booking System', shortDesc: 'AI-powered reservations 24/7', price: 899 },
-    { id: 'chatbot', icon: MessageSquareText, title: 'Query Handling', shortDesc: 'Chatbot + smart email routing', price: 799 },
-    { id: 'inventory', icon: Package, title: 'Inventory Management', shortDesc: 'Real-time stock & service tracking', price: 699 },
-    { id: 'notifications', icon: Bell, title: 'Notifications', shortDesc: 'SMS, email, push alerts', price: 349 },
-    { id: 'crm', icon: Users, title: 'CRM Integration', shortDesc: 'Centralized customer data', price: 599 },
-    { id: 'analytics-a', icon: BarChart3, title: 'Reporting & Analytics', shortDesc: 'Real-time operational dashboards', price: 449 },
+    { id: 'booking', icon: CalendarCheck, title: 'Booking System', shortDesc: 'AI-powered reservations 24/7' },
+    { id: 'chatbot', icon: MessageSquareText, title: 'Query Handling', shortDesc: 'Chatbot + smart email routing' },
+    { id: 'inventory', icon: Package, title: 'Inventory Management', shortDesc: 'Real-time stock & service tracking' },
+    { id: 'notifications', icon: Bell, title: 'Notifications', shortDesc: 'SMS, email, push alerts' },
+    { id: 'crm', icon: Users, title: 'CRM Integration', shortDesc: 'Centralized customer data' },
+    { id: 'analytics-a', icon: BarChart3, title: 'Reporting & Analytics', shortDesc: 'Real-time operational dashboards' },
 ];
 
 const fadeUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
@@ -52,7 +51,6 @@ export default function ProjectCustom() {
     const selectedFeatures = allFeatures.filter((f) => selected.has(f.id));
     const presenceCount = PRESENCE_FEATURES.filter((f) => selected.has(f.id)).length;
     const automationCount = AUTOMATION_FEATURES.filter((f) => selected.has(f.id)).length;
-    const totalPrice = selectedFeatures.reduce((sum, f) => sum + f.price, 0);
 
     return (
         <div className="container py-16 flex flex-col flex-grow">
@@ -125,11 +123,8 @@ export default function ProjectCustom() {
                                                 <Circle size={18} className="text-[var(--text-muted)]" />
                                             )}
                                         </div>
-                                        <div className="flex-grow">
-                                            <div className="flex items-center justify-between mb-0.5">
-                                                <span className="text-sm font-semibold">{f.title}</span>
-                                                <span className="text-xs font-mono text-[var(--accent-orange)] ml-2">${f.price}</span>
-                                            </div>
+                                        <div>
+                                            <div className="text-sm font-semibold mb-0.5">{f.title}</div>
                                             <div className="text-xs text-[var(--text-muted)]">{f.shortDesc}</div>
                                         </div>
                                     </button>
@@ -163,11 +158,8 @@ export default function ProjectCustom() {
                                                 <Circle size={18} className="text-[var(--text-muted)]" />
                                             )}
                                         </div>
-                                        <div className="flex-grow">
-                                            <div className="flex items-center justify-between mb-0.5">
-                                                <span className="text-sm font-semibold">{f.title}</span>
-                                                <span className="text-xs font-mono text-[var(--accent-cyan)] ml-2">${f.price}</span>
-                                            </div>
+                                        <div>
+                                            <div className="text-sm font-semibold mb-0.5">{f.title}</div>
                                             <div className="text-xs text-[var(--text-muted)]">{f.shortDesc}</div>
                                         </div>
                                     </button>
@@ -211,8 +203,8 @@ export default function ProjectCustom() {
                                 </div>
                             </div>
 
-                            {/* Selected list with prices */}
-                            <div className="mb-4 min-h-[120px]">
+                            {/* Selected list */}
+                            <div className="mb-6 min-h-[120px]">
                                 <AnimatePresence mode="popLayout">
                                     {selectedFeatures.length === 0 ? (
                                         <motion.p
@@ -233,43 +225,15 @@ export default function ProjectCustom() {
                                                     animate={{ opacity: 1, x: 0 }}
                                                     exit={{ opacity: 0, x: 10 }}
                                                     layout
-                                                    className="flex items-center justify-between text-sm text-[var(--text-secondary)]"
+                                                    className="flex items-center gap-2 text-sm text-[var(--text-secondary)]"
                                                 >
-                                                    <span className="flex items-center gap-2">
-                                                        <CheckCircle2 size={14} style={{ color: '#c084fc' }} className="shrink-0" />
-                                                        {f.title}
-                                                    </span>
-                                                    <span className="text-xs font-mono text-[var(--text-muted)]">${f.price}</span>
+                                                    <CheckCircle2 size={14} style={{ color: '#c084fc' }} className="shrink-0" />
+                                                    {f.title}
                                                 </motion.li>
                                             ))}
                                         </ul>
                                     )}
                                 </AnimatePresence>
-                            </div>
-
-                            {/* Total Price */}
-                            <div className="border-t border-[rgba(192,132,252,0.15)] pt-4 mb-6">
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Estimated Total</span>
-                                    <DollarSign size={14} className="text-[var(--text-muted)]" />
-                                </div>
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={totalPrice}
-                                        initial={{ opacity: 0, y: -5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 5 }}
-                                        className="flex items-baseline gap-1"
-                                    >
-                                        <span className="text-3xl font-display font-bold" style={{ color: '#c084fc' }}>
-                                            ${totalPrice.toLocaleString()}
-                                        </span>
-                                        <span className="text-xs text-[var(--text-muted)] font-mono">one-time</span>
-                                    </motion.div>
-                                </AnimatePresence>
-                                <p className="text-[10px] text-[var(--text-muted)] font-mono mt-1">
-                                    * Estimate only. Final quote after consultation.
-                                </p>
                             </div>
 
                             {/* CTA */}
@@ -285,17 +249,6 @@ export default function ProjectCustom() {
                             <p className="text-[var(--text-muted)] text-[10px] font-mono mt-3 text-center">
                                 {"We'll scope & quote within 48 hours."}
                             </p>
-
-                            {/* Maintenance link */}
-                            <div className="mt-4 pt-4 border-t border-[rgba(192,132,252,0.1)]">
-                                <Link
-                                    to="/pricing"
-                                    className="flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[#c084fc] transition-colors"
-                                >
-                                    <DollarSign size={12} />
-                                    View ongoing maintenance plans →
-                                </Link>
-                            </div>
                         </div>
                     </div>
                 </motion.div>

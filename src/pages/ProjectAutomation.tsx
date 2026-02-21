@@ -1,6 +1,6 @@
 import {
     CalendarCheck, MessageSquareText, Package, Bell,
-    Users, BarChart3, ArrowRight, ArrowLeft, CheckCircle2, AlertTriangle, DollarSign
+    Users, BarChart3, ArrowRight, ArrowLeft, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,42 +9,36 @@ const FEATURES = [
     {
         icon: CalendarCheck,
         title: 'AI-Powered Booking & Reservation',
-        price: 899,
         description:
             'Let customers book appointments, reserve slots, or schedule services 24/7 through an intelligent system that handles conflicts, waitlists, and reminders automatically.',
     },
     {
         icon: MessageSquareText,
         title: 'Automated Query Handling',
-        price: 799,
         description:
             'AI chatbot + smart email routing that answers common questions instantly, escalates complex issues, and keeps a full conversation history.',
     },
     {
         icon: Package,
         title: 'Inventory & Service Management',
-        price: 699,
         description:
             'Real-time dashboards to track stock levels, service availability, and resource allocation. Automated alerts when something needs attention.',
     },
     {
         icon: Bell,
         title: 'Notification & Alert System',
-        price: 349,
         description:
             'SMS, email, and push notifications triggered by events — booking confirmations, low-stock alerts, payment receipts, and custom triggers you define.',
     },
     {
         icon: Users,
         title: 'CRM Integration',
-        price: 599,
         description:
             'Centralize every customer interaction. Auto-sync with your existing CRM or use our built-in customer management to track leads, history, and lifetime value.',
     },
     {
         icon: BarChart3,
         title: 'Real-Time Reporting & Analytics',
-        price: 449,
         description:
             'Dashboards that show revenue, booking trends, query volume, and operational health in real time — so you make decisions with data, not guesses.',
     },
@@ -141,45 +135,7 @@ export default function ProjectAutomation() {
                 ))}
             </div>
 
-            {/* Pricing Breakdown */}
-            <motion.div {...fadeUp} transition={{ delay: 0.45 }} className="mb-6">
-                <div className="flex items-center gap-4 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Pricing Estimate // 01.5</span>
-                </div>
-                <h2 className="text-3xl font-display uppercase tracking-tight">Investment</h2>
-            </motion.div>
 
-            <motion.div
-                {...fadeUp}
-                transition={{ delay: 0.48 }}
-                className="glass-panel p-8 max-w-2xl mb-24 border border-[rgba(0,229,255,0.15)]"
-            >
-                <div className="space-y-4 font-mono text-sm mb-6">
-                    {FEATURES.map((f) => (
-                        <div key={f.title} className="flex justify-between items-center group">
-                            <span className="text-[var(--text-secondary)] group-hover:text-white transition-colors">{f.title}</span>
-                            <span className="tabular-nums text-[var(--text-muted)]">${f.price}</span>
-                        </div>
-                    ))}
-                </div>
-                <div className="border-t border-[rgba(0,229,255,0.2)] pt-4 flex justify-between items-baseline">
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Package Total</span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-display font-bold text-[var(--accent-cyan)]">
-                            ${FEATURES.reduce((s, f) => s + f.price, 0).toLocaleString()}
-                        </span>
-                        <span className="text-xs text-[var(--text-muted)] font-mono">one-time</span>
-                    </div>
-                </div>
-                <p className="text-[10px] text-[var(--text-muted)] font-mono mt-3">* Starting estimate. Final quote based on project scope and complexity.</p>
-                <div className="mt-4 pt-4 border-t border-[rgba(0,229,255,0.1)]">
-                    <Link to="/pricing" className="flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--accent-cyan)] transition-colors">
-                        <DollarSign size={12} />
-                        View ongoing maintenance plans →
-                    </Link>
-                </div>
-            </motion.div>
 
             {/* Benefits */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">

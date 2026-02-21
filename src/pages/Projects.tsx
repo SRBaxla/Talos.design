@@ -1,4 +1,4 @@
-import { Globe, Bot, Wrench, ArrowRight, Sparkles, DollarSign } from 'lucide-react';
+import { Globe, Bot, Wrench, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -9,8 +9,7 @@ const PROJECTS = [
         title: 'Digital Presence',
         accent: 'orange',
         icon: Globe,
-        startingPrice: '$2,499',
-        priceNote: 'one-time',
+
         description:
             'Your complete online identity — designed, built, and deployed. We handle the website, branding, SEO, and social-media CI/CD so you can focus on running your business.',
         highlights: [
@@ -30,8 +29,7 @@ const PROJECTS = [
         title: 'Smart Automation',
         accent: 'cyan',
         icon: Bot,
-        startingPrice: '$3,999',
-        priceNote: 'one-time',
+
         description:
             'Automate bookings, queries, inventory, and service management with intelligent digital systems that run 24/7 — no manual work, no downtime.',
         highlights: [
@@ -51,8 +49,7 @@ const PROJECTS = [
         title: 'Custom Build',
         accent: 'purple',
         icon: Wrench,
-        startingPrice: 'Varies',
-        priceNote: 'per module',
+
         description:
             'Mix and match from both packages or request something entirely unique. We\'ll craft the exact solution your business needs — nothing more, nothing less.',
         highlights: [
@@ -161,12 +158,7 @@ export default function Projects() {
                                     <h2 className="text-2xl font-display font-bold">{project.title}</h2>
                                 </div>
 
-                                {/* Price */}
-                                <div className="flex items-baseline gap-2 mb-4">
-                                    <span className="text-2xl font-display font-bold" style={{ color: a.color }}>{project.startingPrice}</span>
-                                    <span className="text-xs text-[var(--text-muted)] font-mono">{project.priceNote}</span>
-                                </div>
-                                <p className="text-[10px] text-[var(--text-muted)] font-mono mb-4">Starting at • Final quote after consultation</p>
+
 
                                 {/* Description */}
                                 <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-8">
@@ -222,17 +214,7 @@ export default function Projects() {
                 </p>
             </motion.div>
 
-            {/* Maintenance link */}
-            <motion.div
-                {...fadeUp}
-                transition={{ delay: 0.8 }}
-                className="mt-8 flex items-center gap-3"
-            >
-                <DollarSign size={16} className="text-[var(--accent-cyan)]" />
-                <p className="text-sm text-[var(--text-secondary)]">
-                    Need ongoing hosting & maintenance? <Link to="/pricing" className="text-[var(--accent-cyan)] hover:underline font-medium">View maintenance plans →</Link>
-                </p>
-            </motion.div>
+
         </div>
     );
 }
