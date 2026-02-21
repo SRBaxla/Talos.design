@@ -310,6 +310,76 @@ export default function Pricing() {
 
             </motion.div>
 
+            {/* Project Packages */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="w-full max-w-5xl mt-16"
+            >
+                <div className="flex items-center gap-4 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange-glow)]"></span>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">One-Time Project Pricing</span>
+                </div>
+                <h2 className="text-3xl font-display uppercase tracking-tight mb-3">Project Packages</h2>
+                <p className="text-sm text-[var(--text-secondary)] mb-10 max-w-2xl">
+                    The plans above cover ongoing hosting & maintenance. Below are one-time project packages for building your digital presence or automation systems from scratch.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Digital Presence */}
+                    <Link
+                        to="/projects/presence"
+                        className="glass-panel p-6 group hover:border-[rgba(245,158,11,0.3)] transition-all"
+                    >
+                        <div className="text-[10px] font-mono text-[var(--accent-orange)] uppercase tracking-widest mb-3">Protocol_01</div>
+                        <h3 className="text-lg font-display font-bold mb-1">Digital Presence</h3>
+                        <div className="flex items-baseline gap-2 mb-3">
+                            <span className="text-2xl font-display font-bold text-[var(--accent-orange)]">$2,499</span>
+                            <span className="text-xs text-[var(--text-muted)] font-mono">starting</span>
+                        </div>
+                        <p className="text-xs text-[var(--text-secondary)] mb-4">Website, branding, SEO, CMS, analytics & more.</p>
+                        <span className="text-xs text-[var(--accent-orange)] flex items-center gap-1 group-hover:gap-2 transition-all">
+                            View Details <ArrowRight size={12} />
+                        </span>
+                    </Link>
+
+                    {/* Smart Automation */}
+                    <Link
+                        to="/projects/automation"
+                        className="glass-panel p-6 group hover:border-[rgba(0,229,255,0.3)] transition-all"
+                    >
+                        <div className="text-[10px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest mb-3">Protocol_02</div>
+                        <h3 className="text-lg font-display font-bold mb-1">Smart Automation</h3>
+                        <div className="flex items-baseline gap-2 mb-3">
+                            <span className="text-2xl font-display font-bold text-[var(--accent-cyan)]">$3,999</span>
+                            <span className="text-xs text-[var(--text-muted)] font-mono">starting</span>
+                        </div>
+                        <p className="text-xs text-[var(--text-secondary)] mb-4">Bookings, chatbot, inventory, CRM & notifications.</p>
+                        <span className="text-xs text-[var(--accent-cyan)] flex items-center gap-1 group-hover:gap-2 transition-all">
+                            View Details <ArrowRight size={12} />
+                        </span>
+                    </Link>
+
+                    {/* Custom Build */}
+                    <Link
+                        to="/projects/custom"
+                        className="glass-panel p-6 group hover:border-[rgba(192,132,252,0.3)] transition-all"
+                    >
+                        <div className="text-[10px] font-mono text-[#c084fc] uppercase tracking-widest mb-3">Protocol_03</div>
+                        <h3 className="text-lg font-display font-bold mb-1">Custom Build</h3>
+                        <div className="flex items-baseline gap-2 mb-3">
+                            <span className="text-2xl font-display font-bold text-[#c084fc]">Varies</span>
+                            <span className="text-xs text-[var(--text-muted)] font-mono">per module</span>
+                        </div>
+                        <p className="text-xs text-[var(--text-secondary)] mb-4">Pick any features from both packages. Get a quote.</p>
+                        <span className="text-xs text-[#c084fc] flex items-center gap-1 group-hover:gap-2 transition-all">
+                            Build Custom <ArrowRight size={12} />
+                        </span>
+                    </Link>
+                </div>
+            </motion.div>
+
         </div>
     );
 }

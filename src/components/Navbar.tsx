@@ -7,6 +7,7 @@ export function Navbar() {
 
     const navLinks = [
         { name: 'Solutions', path: '/services' },
+        { name: 'Projects', path: '/projects' },
         { name: 'Studio', path: '/about' },
         { name: 'Pricing', path: '/pricing' },
         { name: 'Contact', path: '/contact' },

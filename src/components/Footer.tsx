@@ -1,4 +1,5 @@
 import { Hexagon, Twitter, Github } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
     return (
@@ -21,6 +22,7 @@ export function Footer() {
                             <li><a href="#" className="hover:text-white transition-colors">Web Design</a></li>
                             <li><a href="#" className="hover:text-white transition-colors">AI Chatbots</a></li>
                             <li><a href="#" className="hover:text-white transition-colors">Automation</a></li>
+                            <li><Link to="/projects" className="hover:text-white transition-colors">Projects</Link></li>
                         </ul>
                     </div>
 
@@ -28,7 +30,7 @@ export function Footer() {
                         <h4 className="font-semibold mb-6">Company</h4>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
                             <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                            <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                            <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
                             <li><a href="#" className="hover:text-white transition-colors">Legal</a></li>
                         </ul>
                     </div>

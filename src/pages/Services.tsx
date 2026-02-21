@@ -52,7 +52,7 @@ export default function Services() {
                     transition={{ delay: 0.4 }}
                     className="flex gap-4"
                 >
-                    <Link to="/contact" className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8 flex items-center justify-center">
+                    <Link to="/projects" className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8 flex items-center justify-center">
                         Initialize Project +
                     </Link>
                     <Link to="/pricing" className="btn btn-outline uppercase text-xs tracking-widest px-8 flex items-center justify-center">
