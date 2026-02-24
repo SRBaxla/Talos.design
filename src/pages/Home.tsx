@@ -1,4 +1,4 @@
-import { LayoutGrid, Bot, Settings, ArrowRight } from 'lucide-react';
+import { LayoutGrid, Bot, Settings, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -278,41 +278,15 @@ export default function Home() {
                   <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">CRM</span>
                   <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Notifications</span>
                 </div>
-                <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
-                  <span>Presence + Automation</span>
-                  <span>•</span>
-                  <span>6 week build</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Portfolio 2 — Talos.design */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="glass-panel p-6 flex flex-col group hover:border-[rgba(0,229,255,0.3)] transition-all relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-cyan)] opacity-[0.04] blur-[60px] rounded-full pointer-events-none"></div>
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] font-mono bg-[rgba(34,197,94,0.1)] text-green-400 px-3 py-1 rounded-full border border-[rgba(34,197,94,0.2)]">● Live</span>
-                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Delivered Feb 2026</span>
-                </div>
-                <h3 className="text-lg font-display font-bold mb-2">Talos.design — Studio Portfolio</h3>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4">
-                  Our own studio website. Built with React, Framer Motion, and a custom design system. Features dynamic project pages, interactive pricing calculator, and a fully responsive dark-mode interface.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">React</span>
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Framer Motion</span>
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Design System</span>
-                </div>
-                <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
-                  <span>Custom Build</span>
-                  <span>•</span>
-                  <span>4 week build</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
+                    <span>Presence + Automation</span>
+                    <span>•</span>
+                    <span>6 week build</span>
+                  </div>
+                  <a href="https://jhansi-hotel.web.app/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs text-[var(--accent-orange)] font-medium hover:text-white transition-colors">
+                    View Live <ExternalLink size={12} />
+                  </a>
                 </div>
               </div>
             </motion.div>

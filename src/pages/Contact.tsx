@@ -1,4 +1,4 @@
-import { Mail, MapPin, Globe, Code, Network, Send } from 'lucide-react';
+import { Mail, Globe, Code, Network, Send, Laptop } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Contact() {
@@ -114,13 +114,13 @@ export default function Contact() {
                         className="glass-panel p-6 flex items-start gap-4 hover:border-[rgba(245,158,11,0.3)] transition-colors"
                     >
                         <div className="w-12 h-12 rounded bg-[rgba(245,158,11,0.1)] flex items-center justify-center shrink-0">
-                            <MapPin className="text-[var(--accent-orange)]" size={24} />
+                            <Laptop className="text-[var(--accent-orange)]" size={24} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold mb-1">Coordinates</h3>
-                            <p className="text-[var(--text-secondary)] text-sm mb-3">Physical operations center.</p>
-                            <div className="text-white text-sm font-mono">37.7749° N, 122.4194° W</div>
-                            <div className="text-[var(--text-muted)] text-sm">San Francisco, CA</div>
+                            <h3 className="text-lg font-bold mb-1">Remote First</h3>
+                            <p className="text-[var(--text-secondary)] text-sm mb-3">We're a fully remote team — no physical office, just pure digital operations.</p>
+                            <div className="text-white text-sm font-mono">Based in India 🇮🇳</div>
+                            <div className="text-[var(--text-muted)] text-sm">Available worldwide, async-friendly</div>
                         </div>
                     </motion.div>
 

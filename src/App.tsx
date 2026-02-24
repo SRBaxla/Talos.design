@@ -11,6 +11,11 @@ import Projects from './pages/Projects';
 import ProjectPresence from './pages/ProjectPresence';
 import ProjectAutomation from './pages/ProjectAutomation';
 import ProjectCustom from './pages/ProjectCustom';
+import AboutUs from './pages/AboutUs';
+import ServiceWebDesign from './pages/ServiceWebDesign';
+import ServiceChatbots from './pages/ServiceChatbots';
+import ServiceAutomation from './pages/ServiceAutomation';
+import Legal from './pages/Legal';
 
 function App() {
   return (
@@ -28,6 +33,11 @@ function App() {
           <Route path="projects/presence" element={<ProjectPresence />} />
           <Route path="projects/automation" element={<ProjectAutomation />} />
           <Route path="projects/custom" element={<ProjectCustom />} />
+          <Route path="about-us" element={<AboutUs />} />
+          <Route path="services/web-design" element={<ServiceWebDesign />} />
+          <Route path="services/chatbots" element={<ServiceChatbots />} />
+          <Route path="services/automation" element={<ServiceAutomation />} />
+          <Route path="legal" element={<Legal />} />
         </Route>
       </Routes>
     </BrowserRouter>

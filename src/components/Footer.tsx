@@ -19,9 +19,9 @@ export function Footer() {
                     <div>
                         <h4 className="font-semibold mb-6">Services</h4>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
-                            <li><a href="#" className="hover:text-white transition-colors">Web Design</a></li>
-                            <li><a href="#" className="hover:text-white transition-colors">AI Chatbots</a></li>
-                            <li><a href="#" className="hover:text-white transition-colors">Automation</a></li>
+                            <li><Link to="/services/web-design" className="hover:text-white transition-colors">Web Design</Link></li>
+                            <li><Link to="/services/chatbots" className="hover:text-white transition-colors">AI Chatbots</Link></li>
+                            <li><Link to="/services/automation" className="hover:text-white transition-colors">Automation</Link></li>
                             <li><Link to="/projects" className="hover:text-white transition-colors">Projects</Link></li>
                         </ul>
                     </div>
@@ -29,9 +29,9 @@ export function Footer() {
                     <div>
                         <h4 className="font-semibold mb-6">Company</h4>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
-                            <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                            <li><Link to="/about-us" className="hover:text-white transition-colors">About Us</Link></li>
                             <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
-                            <li><a href="#" className="hover:text-white transition-colors">Legal</a></li>
+                            <li><Link to="/legal" className="hover:text-white transition-colors">Legal</Link></li>
                         </ul>
                     </div>
 
@@ -47,8 +47,8 @@ export function Footer() {
                 <div className="border-t border-[var(--border-color)] pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-[var(--text-muted)]">
                     <p>© {new Date().getFullYear()} Talos.design. All rights reserved.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
-                        <a href="#" className="hover:text-white">Privacy Policy</a>
-                        <a href="#" className="hover:text-white">Terms of Service</a>
+                        <Link to="/legal#privacy" className="hover:text-white">Privacy Policy</Link>
+                        <Link to="/legal#terms" className="hover:text-white">Terms of Service</Link>
                     </div>
                 </div>
             </div>
