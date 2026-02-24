@@ -17,11 +17,21 @@ import ServiceChatbots from './pages/ServiceChatbots';
 import ServiceAutomation from './pages/ServiceAutomation';
 import Legal from './pages/Legal';
 
+// Admin
+import AdminLayout from './admin/components/AdminLayout';
+import AdminDashboard from './admin/pages/AdminDashboard';
+import AdminProjects from './admin/pages/AdminProjects';
+import AdminCaseStudies from './admin/pages/AdminCaseStudies';
+import AdminSettings from './admin/pages/AdminSettings';
+import ProjectDetail from './admin/pages/ProjectDetail';
+import CaseStudyDetail from './admin/pages/CaseStudyDetail';
+
 function App() {
   return (
-    <BrowserRouter basename="/Talos.design/">
+    <BrowserRouter>
       <ScrollToTop />
       <Routes>
+        {/* Public Site */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="services" element={<Services />} />
@@ -38,6 +48,16 @@ function App() {
           <Route path="services/chatbots" element={<ServiceChatbots />} />
           <Route path="services/automation" element={<ServiceAutomation />} />
           <Route path="legal" element={<Legal />} />
+        </Route>
+
+        {/* Admin Panel */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="projects" element={<AdminProjects />} />
+          <Route path="projects/:id" element={<ProjectDetail />} />
+          <Route path="case-studies" element={<AdminCaseStudies />} />
+          <Route path="case-studies/:id" element={<CaseStudyDetail />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
     </BrowserRouter>

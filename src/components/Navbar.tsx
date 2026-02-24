@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Hexagon, Menu, X } from 'lucide-react';
+import { Hexagon, Menu, X, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -35,6 +35,14 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-4">
+                    <NavLink
+                        to="/admin"
+                        className="hidden md:flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors px-2 py-1 rounded-md hover:bg-[rgba(245,158,11,0.06)]"
+                        title="Admin Panel"
+                    >
+                        <Shield size={14} />
+                        <span>Admin</span>
+                    </NavLink>
                     <NavLink to="/contact" className="btn btn-primary flex items-center justify-center p-2 sm:px-4" style={{ padding: '0.5rem 1rem' }}>
                         <span className="hidden sm:inline mr-2">Get Started</span>
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,6 +80,13 @@ export function Navbar() {
                                 {link.name}
                             </NavLink>
                         ))}
+                        <NavLink
+                            to="/admin"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={({ isActive }) => `flex items-center gap-2 text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)]' : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'}`}
+                        >
+                            <Shield size={16} /> Admin
+                        </NavLink>
                     </motion.div>
                 )}
             </AnimatePresence>
