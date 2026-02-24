@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# Talos.design
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Digital infrastructure studio — Web Design, AI Chatbots & Automation
 
-Currently, two official plugins are available:
+🌐 **Live**: [talos-d74d7.web.app](https://talos-d74d7.web.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+| Layer | Technology |
+|---|---|
+| **Framework** | React 19 + TypeScript |
+| **Build** | Vite 7 |
+| **Styling** | Tailwind CSS + Custom CSS |
+| **Routing** | React Router v7 |
+| **Backend** | Firebase (Auth + Firestore) |
+| **Hosting** | Firebase Hosting |
+| **Animations** | Framer Motion |
+| **Icons** | Lucide React |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/          # Shared UI (Navbar, Footer, Layout)
+├── pages/               # Public pages (Home, Services, Projects, etc.)
+├── admin/               # Admin panel (protected)
+│   ├── components/      # AdminAuth, AdminLayout, ProjectTable, KanbanBoard, TicketList, Modals
+│   ├── pages/           # Dashboard, Projects, CaseStudies, Settings, Detail pages
+│   ├── store/           # Firestore hooks & CRUD (Projects, CaseStudies, Tickets)
+│   └── firebase/        # Firebase config
+└── index.css            # Global styles + admin styles
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Public Site
+- **Solutions** — Service pages for Web Design, AI Chatbots, Automation
+- **Projects** — Portfolio showcase with project detail pages
+- **Pricing** — Service packages and pricing tiers
+- **Contact** — Get in touch form
+- **Studio** — About the team and company story
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Admin Panel (`/admin`)
+- 🔐 **Firebase Authentication** — Email/password login
+- 📊 **Dashboard** — Stats cards, recent projects & case studies with clickable links
+- 📁 **Project Management** — Table view + Kanban board with drag-and-drop
+- 📝 **Case Study Management** — Full CRUD with status tracking
+- 🎫 **Ticket System** — Per-project & per-case-study tickets with status toggle, priority, assignee, due dates
+- 📄 **Detail Pages** — Full project/case study views with embedded tickets
+- ⚙️ **Settings** — Data export/import, account management
+- 📱 **Responsive** — Works on mobile, tablet, and desktop
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to Firebase
+firebase deploy --only hosting
 ```
+
+## Firebase Setup
+
+1. Create a project at [Firebase Console](https://console.firebase.google.com/)
+2. Enable **Authentication** → Email/Password
+3. Enable **Cloud Firestore** → Create database
+4. Add a Web app → Copy config to `src/admin/firebase/firebaseConfig.ts`
+5. Create an admin user in Authentication → Add user
+
+## Deploy
+
+```bash
+npm run build && firebase deploy --only hosting
+```
+
+Project Console: https://console.firebase.google.com/project/talos-d74d7/overview

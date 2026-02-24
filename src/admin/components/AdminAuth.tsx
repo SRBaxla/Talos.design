@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
-import { Hexagon, Eye, EyeOff } from 'lucide-react';
+import { Hexagon, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function AdminAuth() {
     const [email, setEmail] = useState('');
@@ -72,6 +73,10 @@ export default function AdminAuth() {
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
+
+                <Link to="/" className="admin-auth-back">
+                    <ArrowLeft size={14} /> Back to Website
+                </Link>
             </div>
         </div>
     );

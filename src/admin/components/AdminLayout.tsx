@@ -12,6 +12,7 @@ import {
     Hexagon,
     PanelLeftClose,
     PanelLeftOpen,
+    Home,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
 
@@ -97,6 +98,10 @@ export default function AdminLayout() {
                             <span className="admin-sidebar-email">{user.email}</span>
                         </div>
                     )}
+                    <NavLink to="/" className="admin-sidebar-link">
+                        <Home size={18} />
+                        {sidebarOpen && <span>Back to Website</span>}
+                    </NavLink>
                     <button className="admin-sidebar-link" onClick={handleLogout}>
                         <LogOut size={18} />
                         {sidebarOpen && <span>Logout</span>}
