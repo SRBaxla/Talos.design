@@ -183,7 +183,7 @@ export default function Home() {
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">CRM</span>
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Dashboard</span>
               </div>
-              <Link to="/projects/automation" className="text-xs text-[var(--accent-cyan)] flex items-center gap-1 group-hover:gap-2 transition-all">
+              <Link to="/offers/hospitality" className="text-xs text-[var(--accent-cyan)] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
               </Link>
             </motion.div>
@@ -206,7 +206,7 @@ export default function Home() {
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Payments</span>
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">SEO</span>
               </div>
-              <Link to="/projects/presence" className="text-xs text-[var(--accent-orange)] flex items-center gap-1 group-hover:gap-2 transition-all">
+              <Link to="/offers/ecommerce" className="text-xs text-[var(--accent-orange)] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
               </Link>
             </motion.div>
@@ -229,7 +229,7 @@ export default function Home() {
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">AI Chat</span>
                 <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Workflow</span>
               </div>
-              <Link to="/projects/custom" className="text-xs text-[#c084fc] flex items-center gap-1 group-hover:gap-2 transition-all">
+              <Link to="/offers/professional" className="text-xs text-[#c084fc] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
               </Link>
             </motion.div>

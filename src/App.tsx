@@ -16,6 +16,9 @@ import ServiceWebDesign from './pages/ServiceWebDesign';
 import ServiceChatbots from './pages/ServiceChatbots';
 import ServiceAutomation from './pages/ServiceAutomation';
 import Legal from './pages/Legal';
+import OfferHospitality from './pages/OfferHospitality';
+import OfferEcommerce from './pages/OfferEcommerce';
+import OfferProfessional from './pages/OfferProfessional';
 
 // Admin
 import AdminLayout from './admin/components/AdminLayout';
@@ -47,6 +50,9 @@ function App() {
           <Route path="services/web-design" element={<ServiceWebDesign />} />
           <Route path="services/chatbots" element={<ServiceChatbots />} />
           <Route path="services/automation" element={<ServiceAutomation />} />
+          <Route path="offers/hospitality" element={<OfferHospitality />} />
+          <Route path="offers/ecommerce" element={<OfferEcommerce />} />
+          <Route path="offers/professional" element={<OfferProfessional />} />
           <Route path="legal" element={<Legal />} />
         </Route>
 
