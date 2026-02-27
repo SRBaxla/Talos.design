@@ -2,7 +2,7 @@
 
 > Digital infrastructure studio — Web Design, AI Chatbots & Automation
 
-🌐 **Live**: [talos-d74d7.web.app](https://talos-d74d7.web.app)
+🌐 **Live**: [talos.design](https://talos.design)
 
 ## Tech Stack
 
