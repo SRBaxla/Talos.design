@@ -167,7 +167,7 @@ export default function Services() {
                         viewport={{ once: true }}
                         className="glass-panel overflow-hidden group border-t border-t-[rgba(255,255,255,0.1)]"
                     >
-                        <div className="h-64 bg-black relative flex items-center justify-center p-8">
+                        <div className="h-64 bg-[#1c1c22] relative flex items-center justify-center p-8">
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] to-transparent z-10"></div>
                             {/* Abstract Flower Graphic */}
                             <div className="w-32 h-32 relative z-0 opacity-50 group-hover:scale-105 transition-transform duration-700">
@@ -179,7 +179,7 @@ export default function Services() {
                                 </svg>
                             </div>
                         </div>
-                        <div className="p-8 relative z-20 bg-[rgba(18,18,20,0.6)]">
+                        <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
                             <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] border border-[rgba(0,229,255,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
                                 Metrics: +214% ROI
                             </div>
@@ -196,7 +196,7 @@ export default function Services() {
                         transition={{ delay: 0.1 }}
                         className="glass-panel overflow-hidden group border-t border-t-[rgba(255,255,255,0.1)]"
                     >
-                        <div className="h-64 bg-black relative flex items-center justify-center p-8">
+                        <div className="h-64 bg-[#1c1c22] relative flex items-center justify-center p-8">
                             <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] to-transparent z-10"></div>
                             {/* Abstract Letter Graphic */}
                             <div className="w-32 h-32 relative z-0 opacity-50 group-hover:scale-105 transition-transform duration-700 flex justify-center items-center">
@@ -204,7 +204,7 @@ export default function Services() {
                                 <div className="text-8xl font-serif text-white font-bold italic tracking-tighter pr-4">L</div>
                             </div>
                         </div>
-                        <div className="p-8 relative z-20 bg-[rgba(18,18,20,0.6)]">
+                        <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
                             <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)] border border-[rgba(245,158,11,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
                                 Latency: 12 Seconds
                             </div>

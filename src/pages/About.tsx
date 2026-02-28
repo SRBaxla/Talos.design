@@ -60,7 +60,7 @@ export default function About() {
                     >
                         <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.03)] px-4 py-2 border border-[var(--border-color)] rounded-full backdrop-blur-md">
                             <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse"></span>
-                            SYSTEM STATUS: <span className="text-white">ONLINE</span>
+                            SYSTEM STATUS: <span className="text-[var(--text-primary)] font-bold">ONLINE</span>
                         </div>
                         <div className="flex items-start gap-2 max-w-lg text-center mt-4 text-xs md:text-sm">
                             <span className="text-[var(--text-muted)] hidden sm:inline">-</span>
@@ -102,23 +102,23 @@ export default function About() {
                     </div>
 
                     <div className="border-l-2 border-[var(--border-color)] pl-8 py-2">
-                        <p className="text-lg leading-relaxed mb-6 block bg-clip-text text-transparent bg-gradient-to-r from-white to-[var(--text-secondary)]">
+                        <p className="text-lg leading-relaxed mb-6 block bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)]">
                             <span className="text-[var(--accent-orange)] font-bold">&gt;&gt; Talos.design</span> is not merely an agency; it is an architectural firm for the digital age. We believe that true intelligence lies in the seamless integration of raw data and refined automation.
                         </p>
                         <p className="text-[var(--text-secondary)] leading-relaxed mb-8">
                             Our mission is to construct robust digital frameworks that operate with the autonomy of AI and the precision of a master craftsman. We identify inefficiencies, architect solutions, and deploy autonomous agents to safeguard your growth.
                         </p>
-                        <div className="flex gap-8 border-t border-[rgba(255,255,255,0.1)] pt-6">
+                        <div className="flex gap-8 border-t border-[var(--border-color)] pt-6">
                             <div>
-                                <div className="text-3xl font-display font-bold text-white mb-1 leading-none text-gradient-orange">98%</div>
+                                <div className="text-3xl font-display font-bold mb-1 leading-none text-gradient-orange">98%</div>
                                 <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Efficiency</div>
                             </div>
                             <div>
-                                <div className="text-3xl font-display font-bold text-white mb-1 leading-none text-gradient-cyan">24/7</div>
+                                <div className="text-3xl font-display font-bold mb-1 leading-none text-gradient-cyan">24/7</div>
                                 <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Uptime</div>
                             </div>
                             <div>
-                                <div className="text-3xl font-display font-bold text-white mb-1 leading-none">∞</div>
+                                <div className="text-3xl font-display font-bold text-[var(--text-primary)] mb-1 leading-none">∞</div>
                                 <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Scale</div>
                             </div>
                         </div>
@@ -176,7 +176,7 @@ export default function About() {
                             <div className="w-5/12 pr-8 border-b border-[var(--border-color)] h-px"></div>
                             <div className="z-10 w-4 h-4 rounded-full border-2 border-[var(--bg-base)] bg-[var(--accent-orange)] shadow-[0_0_15px_var(--accent-orange-glow)]"></div>
                             <div className="w-5/12 pl-8">
-                                <h3 className="text-xl font-bold mb-2 text-white">Phase 2: Architecture</h3>
+                                <h3 className="text-xl font-bold mb-2 text-[var(--text-primary)]">Phase 2: Architecture</h3>
                                 <p className="text-[var(--text-secondary)] text-sm">Constructing digital frameworks. Building scalable intelligence.</p>
                             </div>
                         </motion.div>
@@ -248,7 +248,7 @@ export default function About() {
                                 <CircuitBoard size={48} className="text-[var(--border-color-light)] group-hover:text-[var(--text-primary)] transition-all" />
                             </div>
                             <h3 className="text-xl font-display font-bold mb-1">Unit Beta</h3>
-                            <div className="text-[10px] font-mono text-white uppercase tracking-widest mb-4">Systems Operations</div>
+                            <div className="text-[10px] font-mono text-[var(--text-primary)] uppercase tracking-widest mb-4">Systems Operations</div>
                             <p className="text-sm text-[var(--text-secondary)] leading-relaxed relative z-10">Expert in data flow optimization and automated agent deployment.</p>
                         </motion.div>
 

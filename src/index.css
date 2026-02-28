@@ -55,6 +55,157 @@
     --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Light Mode Overrides ──────────────────────────────── */
+[data-theme="light"] {
+    /* Warm off-white backgrounds — no pure white */
+    --bg-base: #ede9e3;
+    --bg-surface: #f5f2ee;
+    --bg-surface-elevated: #e8e4de;
+
+    /* High contrast text */
+    --text-primary: #0f0f10;
+    --text-secondary: #3f3f46;
+    --text-muted: #71717a;
+
+    /* Cyan darkened for legibility on light bg */
+    --accent-cyan: #00547a;
+    --accent-cyan-hover: #006699;
+    --accent-cyan-glow: rgba(0, 84, 122, 0.25);
+
+    --border-color: #d6d1ca;
+    --border-color-light: #c4bfb8;
+}
+
+[data-theme="light"] body,
+[data-theme="light"] .admin-shell {
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(245, 158, 11, 0.07), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.06), transparent 25%);
+}
+
+[data-theme="light"] body::before {
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+[data-theme="light"] .glass-panel {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: var(--border-color);
+}
+
+[data-theme="light"] .admin-sidebar {
+    background: rgba(255, 255, 255, 0.97);
+}
+
+[data-theme="light"] .admin-sidebar-toggle:hover,
+[data-theme="light"] .admin-sidebar-link:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .admin-table-wrapper,
+[data-theme="light"] .admin-card,
+[data-theme="light"] .admin-stat-card,
+[data-theme="light"] .admin-kanban-col,
+[data-theme="light"] .admin-tickets,
+[data-theme="light"] .admin-detail-section,
+[data-theme="light"] .admin-detail-info-card {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .admin-kanban-card {
+    background: var(--bg-surface-elevated);
+}
+
+[data-theme="light"] .admin-kanban-card:hover {
+    background: #e0e0e8;
+}
+
+[data-theme="light"] .admin-input,
+[data-theme="light"] .admin-textarea,
+[data-theme="light"] .admin-select {
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .admin-search-input {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .admin-table td {
+    border-bottom-color: rgba(228, 228, 231, 0.7);
+}
+
+[data-theme="light"] .admin-table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.025);
+}
+
+[data-theme="light"] .admin-table-actions button:hover,
+[data-theme="light"] .admin-table-actions a:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .admin-ticket-item:hover,
+[data-theme="light"] .admin-activity-item:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .admin-view-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .admin-modal {
+    background: var(--bg-surface);
+}
+
+[data-theme="light"] .admin-modal-close:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .admin-kanban-count,
+[data-theme="light"] .admin-tickets-count {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .btn-outline {
+    border-color: var(--border-color-light);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-outline:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--text-secondary);
+}
+
+[data-theme="light"] .badge {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .admin-ticket-form {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .admin-ticket-filter:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .admin-ticket-actions button:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Global catch-all: remap text-white → text-primary in light mode ── */
+/* This covers all remaining hardcoded text-white across pages/components */
+[data-theme="light"] .text-white {
+    color: var(--text-primary) !important;
+}
+
+/* Contact form inputs: text readable in light mode */
+[data-theme="light"] input.text-white,
+[data-theme="light"] textarea.text-white,
+[data-theme="light"] select.text-white {
+    color: var(--text-primary) !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
