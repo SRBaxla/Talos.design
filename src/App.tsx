@@ -26,8 +26,14 @@ import AdminDashboard from './admin/pages/AdminDashboard';
 import AdminProjects from './admin/pages/AdminProjects';
 import AdminCaseStudies from './admin/pages/AdminCaseStudies';
 import AdminSettings from './admin/pages/AdminSettings';
+import AdminInquiries from './admin/pages/AdminInquiries';
+import AdminInvoices from './admin/pages/AdminInvoices';
 import ProjectDetail from './admin/pages/ProjectDetail';
 import CaseStudyDetail from './admin/pages/CaseStudyDetail';
+
+// Client Portal
+import PortalLogin from './portal/PortalLogin';
+import PortalDashboard from './portal/PortalDashboard';
 
 function App() {
   return (
@@ -56,6 +62,10 @@ function App() {
           <Route path="legal" element={<Legal />} />
         </Route>
 
+        {/* Client Portal */}
+        <Route path="/portal" element={<PortalLogin />} />
+        <Route path="/portal/dashboard" element={<PortalDashboard />} />
+
         {/* Admin Panel */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
@@ -63,6 +73,8 @@ function App() {
           <Route path="projects/:id" element={<ProjectDetail />} />
           <Route path="case-studies" element={<AdminCaseStudies />} />
           <Route path="case-studies/:id" element={<CaseStudyDetail />} />
+          <Route path="inquiries" element={<AdminInquiries />} />
+          <Route path="invoices" element={<AdminInvoices />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>

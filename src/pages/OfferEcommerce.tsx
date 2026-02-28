@@ -66,7 +66,14 @@ export default function OfferEcommerce() {
         .reduce((sum, item) => sum + item.price, 0);
 
     const handleCreateProject = () => {
-        navigate('/contact');
+        const selectedModules = OFFER_ITEMS.filter(item => selectedItems.includes(item.id));
+        navigate('/contact', {
+            state: {
+                bundleType: 'E-Commerce Platform',
+                estimatedValue: totalCost,
+                modules: selectedModules.map(m => m.title)
+            }
+        });
     };
 
     return (
@@ -128,7 +135,7 @@ export default function OfferEcommerce() {
 
                 <motion.div {...fadeUp} transition={{ delay: 0.4 }} className="lg:col-span-1">
                     <div className="glass-panel p-8 sticky top-24 border-[rgba(245,158,11,0.2)]">
-                        <h3 className="text-xl font-display font-bold mb-6">Project Summary</h3>
+                        <h3 className="text-xl font-display font-bold mb-6">Estimated Scope</h3>
                         <div className="space-y-4 mb-8">
                             {OFFER_ITEMS.filter(item => selectedItems.includes(item.id)).map(item => (
                                 <div key={item.id} className="flex justify-between items-center text-sm">
@@ -138,15 +145,15 @@ export default function OfferEcommerce() {
                             ))}
                             <div className="h-px w-full bg-[var(--border-color)] my-4"></div>
                             <div className="flex justify-between items-center text-lg font-bold">
-                                <span>Estimated Total</span>
-                                <span className="text-[var(--accent-orange)] font-mono">${totalCost}</span>
+                                <span>Estimated Value</span>
+                                <span className="text-[var(--accent-orange)] font-mono">~${totalCost}</span>
                             </div>
                         </div>
                         <button
                             onClick={handleCreateProject}
                             className="w-full btn bg-[var(--accent-orange)] text-black hover:bg-[var(--accent-orange-glow)] border-none py-3 px-6 flex items-center justify-center gap-2 font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)]"
                         >
-                            Create Project <ArrowRight size={16} />
+                            Let's Negotiate <ArrowRight size={16} />
                         </button>
                         <p className="text-xs text-[var(--text-muted)] mt-4 text-center">
                             This is an initial estimate. Final costs may vary based on specific requirements.

@@ -13,11 +13,15 @@ import {
     PanelLeftClose,
     PanelLeftOpen,
     Home,
+    Mail,
+    FileText,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
 
 const sidebarLinks = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
+    { name: 'Inquiries (CRM)', path: '/admin/inquiries', icon: Mail, end: false },
+    { name: 'Invoices', path: '/admin/invoices', icon: FileText, end: false },
     { name: 'Client Projects', path: '/admin/projects', icon: FolderKanban, end: false },
     { name: 'Case Studies', path: '/admin/case-studies', icon: BookOpen, end: false },
     { name: 'Settings', path: '/admin/settings', icon: Settings, end: false },

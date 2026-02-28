@@ -1,7 +1,49 @@
 import { Mail, Globe, Code, Network, Send, Laptop } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { addInquiry } from '../admin/store/adminStore';
 
 export default function Contact() {
+    const location = useLocation();
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [company, setCompany] = useState('');
+    const [message, setMessage] = useState('');
+    const [isTransmitting, setIsTransmitting] = useState(false);
+    const [status, setStatus] = useState<'idle' | 'success'>('idle');
+
+    useEffect(() => {
+        if (location.state && location.state.bundleType) {
+            const { bundleType, estimatedValue, modules = [] } = location.state;
+            const prefilledMessage = `Negotiation Request: ${bundleType}\n\nEstimated Value: ~$${estimatedValue}\n\nSelected Modules:\n${modules.map((m: string) => `- ${m}`).join('\n')}\n\nAdditional Details:\n`;
+            setMessage(prefilledMessage);
+        }
+    }, [location]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsTransmitting(true);
+
+        try {
+            await addInquiry({ name, email, company, message });
+
+            setStatus('success');
+            setTimeout(() => {
+                setStatus('idle');
+                setName('');
+                setEmail('');
+                setCompany('');
+                setMessage('');
+            }, 3000);
+        } catch (error) {
+            console.error("Failed to transmit data:", error);
+        } finally {
+            setIsTransmitting(false);
+        }
+    };
+
     return (
         <div className="container py-16 flex flex-col flex-grow">
 
@@ -44,12 +86,15 @@ export default function Contact() {
                     <div className="glass-panel p-8 relative overflow-hidden bg-[rgba(18,18,20,0.8)] border border-[rgba(245,158,11,0.2)]">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-orange)] opacity-[0.05] blur-[80px] rounded-full pointer-events-none"></div>
 
-                        <form className="relative z-10 flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+                        <form className="relative z-10 flex flex-col gap-6" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-[10px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest mb-2">IDENTITY_REF_ID</label>
                                     <input
                                         type="text"
+                                        required
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                         placeholder="Enter your name"
                                         className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-cyan)] transition-colors text-white placeholder-[var(--text-muted)]"
                                     />
@@ -58,6 +103,9 @@ export default function Contact() {
                                     <label className="block text-[10px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest mb-2">SIGNAL_FREQ (EMAIL)</label>
                                     <input
                                         type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                         placeholder="name@company.com"
                                         className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-cyan)] transition-colors text-white placeholder-[var(--text-muted)]"
                                     />
@@ -68,6 +116,9 @@ export default function Contact() {
                                 <label className="block text-[10px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest mb-2">ORGANIZATION</label>
                                 <input
                                     type="text"
+                                    required
+                                    value={company}
+                                    onChange={(e) => setCompany(e.target.value)}
                                     placeholder="Company Name"
                                     className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-cyan)] transition-colors text-white placeholder-[var(--text-muted)]"
                                 />
@@ -76,14 +127,22 @@ export default function Contact() {
                             <div>
                                 <label className="block text-[10px] font-mono text-[var(--accent-cyan)] uppercase tracking-widest mb-2">OBJECTIVE_PARAMETERS</label>
                                 <textarea
+                                    required
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
                                     placeholder="Describe your automation requirements..."
                                     rows={6}
                                     className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-cyan)] transition-colors text-white placeholder-[var(--text-muted)] resize-none"
                                 ></textarea>
                             </div>
 
-                            <button className="btn btn-primary w-full py-4 text-sm font-bold tracking-widest flex items-center justify-center mt-4">
-                                <Send size={16} className="mr-2" /> TRANSMIT DATA
+                            <button
+                                type="submit"
+                                disabled={isTransmitting}
+                                className="btn btn-primary w-full py-4 text-sm font-bold tracking-widest flex items-center justify-center mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Send size={16} className="mr-2" />
+                                {isTransmitting ? 'TRANSMITTING...' : status === 'success' ? 'TRANSMISSION SUCCESSFUL' : 'TRANSMIT DATA'}
                             </button>
                         </form>
                     </div>

@@ -33,8 +33,9 @@ const TYPE_OPTIONS: { value: ProjectType; label: string }[] = [
 ];
 
 const emptyForm = {
-    name: '',
+    title: '',
     client: '',
+    clientEmail: '',
     type: 'web-design' as ProjectType,
     status: 'lead' as ProjectStatus,
     priority: 'medium' as ProjectPriority,
@@ -44,7 +45,9 @@ const emptyForm = {
     description: '',
     notes: '',
     liveUrl: '',
+    link: '',
     tags: [] as string[],
+    technologies: [] as string[],
 };
 
 export default function ProjectModal({ open, onClose, project }: ProjectModalProps) {
@@ -55,18 +58,21 @@ export default function ProjectModal({ open, onClose, project }: ProjectModalPro
     useEffect(() => {
         if (project) {
             setForm({
-                name: project.name,
+                title: project.title || (project as any).name || '',
                 client: project.client,
+                clientEmail: project.clientEmail || '',
                 type: project.type,
                 status: project.status,
                 priority: project.priority,
-                startDate: project.startDate,
-                endDate: project.endDate,
-                budget: project.budget,
-                description: project.description,
-                notes: project.notes,
-                liveUrl: project.liveUrl,
+                startDate: project.startDate || '',
+                endDate: project.endDate || '',
+                budget: project.budget || '',
+                description: project.description || '',
+                notes: project.notes || '',
+                liveUrl: project.liveUrl || '',
+                link: project.link || '',
                 tags: project.tags || [],
+                technologies: project.technologies || [],
             });
         } else {
             setForm(emptyForm);
@@ -119,25 +125,18 @@ export default function ProjectModal({ open, onClose, project }: ProjectModalPro
                 </div>
 
                 <form onSubmit={handleSave} className="admin-modal-body">
-                    <div className="admin-form-grid">
+                    <div className="admin-form-grid admin-form-grid-3">
                         <div className="admin-field">
-                            <label className="admin-label">Project Name *</label>
-                            <input
-                                className="admin-input"
-                                placeholder="e.g. Restaurant Website"
-                                value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                required
-                            />
+                            <label className="admin-label">Project Title</label>
+                            <input className="admin-input" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                         </div>
                         <div className="admin-field">
-                            <label className="admin-label">Client</label>
-                            <input
-                                className="admin-input"
-                                placeholder="e.g. Acme Corp"
-                                value={form.client}
-                                onChange={(e) => setForm({ ...form, client: e.target.value })}
-                            />
+                            <label className="admin-label">Client Name</label>
+                            <input className="admin-input" required value={form.client} onChange={e => setForm({ ...form, client: e.target.value })} />
+                        </div>
+                        <div className="admin-field">
+                            <label className="admin-label">Client Email</label>
+                            <input className="admin-input" type="email" value={form.clientEmail} onChange={e => setForm({ ...form, clientEmail: e.target.value })} />
                         </div>
                     </div>
 

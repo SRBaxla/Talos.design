@@ -169,6 +169,11 @@ export default function ProjectAutomation() {
                         </p>
                         <Link
                             to="/contact"
+                            state={{
+                                bundleType: 'Smart Automation',
+                                estimatedValue: '$3,999+',
+                                modules: FEATURES.map(f => f.title)
+                            }}
                             className="btn inline-flex items-center gap-2 text-sm font-bold tracking-widest bg-[var(--accent-cyan)] text-black hover:bg-white hover:shadow-[0_0_20px_var(--accent-cyan-glow)] transition-all"
                         >
                             Initialize Project <ArrowRight size={16} />

@@ -60,7 +60,7 @@ export default function AdminDashboard() {
                                         style={{ background: STATUS_COLORS[p.status] || '#71717a' }}
                                     />
                                     <div className="admin-activity-info">
-                                        <span className="admin-activity-name">{p.name}</span>
+                                        <span className="admin-activity-name">{p.title || (p as any).name}</span>
                                         <span className="admin-activity-meta">{p.client || 'No client'}</span>
                                     </div>
                                     <span

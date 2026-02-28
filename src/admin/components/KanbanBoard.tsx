@@ -70,7 +70,7 @@ export default function KanbanBoard({ projects, onEdit, onCardClick }: KanbanBoa
                                     onDragStart={() => handleDragStart(p.id)}
                                     onClick={() => onCardClick ? onCardClick(p) : onEdit(p)}
                                 >
-                                    <div className="admin-kanban-card-name">{p.name}</div>
+                                    <div className="admin-kanban-card-name">{p.title || (p as any).name}</div>
                                     {p.client && (
                                         <div className="admin-kanban-card-client">{p.client}</div>
                                     )}

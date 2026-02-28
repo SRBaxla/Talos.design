@@ -49,7 +49,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
     const filtered = projects
         .filter((p) => {
             const matchSearch =
-                p.name.toLowerCase().includes(search.toLowerCase()) ||
+                (p.title || (p as any).name || '').toLowerCase().includes(search.toLowerCase()) ||
                 p.client.toLowerCase().includes(search.toLowerCase());
             const matchStatus = statusFilter === 'all' || p.status === statusFilter;
             return matchSearch && matchStatus;
@@ -65,8 +65,8 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
             return 0;
         });
 
-    const handleDelete = async (id: string, name: string) => {
-        if (window.confirm(`Delete project "${name}"? This cannot be undone.`)) {
+    const handleDelete = async (id: string, title: string) => {
+        if (window.confirm(`Delete project "${title}"? This cannot be undone.`)) {
             await deleteProject(id);
         }
     };
@@ -101,7 +101,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                 <table className="admin-table">
                     <thead>
                         <tr>
-                            <th onClick={() => toggleSort('name')}>
+                            <th onClick={() => toggleSort('title')}>
                                 <span>Name <ArrowUpDown size={12} /></span>
                             </th>
                             <th onClick={() => toggleSort('client')}>
@@ -127,7 +127,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                         ) : (
                             filtered.map((p) => (
                                 <tr key={p.id} onClick={() => onRowClick ? onRowClick(p) : onEdit(p)}>
-                                    <td className="admin-table-name">{p.name}</td>
+                                    <td className="admin-table-name">{p.title || (p as any).name}</td>
                                     <td>{p.client || '—'}</td>
                                     <td>{TYPE_LABELS[p.type] || p.type}</td>
                                     <td>
@@ -165,7 +165,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                                                 </a>
                                             )}
                                             <button
-                                                onClick={() => handleDelete(p.id, p.name)}
+                                                onClick={() => handleDelete(p.id, p.title || (p as any).name)}
                                                 className="admin-action-danger"
                                                 title="Delete"
                                             >

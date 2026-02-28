@@ -170,6 +170,11 @@ export default function ProjectPresence() {
                         </p>
                         <Link
                             to="/contact"
+                            state={{
+                                bundleType: 'Digital Presence',
+                                estimatedValue: '$2,499+',
+                                modules: FEATURES.map(f => f.title)
+                            }}
                             className="btn btn-primary inline-flex items-center gap-2 text-sm font-bold tracking-widest"
                         >
                             Initialize Project <ArrowRight size={16} />

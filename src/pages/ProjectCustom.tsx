@@ -239,6 +239,11 @@ export default function ProjectCustom() {
                             {/* CTA */}
                             <Link
                                 to="/contact"
+                                state={{
+                                    bundleType: 'Custom Build',
+                                    estimatedValue: 'To be determined',
+                                    modules: selectedFeatures.map(f => f.title)
+                                }}
                                 className={`btn w-full flex items-center justify-center gap-2 text-sm font-bold tracking-widest transition-all ${selected.size > 0
                                     ? 'bg-[#c084fc] text-black hover:bg-white hover:shadow-[0_0_20px_rgba(192,132,252,0.4)]'
                                     : 'btn-outline border-[rgba(192,132,252,0.3)] text-[#c084fc] opacity-50 pointer-events-none'

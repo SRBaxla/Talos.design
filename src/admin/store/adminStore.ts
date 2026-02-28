@@ -18,10 +18,30 @@ export type ProjectStatus = 'lead' | 'in-progress' | 'review' | 'completed' | 'p
 export type ProjectPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type ProjectType = 'web-design' | 'ai-chatbot' | 'automation' | 'custom';
 
+export interface CostRevision {
+    id: string;
+    reason: string;
+    amount: number;
+    date: string;
+}
+
+export interface ClientRequirement {
+    id: string;
+    task: string;
+    completed: boolean;
+}
+
+export interface ProjectMeeting {
+    id: string;
+    date: string;
+    topic: string;
+}
+
 export interface Project {
     id: string;
-    name: string;
+    title: string;
     client: string;
+    clientEmail?: string;
     type: ProjectType;
     status: ProjectStatus;
     priority: ProjectPriority;
@@ -30,8 +50,17 @@ export interface Project {
     budget: string;
     description: string;
     notes: string;
+    technologies?: string[];
+    link?: string;
     liveUrl: string;
     tags: string[];
+    // Advanced CRM Tracking
+    clientUid?: string;
+    teamAllotment?: string[];
+    selectedFeatures?: string[];
+    costRevisions?: CostRevision[];
+    clientRequirements?: ClientRequirement[];
+    meetings?: ProjectMeeting[];
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -200,5 +229,159 @@ export async function deleteTicket(
     ticketId: string
 ) {
     return deleteDoc(doc(db, parentCollection, parentId, 'tickets', ticketId));
+}
+
+/* ── Inquiries (CRM) ───────────────────────────────── */
+
+export type InquiryStatus = 'unread' | 'read' | 'contacted' | 'negotiating' | 'won' | 'lost' | 'archived';
+
+export interface Inquiry {
+    id: string;
+    name: string;
+    email: string;
+    company: string;
+    message: string;
+    status: InquiryStatus;
+    value?: string; // Potential deal value
+    notes?: string; // Internal notes
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export async function addInquiry(data: Omit<Inquiry, 'id' | 'createdAt' | 'updatedAt' | 'status'>) {
+    return addDoc(collection(db, 'inquiries'), {
+        ...data,
+        status: 'unread',
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export async function updateInquiry(id: string, data: Partial<Inquiry>) {
+    return updateDoc(doc(db, 'inquiries', id), {
+        ...data,
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export function useInquiries() {
+    const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const q = query(collection(db, 'inquiries'), orderBy('createdAt', 'desc'));
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Inquiry));
+            setInquiries(data);
+            setLoading(false);
+        });
+        return unsub;
+    }, []);
+
+    return { inquiries, loading };
+}
+
+/* ── Chat Messaging ────────────────────────────────── */
+
+export interface ChatMessage {
+    id: string;
+    text: string;
+    sender: 'admin' | 'client';
+    read: boolean;
+    createdAt: Timestamp;
+}
+
+export function useMessages(projectId: string) {
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!projectId) {
+            setLoading(false);
+            return;
+        }
+        const q = query(
+            collection(db, 'projects', projectId, 'messages'),
+            orderBy('createdAt', 'asc')
+        );
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage));
+            setMessages(data);
+            setLoading(false);
+        });
+        return unsub;
+    }, [projectId]);
+
+    return { messages, loading };
+}
+
+export async function sendMessage(projectId: string, text: string, sender: 'admin' | 'client') {
+    return addDoc(collection(db, 'projects', projectId, 'messages'), {
+        text,
+        sender,
+        read: false,
+        createdAt: Timestamp.now()
+    });
+}
+
+/* ── Invoices ──────────────────────────────────────── */
+
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue';
+
+export interface InvoiceItem {
+    description: string;
+    quantity: number;
+    rate: number;
+}
+
+export interface Invoice {
+    id: string;
+    invoiceNumber: string;
+    clientName: string;
+    clientEmail: string;
+    projectId?: string; // Optional link to a project
+    status: InvoiceStatus;
+    issueDate: string;
+    dueDate: string;
+    items: InvoiceItem[];
+    notes?: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export async function addInvoice(data: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>) {
+    return addDoc(collection(db, 'invoices'), {
+        ...data,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export async function updateInvoice(id: string, data: Partial<Invoice>) {
+    return updateDoc(doc(db, 'invoices', id), {
+        ...data,
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export async function deleteInvoice(id: string) {
+    return deleteDoc(doc(db, 'invoices', id));
+}
+
+export function useInvoices() {
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const q = query(collection(db, 'invoices'), orderBy('createdAt', 'desc'));
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Invoice));
+            setInvoices(data);
+            setLoading(false);
+        });
+        return unsub;
+    }, []);
+
+    return { invoices, loading };
 }
 
