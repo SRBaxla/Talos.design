@@ -9,7 +9,6 @@ import Home from './pages/Home';
 // ── Public pages — lazy loaded ───────────────────────────────────────────────
 const Services = lazy(() => import('./pages/Services'));
 const About = lazy(() => import('./pages/About'));
-const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Careers = lazy(() => import('./pages/Careers'));
 const Projects = lazy(() => import('./pages/Projects'));
@@ -56,7 +55,6 @@ function App() {
             <Route index element={<Home />} />
             <Route path="services" element={<Services />} />
             <Route path="about" element={<About />} />
-            <Route path="pricing" element={<Pricing />} />
             <Route path="contact" element={<Contact />} />
             <Route path="careers" element={<Careers />} />
             <Route path="projects" element={<Projects />} />

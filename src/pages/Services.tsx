@@ -55,8 +55,8 @@ export default function Services() {
                     <Link to="/projects" className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8 flex items-center justify-center">
                         Initialize Project +
                     </Link>
-                    <Link to="/pricing" className="btn btn-outline uppercase text-xs tracking-widest px-8 flex items-center justify-center">
-                        View Systems
+                    <Link to="/contact" className="btn btn-outline uppercase text-xs tracking-widest px-8 flex items-center justify-center">
+                        Get in Touch
                     </Link>
                 </motion.div>
             </div>
@@ -95,8 +95,8 @@ export default function Services() {
                             Procedural layout generation that adapts in real-time to user behavior and platform constraints.
                         </p>
                         <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-cyan)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Dynamic Components</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-cyan)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Variable Theming</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Dynamic Components</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Variable Theming</div>
                         </div>
                     </motion.div>
 
@@ -116,8 +116,8 @@ export default function Services() {
                             Algorithmic visual identities that evolve while maintaining the core presence of your unique prestige.
                         </p>
                         <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-orange)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Neural Logos</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-orange)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Semantic Palettes</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Neural Logos</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Semantic Palettes</div>
                         </div>
                     </motion.div>
 
@@ -137,8 +137,8 @@ export default function Services() {
                             Seamless integration of AI into your existing Figma or GitHub workflows to eliminate repetitive tasks.
                         </p>
                         <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-cyan)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Asset Pipelines</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--accent-cyan)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Auto-Documentation</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Asset Pipelines</div>
+                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Auto-Documentation</div>
                         </div>
                     </motion.div>
                 </div>
@@ -180,7 +180,7 @@ export default function Services() {
                             </div>
                         </div>
                         <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
-                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] border border-[rgba(0,229,255,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
+                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(0,229,255,0.1)] text-[var(--text-primary)] border border-[rgba(0,229,255,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
                                 Metrics: +214% ROI
                             </div>
                             <h3 className="text-xl font-display font-bold uppercase tracking-wide mb-2">Project: Neural Vault</h3>
@@ -205,7 +205,7 @@ export default function Services() {
                             </div>
                         </div>
                         <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
-                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)] border border-[rgba(245,158,11,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
+                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[var(--text-primary)] border border-[rgba(245,158,11,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
                                 Latency: 12 Seconds
                             </div>
                             <h3 className="text-xl font-display font-bold uppercase tracking-wide mb-2">Project: Aether Lux <span className="text-[10px] font-mono text-[var(--text-muted)] ml-2">BETA</span></h3>

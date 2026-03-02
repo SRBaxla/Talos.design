@@ -1,18 +1,15 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Hexagon, Menu, X, Shield, Sun, Moon } from 'lucide-react';
+import { Hexagon, Menu, X, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
 
     const navLinks = [
         { name: 'Solutions', path: '/services' },
         { name: 'Projects', path: '/projects' },
         { name: 'Studio', path: '/about' },
-        { name: 'Pricing', path: '/pricing' },
         { name: 'Contact', path: '/contact' },
     ];
 
@@ -38,15 +35,6 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
-                    {/* Theme Toggle */}
-                    <button
-                        onClick={toggleTheme}
-                        title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                        className="flex items-center justify-center w-9 h-9 rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] hover:bg-[rgba(245,158,11,0.06)] transition-all"
-                    >
-                        {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-                    </button>
-
                     <NavLink
                         to="/admin"
                         className="hidden md:flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors px-2 py-1 rounded-md hover:bg-[rgba(245,158,11,0.06)]"
@@ -87,7 +75,7 @@ export function Navbar() {
                                 key={link.name}
                                 to={link.path}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className={({ isActive }) => `text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(0,0,0,0.04)]'}`}
+                                className={({ isActive }) => `text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[rgba(246,128,72,0.1)] text-[var(--accent-orange)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]'}`}
                             >
                                 {link.name}
                             </NavLink>
@@ -95,7 +83,7 @@ export function Navbar() {
                         <NavLink
                             to="/admin"
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={({ isActive }) => `flex items-center gap-2 text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[rgba(0,0,0,0.04)]'}`}
+                            className={({ isActive }) => `flex items-center gap-2 text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[rgba(246,128,72,0.1)] text-[var(--accent-orange)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]'}`}
                         >
                             <Shield size={16} /> Admin
                         </NavLink>

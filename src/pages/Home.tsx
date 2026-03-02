@@ -67,9 +67,9 @@ export default function Home() {
             <div>
               <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-3">Technology Stack</div>
               <div className="flex flex-wrap gap-2 mb-8">
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Next.js</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Tailwind</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Framer Motion</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Next.js</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Tailwind</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Framer Motion</span>
               </div>
               <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 Explore Architecture <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -99,9 +99,9 @@ export default function Home() {
             <div>
               <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-3">Technology Stack</div>
               <div className="flex flex-wrap gap-2 mb-8">
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">OpenAI API</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">LangChain</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Pinecone</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">OpenAI API</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">LangChain</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Pinecone</span>
               </div>
               <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 View Integration <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -131,9 +131,9 @@ export default function Home() {
             <div>
               <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-3">Technology Stack</div>
               <div className="flex flex-wrap gap-2 mb-8">
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Python</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">Zapier</span>
-                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--accent-cyan)]">AWS Lambda</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Python</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">Zapier</span>
+                <span className="text-xs bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded text-[var(--text-primary)]">AWS Lambda</span>
               </div>
               <Link to="/services" className="inline-flex items-center text-[var(--accent-orange)] font-medium text-sm hover:text-[var(--accent-orange-hover)] transition-colors">
                 See Workflows <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -173,15 +173,15 @@ export default function Home() {
               viewport={{ once: true }}
               className="glass-panel p-6 flex flex-col group hover:border-[rgba(0,229,255,0.3)] transition-all"
             >
-              <span className="text-[10px] font-mono bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] px-3 py-1 rounded-full border border-[rgba(0,229,255,0.2)] self-start mb-5">Hospitality</span>
+              <span className="text-[10px] font-mono bg-[rgba(0,229,255,0.1)] text-[var(--text-primary)] px-3 py-1 rounded-full border border-[rgba(0,229,255,0.2)] self-start mb-5">Hospitality</span>
               <h3 className="text-lg font-display font-bold mb-2">Hotel & Restaurant Systems</h3>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
                 Automated booking engines, reservation management, guest CRM, menu systems, and real-time availability dashboards for hospitality businesses.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-4">
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Booking</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">CRM</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Dashboard</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Booking</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">CRM</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Dashboard</span>
               </div>
               <Link to="/offers/hospitality" className="text-xs text-[var(--accent-cyan)] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
@@ -196,15 +196,15 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="glass-panel p-6 flex flex-col group hover:border-[rgba(245,158,11,0.3)] transition-all"
             >
-              <span className="text-[10px] font-mono bg-[rgba(245,158,11,0.1)] text-[var(--accent-orange)] px-3 py-1 rounded-full border border-[rgba(245,158,11,0.2)] self-start mb-5">E-Commerce</span>
+              <span className="text-[10px] font-mono bg-[rgba(245,158,11,0.1)] text-[var(--text-primary)] px-3 py-1 rounded-full border border-[rgba(245,158,11,0.2)] self-start mb-5">E-Commerce</span>
               <h3 className="text-lg font-display font-bold mb-2">Online Stores & Brand Sites</h3>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
                 High-converting storefronts, product catalogs, payment integration, inventory management, and marketing automation for online retail.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-4">
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Storefront</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Payments</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">SEO</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Storefront</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Payments</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">SEO</span>
               </div>
               <Link to="/offers/ecommerce" className="text-xs text-[var(--accent-orange)] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
@@ -219,15 +219,15 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="glass-panel p-6 flex flex-col group hover:border-[rgba(192,132,252,0.3)] transition-all"
             >
-              <span className="text-[10px] font-mono bg-[rgba(192,132,252,0.1)] text-[#c084fc] px-3 py-1 rounded-full border border-[rgba(192,132,252,0.2)] self-start mb-5">Professional Services</span>
+              <span className="text-[10px] font-mono bg-[rgba(192,132,252,0.1)] text-[var(--text-primary)] px-3 py-1 rounded-full border border-[rgba(192,132,252,0.2)] self-start mb-5">Professional Services</span>
               <h3 className="text-lg font-display font-bold mb-2">Consultation & SaaS Platforms</h3>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-4 flex-grow">
                 Appointment scheduling, client portals, document management, AI chatbots, and custom workflow automation for service-based businesses.
               </p>
               <div className="flex flex-wrap gap-1.5 mb-4">
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Scheduling</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">AI Chat</span>
-                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-muted)]">Workflow</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Scheduling</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">AI Chat</span>
+                <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Workflow</span>
               </div>
               <Link to="/offers/professional" className="text-xs text-[#c084fc] flex items-center gap-1 group-hover:gap-2 transition-all">
                 Learn More <ArrowRight size={12} />
@@ -273,10 +273,10 @@ export default function Home() {
                   Complete digital overhaul for a 40-room boutique hotel. Includes custom website, booking engine, real-time availability dashboard, guest CRM, and automated email/SMS notifications.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Website</span>
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Booking</span>
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">CRM</span>
-                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--accent-cyan)]">Notifications</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Website</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Booking</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">CRM</span>
+                  <span className="text-[10px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[var(--text-primary)]">Notifications</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-6 text-xs text-[var(--text-muted)] font-mono">
@@ -306,7 +306,6 @@ export default function Home() {
             <p className="text-[var(--text-secondary)]">Schedule a free consultation to discuss your infrastructure.</p>
           </div>
           <div className="flex gap-4 relative z-10">
-            <Link to="/pricing" className="btn btn-outline py-3 px-8">View Pricing</Link>
             <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">Book a Call</Link>
           </div>
         </motion.div>
@@ -314,3 +313,4 @@ export default function Home() {
     </div>
   );
 }
+

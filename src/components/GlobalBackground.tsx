@@ -1,11 +1,12 @@
 const CIRCUIT_PATHS = [
-    { id: 1, d: "M -10 20 L 20 20 L 20 50 L 110 50", color: "rgba(245,158,11,0.25)" },
-    { id: 2, d: "M 40 -10 L 40 40 L 80 40 L 80 110", color: "rgba(6,182,212,0.25)" },
-    { id: 3, d: "M 110 30 L 70 30 L 70 80 L -10 80", color: "rgba(245,158,11,0.25)" },
-    { id: 4, d: "M 60 110 L 60 60 L 10 60 L 10 -10", color: "rgba(6,182,212,0.25)" },
-    { id: 5, d: "M -10 70 L 35 70 L 35 15 L 110 15", color: "rgba(245,158,11,0.25)" },
-    { id: 6, d: "M 85 -10 L 85 55 L 50 55 L 50 110", color: "rgba(6,182,212,0.25)" },
+    { id: 1, d: "M -10 20 L 20 20 L 20 50 L 110 50", color: "rgba(210,193,182,0.25)" },
+    { id: 2, d: "M 40 -10 L 40 40 L 80 40 L 80 110", color: "rgba(69,104,130,0.35)" },
+    { id: 3, d: "M 110 30 L 70 30 L 70 80 L -10 80", color: "rgba(210,193,182,0.25)" },
+    { id: 4, d: "M 60 110 L 60 60 L 10 60 L 10 -10", color: "rgba(69,104,130,0.35)" },
+    { id: 5, d: "M -10 70 L 35 70 L 35 15 L 110 15", color: "rgba(210,193,182,0.25)" },
+    { id: 6, d: "M 85 -10 L 85 55 L 50 55 L 50 110", color: "rgba(69,104,130,0.35)" },
 ];
+
 
 const NODES = [
     { x: 20, y: 20 }, { x: 20, y: 50 }, { x: 40, y: 40 }, { x: 80, y: 40 },
@@ -16,11 +17,11 @@ const NODES = [
 export function GlobalBackground() {
     return (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[var(--bg-base)]">
-            {/* Central glow — pure CSS, no blur filter animation */}
+            {/* Central glow — teal-tinted */}
             <div
                 className="absolute top-[20%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full mix-blend-screen"
                 style={{
-                    background: 'radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(69,104,130,0.18) 0%, transparent 70%)',
                     filter: 'blur(80px)',
                 }}
             />

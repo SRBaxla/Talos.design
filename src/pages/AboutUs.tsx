@@ -227,7 +227,6 @@ export default function AboutUs() {
                     <p className="text-[var(--text-secondary)]">Have a project in mind? We'd love to hear about it.</p>
                 </div>
                 <div className="flex gap-4 relative z-10">
-                    <Link to="/pricing" className="btn btn-outline py-3 px-8">View Pricing</Link>
                     <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2">
                         Get in Touch <ArrowRight size={16} />
                     </Link>

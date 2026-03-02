@@ -238,7 +238,7 @@ export default function ServiceChatbots() {
                     <p className="text-[var(--text-secondary)]">Let us build a chatbot that works for your business, 24/7.</p>
                 </div>
                 <div className="flex gap-4 relative z-10">
-                    <Link to="/pricing" className="btn btn-outline py-3 px-8">View Pricing</Link>
+                    <Link to="/contact" className="btn btn-outline py-3 px-8">Get in Touch</Link>
                     <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2">
                         Get Started <ArrowRight size={16} />
                     </Link>
