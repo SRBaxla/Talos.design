@@ -49,9 +49,9 @@ export default function CaseStudyDetail() {
 
     if (!study) {
         return (
-            <div className="admin-page">
-                <p>Case study not found.</p>
-                <Link to="/admin/case-studies" className="admin-btn-secondary" style={{ marginTop: '1rem', display: 'inline-flex' }}>
+            <div className="p-8 max-w-[1400px] mx-auto animate-fade-in text-center py-20">
+                <p className="text-secondary mb-4">Case study not found.</p>
+                <Link to="/admin/case-studies" className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-primary font-semibold text-sm rounded-lg hover:bg-white/10 transition-all">
                     <ArrowLeft size={16} /> Back to Case Studies
                 </Link>
             </div>
@@ -61,86 +61,92 @@ export default function CaseStudyDetail() {
     const sc = STATUS_COLORS[study.status];
 
     return (
-        <div className="admin-page">
+        <div className="p-6 md:p-10 w-full max-w-screen-2xl mx-auto space-y-8 animate-fade-in">
             {/* Back + Actions */}
-            <div className="admin-detail-top">
-                <Link to="/admin/case-studies" className="admin-detail-back">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <Link to="/admin/case-studies" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors font-medium tracking-wide">
                     <ArrowLeft size={16} /> Back to Case Studies
                 </Link>
-                <div className="admin-detail-top-actions">
-                    <button className="admin-btn-secondary" onClick={() => setModalOpen(true)}>
+                <div className="flex items-center gap-2">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-base)] border border-[var(--border-color)] text-white font-bold text-xs uppercase tracking-widest rounded-lg hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all" onClick={() => setModalOpen(true)}>
                         <Edit2 size={14} /> Edit
                     </button>
                     {study.liveUrl && (
-                        <a href={study.liveUrl} target="_blank" rel="noreferrer" className="admin-btn-secondary">
+                        <a href={study.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-base)] border border-[var(--border-color)] text-white font-bold text-xs uppercase tracking-widest rounded-lg hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all">
                             <ExternalLink size={14} /> View Live
                         </a>
                     )}
-                    <button className="admin-btn-danger" onClick={handleDelete}>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.2)] text-red-400 font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-[rgba(239,68,68,0.15)] transition-all" onClick={handleDelete}>
                         <Trash2 size={14} /> Delete
                     </button>
                 </div>
             </div>
 
             {/* Header */}
-            <div className="admin-detail-header">
+            <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8 shadow-sm">
                 <div>
-                    <div className="admin-detail-meta-row">
-                        <span className="admin-badge" style={{ background: sc?.bg, color: sc?.text }}>
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded border text-[10px] font-bold uppercase tracking-wider" style={{ backgroundColor: `${sc?.text}15`, color: sc?.text, borderColor: `${sc?.text}30` }}>
                             {study.status}
                         </span>
-                        {study.industry && <span className="admin-detail-type">{study.industry}</span>}
+                        {study.industry && <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">{study.industry}</span>}
                     </div>
-                    <h1 className="admin-detail-title">{study.title}</h1>
+                    <h1 className="font-display text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 mb-2">{study.title}</h1>
                     {study.client && (
-                        <p className="admin-detail-client">Client: {study.client}</p>
+                        <p className="text-[var(--text-secondary)] font-medium text-lg">Client: <span className="text-white">{study.client}</span></p>
                     )}
                 </div>
             </div>
 
-            {/* Tags */}
-            {study.tags?.length > 0 && (
-                <div className="admin-detail-info-grid">
-                    <div className="admin-detail-info-card">
-                        <Tag size={14} className="admin-detail-info-icon" />
-                        <div>
-                            <div className="admin-detail-info-label">Tags</div>
-                            <div className="admin-detail-tags">
-                                {study.tags.map(t => <span key={t} className="admin-tag">{t}</span>)}
-                            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Content Sections */}
+                    {study.summary && (
+                        <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
+                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]" /> Summary</h3>
+                            <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.summary}</p>
                         </div>
+                    )}
+                    {study.challenge && (
+                        <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
+                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-400" /> Challenge</h3>
+                            <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.challenge}</p>
+                        </div>
+                    )}
+                    {study.solution && (
+                        <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
+                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]" /> Solution</h3>
+                            <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.solution}</p>
+                        </div>
+                    )}
+                    {study.results && (
+                        <div className="bg-[rgba(0,229,255,0.03)] border border-[rgba(0,229,255,0.15)] rounded-2xl p-8">
+                            <h3 className="font-display text-lg font-bold mb-4 text-[var(--accent-cyan)] flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan)]" /> Results</h3>
+                            <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap font-medium">{study.results}</p>
+                        </div>
+                    )}
+
+                    {/* Tickets */}
+                    <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
+                        <TicketList tickets={tickets} parentCollection="caseStudies" parentId={study.id} />
                     </div>
                 </div>
-            )}
 
-            {/* Content Sections */}
-            {study.summary && (
-                <div className="admin-detail-section">
-                    <h3 className="admin-detail-section-title">Summary</h3>
-                    <p className="admin-detail-section-text">{study.summary}</p>
+                <div className="space-y-6">
+                    {/* Sidebar Info */}
+                    {study.tags?.length > 0 && (
+                        <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl flex flex-col shadow-sm overflow-hidden">
+                            <div className="p-5 border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)] flex items-center gap-2">
+                                <Tag size={16} className="text-[var(--accent-orange)]" />
+                                <h3 className="font-display font-bold text-white text-sm uppercase tracking-wider">Tags</h3>
+                            </div>
+                            <div className="p-5 flex flex-wrap gap-2">
+                                {study.tags.map(t => <span key={t} className="px-3 py-1 bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg text-xs font-bold tracking-wide text-[var(--text-secondary)] hover:text-white transition-colors">{t}</span>)}
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
-            {study.challenge && (
-                <div className="admin-detail-section">
-                    <h3 className="admin-detail-section-title">Challenge</h3>
-                    <p className="admin-detail-section-text">{study.challenge}</p>
-                </div>
-            )}
-            {study.solution && (
-                <div className="admin-detail-section">
-                    <h3 className="admin-detail-section-title">Solution</h3>
-                    <p className="admin-detail-section-text">{study.solution}</p>
-                </div>
-            )}
-            {study.results && (
-                <div className="admin-detail-section">
-                    <h3 className="admin-detail-section-title">Results</h3>
-                    <p className="admin-detail-section-text">{study.results}</p>
-                </div>
-            )}
-
-            {/* Tickets */}
-            <TicketList tickets={tickets} parentCollection="caseStudies" parentId={study.id} />
+            </div>
 
             <CaseStudyModal open={modalOpen} onClose={() => setModalOpen(false)} study={study} />
         </div>

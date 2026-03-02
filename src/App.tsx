@@ -8,14 +8,13 @@ import Home from './pages/Home';
 
 // ── Public pages — lazy loaded ───────────────────────────────────────────────
 const Services = lazy(() => import('./pages/Services'));
-const About = lazy(() => import('./pages/About'));
+const Studio = lazy(() => import('./pages/Studio'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Careers = lazy(() => import('./pages/Careers'));
 const Projects = lazy(() => import('./pages/Projects'));
 const ProjectPresence = lazy(() => import('./pages/ProjectPresence'));
 const ProjectAutomation = lazy(() => import('./pages/ProjectAutomation'));
 const ProjectCustom = lazy(() => import('./pages/ProjectCustom'));
-const AboutUs = lazy(() => import('./pages/AboutUs'));
 const ServiceWebDesign = lazy(() => import('./pages/ServiceWebDesign'));
 const ServiceChatbots = lazy(() => import('./pages/ServiceChatbots'));
 const ServiceAutomation = lazy(() => import('./pages/ServiceAutomation'));
@@ -38,6 +37,7 @@ const CaseStudyDetail = lazy(() => import('./admin/pages/CaseStudyDetail'));
 // ── Client portal — lazy loaded ──────────────────────────────────────────────
 const PortalLogin = lazy(() => import('./portal/PortalLogin'));
 const PortalDashboard = lazy(() => import('./portal/PortalDashboard'));
+const PortalProfile = lazy(() => import('./portal/PortalProfile'));
 
 // Minimal fallback — invisible, keeps layout stable (no spinner flash)
 const PageFallback = () => (
@@ -54,14 +54,13 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="services" element={<Services />} />
-            <Route path="about" element={<About />} />
+            <Route path="about" element={<Studio />} />
             <Route path="contact" element={<Contact />} />
             <Route path="careers" element={<Careers />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/presence" element={<ProjectPresence />} />
             <Route path="projects/automation" element={<ProjectAutomation />} />
             <Route path="projects/custom" element={<ProjectCustom />} />
-            <Route path="about-us" element={<AboutUs />} />
             <Route path="services/web-design" element={<ServiceWebDesign />} />
             <Route path="services/chatbots" element={<ServiceChatbots />} />
             <Route path="services/automation" element={<ServiceAutomation />} />
@@ -74,6 +73,7 @@ function App() {
           {/* Client Portal */}
           <Route path="/portal" element={<PortalLogin />} />
           <Route path="/portal/dashboard" element={<PortalDashboard />} />
+          <Route path="/portal/profile" element={<PortalProfile />} />
 
           {/* Admin Panel */}
           <Route path="/admin" element={<AdminLayout />}>

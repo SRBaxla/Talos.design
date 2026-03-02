@@ -1,113 +1,353 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../admin/firebase/firebaseConfig';
-import { motion } from 'framer-motion';
-import { Hexagon, ArrowRight, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Hexagon, ArrowRight, Lock, Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react';
+import {
+    emailHasProject, getPortalUser,
+    createPortalUser, verifyPortalUser, verifyAccessCode,
+} from './portalStore';
+
+type Step = 'email' | 'first-login' | 'returning';
 
 export default function PortalLogin() {
+    const navigate = useNavigate();
+    const [step, setStep] = useState<Step>('email');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [accessCode, setAccessCode] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    /* ── Step 1: check email ──────────────────────────────────── */
+    const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setError('');
-
+        setLoading(true);
         try {
-            // Check if there is a project with this email
-            const q = query(collection(db, 'projects'), where('clientEmail', '==', email));
-            const querySnapshot = await getDocs(q);
+            const hasProject = await emailHasProject(email);
+            if (!hasProject) {
+                setError('No active project found for this email. Contact Talos if you think this is a mistake.');
+                setLoading(false);
+                return;
+            }
+            const portalUser = await getPortalUser(email);
+            setStep(portalUser ? 'returning' : 'first-login');
+        } catch (err) {
+            console.error(err);
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            if (!querySnapshot.empty) {
-                // Verified: Client exists and has a project
+    /* ── Step 2a: first login — verify code + create password ── */
+    const handleFirstLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        if (!accessCode.trim()) {
+            setError('Please enter the access code from your welcome email.');
+            return;
+        }
+        if (password.length < 8) {
+            setError('Password must be at least 8 characters.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+        setLoading(true);
+        try {
+            const codeValid = await verifyAccessCode(email, accessCode);
+            if (!codeValid) {
+                setError('Invalid access code. Check the code in your welcome email from Talos.');
+                setLoading(false);
+                return;
+            }
+            await createPortalUser(email, password);
+            localStorage.setItem('talosClientEmail', email);
+            navigate('/portal/dashboard');
+        } catch (err) {
+            console.error(err);
+            setError('Failed to create account. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /* ── Step 2b: returning login ─────────────────────────────── */
+    const handleReturningLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            const ok = await verifyPortalUser(email, password);
+            if (ok) {
                 localStorage.setItem('talosClientEmail', email);
-
-                // For the demo: verify access code is 'talos2025' or length > 5
-                if (accessCode.length < 5) {
-                    setError('Invalid Access Code. Please use the code provided in your welcome email.');
-                } else {
-                    navigate('/portal/dashboard');
-                }
+                navigate('/portal/dashboard');
             } else {
-                setError('No active projects found for this email address.');
+                setError('Incorrect password. Please try again.');
             }
         } catch (err) {
-            console.error('Login error:', err);
-            setError('System error verifying identity. Please try again.');
+            console.error(err);
+            setError('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="admin-shell flex items-center justify-center p-4">
+        <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md"
             >
-                <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl overflow-hidden shadow-2xl relative">
-                    <div className="p-8">
-                        <div className="flex flex-colItems-center justify-center mb-8 text-center">
-                            <div className="w-16 h-16 flex items-center justify-center bg-[rgba(0,229,255,0.1)] rounded-full mx-auto mb-4 border border-[rgba(0,229,255,0.2)]">
-                                <Hexagon className="text-[var(--accent-cyan)]" size={32} />
-                            </div>
-                            <h1 className="text-2xl font-display font-bold mb-2">Client Portal</h1>
-                            <p className="text-[var(--text-secondary)] text-sm">Access your project dashboard</p>
+                {/* Card */}
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl">
+
+                    {/* Top brand strip */}
+                    <div className="flex items-center gap-3 px-8 pt-8 pb-6 border-b border-[var(--border-color)]">
+                        <div className="w-10 h-10 flex items-center justify-center bg-[rgba(210,193,182,0.08)] rounded-xl border border-[rgba(210,193,182,0.2)]">
+                            <Hexagon className="text-[var(--accent-orange)]" size={20} />
                         </div>
-
-                        {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded mb-6 text-center">
-                                {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleLogin} className="space-y-4">
-                            <div>
-                                <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-1">Registered Email</label>
-                                <input
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="admin-input"
-                                    placeholder="client@company.com"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-1">Access Code</label>
-                                <input
-                                    type="password"
-                                    required
-                                    value={accessCode}
-                                    onChange={(e) => setAccessCode(e.target.value)}
-                                    className="admin-input"
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full btn bg-[var(--accent-cyan)] text-black hover:bg-[var(--accent-cyan-glow)] border-none py-3 mt-4 flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-50"
-                            >
-                                {loading ? (
-                                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                                ) : (
-                                    <>Access Dashboard <ArrowRight size={16} /></>
-                                )}
-                            </button>
-                        </form>
+                        <div>
+                            <div className="font-display font-bold text-sm">Talos.design</div>
+                            <div className="text-[10px] text-[var(--text-muted)] font-mono">Client Portal</div>
+                        </div>
                     </div>
 
-                    <div className="bg-[rgba(0,0,0,0.2)] p-4 border-t border-[var(--border-color)] flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
-                        <Lock size={12} /> Secure encrypted connection
+                    <div className="p-8">
+
+                        {/* Step indicator */}
+                        <div className="flex items-center gap-2 mb-6">
+                            {['email', 'first-login', 'returning'].map((s, i) => {
+                                if (s === 'returning' && step === 'first-login') return null;
+                                if (s === 'first-login' && step === 'returning') return null;
+                                const stepLabels: Record<string, string> = {
+                                    email: 'Email',
+                                    'first-login': 'Set Password',
+                                    returning: 'Password',
+                                };
+                                const isActive = step === s;
+                                const isDone = (step === 'first-login' || step === 'returning') && s === 'email';
+                                return (
+                                    <div key={s} className="flex items-center gap-2">
+                                        <div className={`flex items-center gap-1.5 text-xs font-mono px-2 py-1 rounded-full transition-all ${isActive ? 'bg-[rgba(210,193,182,0.12)] text-[var(--accent-orange)] border border-[rgba(210,193,182,0.3)]' : isDone ? 'text-green-500' : 'text-[var(--text-muted)]'}`}>
+                                            {isDone ? <CheckCircle size={11} /> : null}
+                                            {stepLabels[s]}
+                                        </div>
+                                        {i < 1 && <ChevronIcon />}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Error */}
+                        <AnimatePresence>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-lg mb-5"
+                                >
+                                    {error}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        <AnimatePresence mode="wait">
+
+                            {/* ── Step 1: Email ────────────── */}
+                            {step === 'email' && (
+                                <motion.form
+                                    key="email"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    onSubmit={handleEmailSubmit}
+                                    className="space-y-5"
+                                >
+                                    <div>
+                                        <h2 className="text-xl font-display font-bold mb-1">Welcome</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">Enter your registered email to continue.</p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">Email Address</label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                            placeholder="you@company.com"
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                                        />
+                                    </div>
+                                    <SubmitButton loading={loading} label="Continue" />
+                                </motion.form>
+                            )}
+
+                            {/* ── Step 2a: First login ──────── */}
+                            {step === 'first-login' && (
+                                <motion.form
+                                    key="first-login"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    onSubmit={handleFirstLogin}
+                                    className="space-y-5"
+                                >
+                                    <div>
+                                        <h2 className="text-xl font-display font-bold mb-1">Create Your Password</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">
+                                            First time here! Enter the access code from your welcome email, then set a password.
+                                            <span className="block mt-1 text-[var(--accent-orange)] font-mono text-[11px]">{email}</span>
+                                        </p>
+                                    </div>
+                                    {/* Access code */}
+                                    <div>
+                                        <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">
+                                            Access Code
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                required
+                                                value={accessCode}
+                                                onChange={e => setAccessCode(e.target.value)}
+                                                placeholder="Code from your welcome email"
+                                                className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-4 py-3 pl-10 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                                            />
+                                            <KeyRound size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                                        </div>
+                                        <p className="text-[10px] text-[var(--text-muted)] mt-1">Can't find your code? Contact hello@talos.design</p>
+                                    </div>
+                                    <PasswordInput
+                                        label="New Password"
+                                        value={password}
+                                        onChange={setPassword}
+                                        show={showPassword}
+                                        onToggle={() => setShowPassword(v => !v)}
+                                        placeholder="Min. 8 characters"
+                                    />
+                                    <PasswordInput
+                                        label="Confirm Password"
+                                        value={confirmPassword}
+                                        onChange={setConfirmPassword}
+                                        show={showPassword}
+                                        onToggle={() => setShowPassword(v => !v)}
+                                        placeholder="Repeat password"
+                                    />
+                                    <StrengthBar password={password} />
+                                    <SubmitButton loading={loading} label="Create Account & Sign In" />
+                                    <button type="button" onClick={() => { setStep('email'); setError(''); }} className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] w-full text-center">← Back</button>
+                                </motion.form>
+                            )}
+
+                            {/* ── Step 2b: Returning login ──── */}
+                            {step === 'returning' && (
+                                <motion.form
+                                    key="returning"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    onSubmit={handleReturningLogin}
+                                    className="space-y-5"
+                                >
+                                    <div>
+                                        <h2 className="text-xl font-display font-bold mb-1">Welcome back</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">
+                                            Enter your password to access your dashboard.
+                                            <span className="block mt-1 text-[var(--accent-orange)] font-mono text-[11px]">{email}</span>
+                                        </p>
+                                    </div>
+                                    <PasswordInput
+                                        label="Password"
+                                        value={password}
+                                        onChange={setPassword}
+                                        show={showPassword}
+                                        onToggle={() => setShowPassword(v => !v)}
+                                        placeholder="Your password"
+                                    />
+                                    <SubmitButton loading={loading} label="Sign In" />
+                                    <button type="button" onClick={() => { setStep('email'); setError(''); }} className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] w-full text-center">← Use a different email</button>
+                                </motion.form>
+                            )}
+
+                        </AnimatePresence>
+                    </div>
+
+                    <div className="bg-[rgba(0,0,0,0.15)] px-8 py-3 border-t border-[var(--border-color)] flex items-center justify-center gap-2 text-[10px] text-[var(--text-muted)]">
+                        <Lock size={10} /> Secured connection · Passwords are hashed with SHA-256
                     </div>
                 </div>
             </motion.div>
         </div>
+    );
+}
+
+/* ── Small helper components ────────────────────────────────── */
+function ChevronIcon() {
+    return <ArrowRight size={10} className="text-[var(--text-muted)]" />;
+}
+
+function PasswordInput({ label, value, onChange, show, onToggle, placeholder }: {
+    label: string; value: string; onChange: (v: string) => void;
+    show: boolean; onToggle: () => void; placeholder: string;
+}) {
+    return (
+        <div>
+            <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">{label}</label>
+            <div className="relative">
+                <input
+                    type={show ? 'text' : 'password'}
+                    required
+                    value={value}
+                    onChange={e => onChange(e.target.value)}
+                    placeholder={placeholder}
+                    className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-4 py-3 pr-10 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                />
+                <button type="button" onClick={onToggle} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
+                    {show ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+            </div>
+        </div>
+    );
+}
+
+function StrengthBar({ password }: { password: string }) {
+    const len = password.length;
+    const strength = len === 0 ? 0 : len < 8 ? 1 : len < 12 ? 2 : len < 16 ? 3 : 4;
+    const colors = ['', '#ef4444', '#f59e0b', '#3b82f6', '#22c55e'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    if (len === 0) return null;
+    return (
+        <div className="space-y-1">
+            <div className="flex gap-1">
+                {[1, 2, 3, 4].map(s => (
+                    <div key={s} className="flex-1 h-1 rounded-full transition-all" style={{ backgroundColor: s <= strength ? colors[strength] : 'var(--border-color)' }} />
+                ))}
+            </div>
+            <div className="text-[10px] font-mono" style={{ color: colors[strength] }}>{labels[strength]}</div>
+        </div>
+    );
+}
+
+function SubmitButton({ loading, label }: { loading: boolean; label: string }) {
+    return (
+        <button
+            type="submit"
+            disabled={loading}
+            className="w-full btn btn-primary py-3 flex items-center justify-center gap-2 font-bold shadow-[0_0_20px_var(--accent-orange-glow)] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            {loading ? (
+                <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+            ) : (
+                <>{label} <ArrowRight size={16} /></>
+            )}
+        </button>
     );
 }

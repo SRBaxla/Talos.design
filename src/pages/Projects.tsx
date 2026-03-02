@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const PROJECTS = [
     {
         id: 'presence',
-        label: 'PROTOCOL_01',
+        label: 'Package 01',
         title: 'Digital Presence',
         accent: 'orange',
         icon: Globe,
@@ -25,7 +25,7 @@ const PROJECTS = [
     },
     {
         id: 'automation',
-        label: 'PROTOCOL_02',
+        label: 'Package 02',
         title: 'Smart Automation',
         accent: 'cyan',
         icon: Bot,
@@ -45,7 +45,7 @@ const PROJECTS = [
     },
     {
         id: 'custom',
-        label: 'PROTOCOL_03',
+        label: 'Package 03',
         title: 'Custom Build',
         accent: 'purple',
         icon: Wrench,
@@ -98,9 +98,9 @@ export default function Projects() {
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="badge badge-online mb-8 font-mono text-xs"
+                className="badge badge-active mb-8 font-mono text-xs"
             >
-                PROJECT_SELECT: READY
+                [PROJECTS]
             </motion.div>
 
             {/* Hero */}
@@ -109,7 +109,7 @@ export default function Projects() {
                 transition={{ delay: 0.1 }}
                 className="text-5xl md:text-7xl font-display tracking-tight mb-6 text-center"
             >
-                Select Your <span className="text-[var(--accent-orange)]">Protocol.</span>
+                Choose Your <span className="text-[var(--accent-orange)]">Package.</span>
             </motion.h1>
             <motion.p
                 {...fadeUp}
@@ -206,11 +206,8 @@ export default function Projects() {
                 transition={{ delay: 0.7 }}
                 className="glass-panel p-8 max-w-3xl w-full text-center"
             >
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-1">
-                    <span className="text-white font-semibold">Not sure which one fits?</span> No worries — pick Custom Build and we'll help you figure out the perfect setup during a free consultation.
-                </p>
-                <p className="text-[var(--text-muted)] text-xs font-mono mt-4">
-                    // All packages include 24/7 digital availability. No physical task management.
+                <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                    <span className="text-[var(--text-primary)] font-semibold">Not sure which one fits?</span> Pick Custom Build and we'll help you figure out the right setup during a free 30-minute call — no commitment needed.
                 </p>
             </motion.div>
 

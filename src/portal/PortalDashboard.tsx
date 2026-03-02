@@ -1,238 +1,508 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { LogOut, FileText, Clock, ExternalLink, Send, MessageSquare } from 'lucide-react';
-import { useProjects, useInvoices, useMessages, sendMessage } from '../admin/store/adminStore';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    LogOut, FolderKanban, FileText, MessageSquare, ExternalLink,
+    Send, Clock, CheckCircle, ChevronRight, Hexagon, User,
+} from 'lucide-react';
+import {
+    useProjects, useInvoices, useMessages, sendMessage,
+} from '../admin/store/adminStore';
 import type { Project } from '../admin/store/adminStore';
+
+/* ── Stage stepper data ─────────────────────────────────────── */
+const STAGES: { key: Project['status']; label: string }[] = [
+    { key: 'lead', label: 'Discovery' },
+    { key: 'in-progress', label: 'In Progress' },
+    { key: 'review', label: 'Review' },
+    { key: 'completed', label: 'Completed' },
+    { key: 'published', label: 'Live' },
+];
+
+const stageIndex = (status: Project['status']) =>
+    STAGES.findIndex(s => s.key === status);
+
+const TYPE_LABELS: Record<Project['type'], string> = {
+    'web-design': 'Web Design',
+    'ai-chatbot': 'AI Chatbot',
+    automation: 'Automation',
+    custom: 'Custom',
+};
+
+const INVOICE_STATUS_STYLE: Record<string, { color: string; bg: string; border: string }> = {
+    paid: { color: '#22c55e', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.3)' },
+    overdue: { color: '#ef4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+    sent: { color: '#3b82f6', bg: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.3)' },
+    draft: { color: '#71717a', bg: 'rgba(113,113,122,0.1)', border: 'rgba(113,113,122,0.3)' },
+};
+
+/* ── Sub-components ─────────────────────────────────────────── */
+function StageStepper({ status }: { status: Project['status'] }) {
+    const current = stageIndex(status);
+    return (
+        <div className="flex items-center w-full gap-0 mt-4">
+            {STAGES.map((stage, i) => {
+                const done = i < current;
+                const active = i === current;
+                return (
+                    <div key={stage.key} className="flex items-center flex-1 min-w-0">
+                        <div className="flex flex-col items-center flex-shrink-0">
+                            <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all
+                                    ${done ? 'bg-[var(--accent-orange)] text-black' : active ? 'bg-[rgba(210,193,182,0.2)] border-2 border-[var(--accent-orange)] text-[var(--accent-orange)]' : 'bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] text-[var(--text-muted)]'}`}
+                            >
+                                {done ? <CheckCircle size={12} /> : <span>{i + 1}</span>}
+                            </div>
+                            <span className={`text-[9px] font-mono mt-1 whitespace-nowrap hidden sm:block ${active ? 'text-[var(--accent-orange)]' : done ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'}`}>
+                                {stage.label}
+                            </span>
+                        </div>
+                        {i < STAGES.length - 1 && (
+                            <div className={`h-px flex-1 mx-1 transition-all ${i < current ? 'bg-[var(--accent-orange)]' : 'bg-[var(--border-color)]'}`} />
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+function ProjectCard({ project, onMessageClick }: { project: Project; onMessageClick: () => void }) {
+    const [expanded, setExpanded] = useState(false);
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-6 hover:border-[rgba(210,193,182,0.25)] transition-all"
+        >
+            {/* Header row */}
+            <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
+                            {TYPE_LABELS[project.type]}
+                        </span>
+                        {project.liveUrl && (
+                            <a
+                                href={project.liveUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[var(--accent-orange)] hover:underline text-[10px] flex items-center gap-1"
+                            >
+                                <ExternalLink size={10} /> Live
+                            </a>
+                        )}
+                    </div>
+                    <h3 className="text-lg font-display font-bold truncate">{project.title}</h3>
+                </div>
+                <span
+                    className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full shrink-0"
+                    style={{
+                        color: stageIndex(project.status) === STAGES.length - 1 ? '#22c55e' : 'var(--accent-orange)',
+                        background: stageIndex(project.status) === STAGES.length - 1 ? 'rgba(34,197,94,0.1)' : 'rgba(210,193,182,0.1)',
+                        border: `1px solid ${stageIndex(project.status) === STAGES.length - 1 ? 'rgba(34,197,94,0.3)' : 'rgba(210,193,182,0.3)'}`,
+                    }}
+                >
+                    {project.status.replace('-', ' ')}
+                </span>
+            </div>
+
+            {/* Stage stepper */}
+            <StageStepper status={project.status} />
+
+            {/* Expandable details */}
+            <button
+                onClick={() => setExpanded(e => !e)}
+                className="mt-4 text-[10px] font-mono text-[var(--text-muted)] flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors"
+            >
+                <ChevronRight size={12} className={`transition-transform ${expanded ? 'rotate-90' : ''}`} />
+                {expanded ? 'Hide details' : 'Show details'}
+            </button>
+
+            <AnimatePresence>
+                {expanded && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="pt-4 space-y-4 border-t border-[var(--border-color)] mt-3">
+                            {project.description && (
+                                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                    {project.description}
+                                </p>
+                            )}
+                            <div className="grid grid-cols-2 gap-3 text-xs">
+                                {project.startDate && (
+                                    <div>
+                                        <div className="text-[var(--text-muted)] mb-0.5">Start date</div>
+                                        <div className="font-mono text-[var(--text-primary)]">{project.startDate}</div>
+                                    </div>
+                                )}
+                                {project.endDate && (
+                                    <div>
+                                        <div className="text-[var(--text-muted)] mb-0.5">Target date</div>
+                                        <div className="font-mono text-[var(--text-primary)]">{project.endDate}</div>
+                                    </div>
+                                )}
+                            </div>
+                            {project.selectedFeatures && project.selectedFeatures.length > 0 && (
+                                <div>
+                                    <div className="text-[10px] text-[var(--text-muted)] mb-2 uppercase tracking-widest">Included Features</div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.selectedFeatures.map((f, i) => (
+                                            <span key={i} className="text-[10px] bg-[rgba(255,255,255,0.04)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-secondary)]">
+                                                {f}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <button
+                                onClick={onMessageClick}
+                                className="text-xs text-[var(--accent-orange)] flex items-center gap-1 hover:underline"
+                            >
+                                <MessageSquare size={12} /> Message team about this project
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
+    );
+}
+
+/* ── Chat panel ─────────────────────────────────────────────── */
+function ChatPanel({ projects }: { projects: Project[] }) {
+    const [selectedId, setSelectedId] = useState(projects[0]?.id || '');
+    const { messages } = useMessages(selectedId);
+    const [text, setText] = useState('');
+    const [sending, setSending] = useState(false);
+
+    const handleSend = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!text.trim() || !selectedId) return;
+        setSending(true);
+        try {
+            await sendMessage(selectedId, text, 'client');
+            setText('');
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setSending(false);
+        }
+    };
+
+    if (projects.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 text-[var(--text-muted)]">
+                <MessageSquare size={32} className="mb-3 opacity-30" />
+                <p className="text-sm">No projects to chat about yet.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col h-full min-h-[400px]">
+            {/* Project selector (only if multiple) */}
+            {projects.length > 1 && (
+                <div className="flex gap-2 mb-4 flex-wrap">
+                    {projects.map(p => (
+                        <button
+                            key={p.id}
+                            onClick={() => setSelectedId(p.id)}
+                            className={`text-xs px-3 py-1.5 rounded-full border font-mono transition-all ${selectedId === p.id
+                                ? 'border-[var(--accent-orange)] text-[var(--accent-orange)] bg-[rgba(210,193,182,0.1)]'
+                                : 'border-[var(--border-color)] text-[var(--text-muted)] hover:border-[rgba(210,193,182,0.3)]'
+                                }`}
+                        >
+                            {p.title}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-t-xl p-4 space-y-3">
+                {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] text-sm gap-2">
+                        <MessageSquare size={24} className="opacity-30" />
+                        No messages yet. Start the conversation below.
+                    </div>
+                ) : (
+                    messages.map(msg => (
+                        <div key={msg.id} className={`flex ${msg.sender === 'client' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${msg.sender === 'client'
+                                ? 'bg-[var(--accent-orange)] text-black rounded-br-none'
+                                : 'bg-[rgba(255,255,255,0.06)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-bl-none'
+                                }`}
+                            >
+                                <div className="text-[9px] uppercase font-bold opacity-60 mb-1">
+                                    {msg.sender === 'client' ? 'You' : 'Talos Team'}
+                                </div>
+                                <div className="whitespace-pre-wrap leading-relaxed">{msg.text}</div>
+                                <div className="text-[9px] mt-1 opacity-50 text-right">
+                                    {msg.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSend} className="flex gap-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] border-t-0 rounded-b-xl p-3">
+                <input
+                    type="text"
+                    value={text}
+                    onChange={e => setText(e.target.value)}
+                    placeholder="Message the Talos team..."
+                    className="flex-1 bg-[rgba(255,255,255,0.04)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                />
+                <button
+                    type="submit"
+                    disabled={sending || !text.trim()}
+                    className="bg-[var(--accent-orange)] text-black px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-40 transition-all flex items-center gap-1.5 text-sm font-bold"
+                >
+                    <Send size={14} /> Send
+                </button>
+            </form>
+        </div>
+    );
+}
+
+/* ── Main Dashboard ─────────────────────────────────────────── */
+type Tab = 'projects' | 'invoices' | 'messages';
 
 export default function PortalDashboard() {
     const navigate = useNavigate();
     const [clientEmail, setClientEmail] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<Tab>('projects');
 
     const { projects, loading: pLoading } = useProjects();
     const { invoices, loading: iLoading } = useInvoices();
 
-    // We will initialize useMessages after we find the project
-    const clientProject = projects.find(p => p.clientEmail?.toLowerCase() === clientEmail?.toLowerCase());
-    const clientInvoices = invoices.filter(i => i.clientEmail?.toLowerCase() === clientEmail?.toLowerCase());
-
-    const { messages, loading: mLoading } = useMessages(clientProject?.id || '');
-    const [newMessage, setNewMessage] = useState('');
-    const [sending, setSending] = useState(false);
-
     useEffect(() => {
         const email = localStorage.getItem('talosClientEmail');
-        if (!email) {
-            navigate('/portal');
-        } else {
-            setClientEmail(email);
-        }
+        if (!email) navigate('/portal');
+        else setClientEmail(email);
     }, [navigate]);
+
+    const clientProjects = projects.filter(
+        p => p.clientEmail?.toLowerCase() === clientEmail?.toLowerCase()
+    );
+    const clientInvoices = invoices.filter(
+        i => i.clientEmail?.toLowerCase() === clientEmail?.toLowerCase()
+    );
 
     const handleLogout = () => {
         localStorage.removeItem('talosClientEmail');
         navigate('/portal');
     };
 
-    if (pLoading || iLoading || (clientProject && mLoading)) {
+    if (pLoading || iLoading) {
         return (
-            <div className="admin-shell flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-cyan)] border-t-transparent animate-spin"></div>
+            <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-orange)] border-t-transparent animate-spin" />
             </div>
         );
     }
 
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newMessage.trim() || !clientProject) return;
-        setSending(true);
-        try {
-            await sendMessage(clientProject.id, newMessage, 'client');
-            setNewMessage('');
-        } catch (err) {
-            console.error('Failed to send message:', err);
-        } finally {
-            setSending(false);
-        }
-    };
-
-    const getStatusColor = (status: Project['status']) => {
-        switch (status) {
-            case 'in-progress': return '#00e5ff';
-            case 'completed': return '#22c55e';
-            case 'published': return '#a855f7';
-            case 'review': return '#f59e0b';
-            case 'lead': return '#71717a';
-            default: return '#71717a';
-        }
-    };
+    const tabs: { key: Tab; label: string; count?: number }[] = [
+        { key: 'projects', label: 'Projects', count: clientProjects.length },
+        { key: 'invoices', label: 'Invoices', count: clientInvoices.length },
+        { key: 'messages', label: 'Messages' },
+    ];
 
     return (
-        <div className="min-h-screen bg-[var(--bg-base)] text-white w-full">
-            <header className="border-b border-[var(--border-color)] bg-[var(--bg-surface)] sticky top-0 z-50">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="flex justify-center items-center gap-2">
-                        <span className="text-[var(--accent-cyan)] font-mono text-sm uppercase tracking-widest px-2 py-1 bg-[rgba(0,229,255,0.1)] rounded border border-[rgba(0,229,255,0.2)]">CLIENT PORTAL</span>
+        <div className="h-screen bg-[var(--bg-base)] text-[var(--text-primary)] w-full flex flex-col overflow-hidden">
+
+            {/* ── HEADER ──────────────────────────────────────────── */}
+            <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] backdrop-blur-md">
+                <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Hexagon size={22} className="text-[var(--accent-orange)]" />
+                        <span className="font-display font-bold text-sm tracking-tight">Talos.design</span>
+                        <span className="hidden sm:inline text-[10px] font-mono text-[var(--text-muted)] px-2 py-0.5 rounded border border-[var(--border-color)] ml-1">
+                            Client Portal
+                        </span>
                     </div>
-                    <div className="flex items-center gap-6 text-sm">
-                        <span className="text-[var(--text-muted)] hidden md:inline-block">{clientEmail}</span>
-                        <button onClick={handleLogout} className="flex items-center gap-2 text-[var(--accent-orange)] hover:text-white transition-colors">
-                            <LogOut size={16} /> Logout
+                    <div className="flex items-center gap-4">
+                        <span className="text-xs text-[var(--text-muted)] hidden md:block truncate max-w-[160px]">{clientEmail}</span>
+                        <Link
+                            to="/portal/profile"
+                            className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            <User size={14} /> Profile
+                        </Link>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors"
+                        >
+                            <LogOut size={14} /> Sign out
                         </button>
                     </div>
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 py-8 max-w-5xl">
-                {!clientProject && clientInvoices.length === 0 ? (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 text-center border border-[var(--border-color)] border-dashed rounded-lg bg-[rgba(255,255,255,0.02)]">
-                        <div className="w-16 h-16 rounded-full bg-[rgba(255,255,255,0.05)] flex items-center justify-center mb-4 text-[var(--text-muted)]">
-                            <Clock size={24} />
-                        </div>
-                        <h2 className="text-xl font-bold mb-2">No active projects found</h2>
-                        <p className="text-[var(--text-secondary)] max-w-md">Your project details or invoices will appear here once our engineers assign them to your email address.</p>
-                    </motion.div>
-                ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Project Column */}
-                        <div className="lg:col-span-2 space-y-8">
-                            {clientProject ? (
-                                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-2xl font-display font-bold">Project Status</h2>
-                                        <span className="px-3 py-1 text-xs uppercase font-bold rounded-full font-mono tracking-widest" style={{ backgroundColor: `${getStatusColor(clientProject.status)}20`, color: getStatusColor(clientProject.status), border: `1px solid ${getStatusColor(clientProject.status)}` }}>
-                                            {clientProject.status}
-                                        </span>
-                                    </div>
+            <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-6 flex flex-col min-h-0">
 
-                                    <div className="admin-card">
-                                        <div className="admin-card-header border-b border-[var(--border-color)] pb-4 mb-4">
-                                            <h3 className="text-xl font-bold text-[var(--accent-cyan)]">{clientProject.title}</h3>
-                                            <p className="text-sm text-[var(--text-muted)] mt-1">{clientProject.type}</p>
-                                        </div>
+                {/* ── WELCOME STRIP ──────────────────────────────── */}
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8"
+                >
+                    <h1 className="text-2xl font-display font-bold mb-1">
+                        Welcome back
+                        {clientProjects[0]?.client ? `, ${clientProjects[0].client}` : ''}
+                    </h1>
+                    <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
+                        <span className="flex items-center gap-1">
+                            <FolderKanban size={14} />
+                            {clientProjects.length} {clientProjects.length === 1 ? 'project' : 'projects'}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <FileText size={14} />
+                            {clientInvoices.length} {clientInvoices.length === 1 ? 'invoice' : 'invoices'}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                            Portal active
+                        </span>
+                    </div>
+                </motion.div>
 
-                                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
-                                            {clientProject.description || "No project description provided."}
-                                        </p>
-
-                                        {clientProject.technologies && clientProject.technologies.length > 0 && (
-                                            <div className="flex flex-wrap gap-2 mb-6">
-                                                {clientProject.technologies.map((tech, idx) => (
-                                                    <span key={idx} className="text-xs text-[var(--text-muted)] bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] px-2 py-1 rounded">
-                                                        {tech}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {clientProject.link && (
-                                            <a href={clientProject.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[var(--accent-orange)] text-sm font-bold bg-[rgba(245,158,11,0.1)] px-4 py-2 rounded hover:bg-[rgba(245,158,11,0.2)] transition-colors w-full justify-center md:w-auto">
-                                                <ExternalLink size={16} /> View Live Deployment
-                                            </a>
-                                        )}
-                                    </div>
-                                </motion.section>
-                            ) : (
-                                <div className="admin-card bg-[var(--bg-surface-elevated)] border-dashed">
-                                    <div className="p-8 text-center text-[var(--text-muted)]">
-                                        Your custom project space is still being generated.
-                                    </div>
-                                </div>
+                {/* ── TABS ────────────────────────────────────────── */}
+                <div className="flex-none flex gap-0 border-b border-[var(--border-color)] mb-4">
+                    {tabs.map(tab => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`px-5 py-3 text-sm font-medium border-b-2 transition-all flex items-center gap-2 ${activeTab === tab.key
+                                ? 'border-[var(--accent-orange)] text-[var(--text-primary)]'
+                                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                                }`}
+                        >
+                            {tab.label}
+                            {tab.count !== undefined && tab.count > 0 && (
+                                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${activeTab === tab.key ? 'bg-[rgba(210,193,182,0.15)] text-[var(--accent-orange)]' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)]'}`}>
+                                    {tab.count}
+                                </span>
                             )}
-                        </div>
+                        </button>
+                    ))}
+                </div>
 
-                        {/* Invoices Column */}
-                        <div className="lg:col-span-1 space-y-8">
-                            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                                <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
-                                    <FileText size={20} className="text-[var(--accent-cyan)]" /> Invoices
-                                </h2>
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+                    <AnimatePresence mode="wait">
 
-                                {clientInvoices.length === 0 ? (
-                                    <div className="text-sm text-[var(--text-muted)] p-6 bg-[rgba(255,255,255,0.02)] border border-[var(--border-color)] rounded text-center">
-                                        No invoices linked to this account.
+                        {/* ── PROJECTS TAB ──────────────────────────────── */}
+                        {activeTab === 'projects' && (
+                            <motion.div
+                                key="projects"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                {clientProjects.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[var(--border-color)] rounded-xl text-center">
+                                        <Clock size={32} className="text-[var(--text-muted)] mb-3 opacity-40" />
+                                        <h2 className="font-bold mb-1">No projects yet</h2>
+                                        <p className="text-sm text-[var(--text-secondary)] max-w-sm">
+                                            Your project will appear here once the Talos team assigns it to your account.
+                                        </p>
                                     </div>
                                 ) : (
-                                    <div className="space-y-3">
-                                        {clientInvoices.map((inv) => (
-                                            <div key={inv.id} className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded p-4 hover:border-[rgba(0,229,255,0.3)] transition-colors group">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div>
-                                                        <span className="text-xs font-mono text-[var(--text-muted)] block mb-1">#{inv.invoiceNumber}</span>
-                                                        <span className="font-bold text-lg font-mono">
-                                                            ${inv.items.reduce((s, item) => s + (item.quantity * item.rate), 0).toFixed(2)}
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded border" style={{
-                                                        color: inv.status === 'paid' ? '#22c55e' : inv.status === 'overdue' ? '#ef4444' : '#3b82f6',
-                                                        borderColor: inv.status === 'paid' ? 'rgba(34,197,94,0.3)' : inv.status === 'overdue' ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.3)',
-                                                        backgroundColor: inv.status === 'paid' ? 'rgba(34,197,94,0.1)' : inv.status === 'overdue' ? 'rgba(239,68,68,0.1)' : 'rgba(59,130,246,0.1)'
-                                                    }}>
-                                                        {inv.status}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between text-xs text-[var(--text-secondary)] mt-4">
-                                                    <span>Issued: {inv.issueDate}</span>
-                                                    <span>Due: {inv.dueDate}</span>
-                                                </div>
-                                            </div>
+                                    <div className="grid grid-cols-1 gap-5">
+                                        {clientProjects.map(project => (
+                                            <ProjectCard
+                                                key={project.id}
+                                                project={project}
+                                                onMessageClick={() => setActiveTab('messages')}
+                                            />
                                         ))}
                                     </div>
                                 )}
-                            </motion.section>
+                            </motion.div>
+                        )}
 
-                            {/* Client Chat Messages */}
-                            {clientProject && (
-                                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8 flex flex-col h-[500px]">
-                                    <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2">
-                                        <MessageSquare size={20} className="text-[#a855f7]" /> Project Chat
-                                    </h2>
-
-                                    <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-t-lg p-4 flex-1 overflow-y-auto space-y-4 flex flex-col">
-                                        {messages.length === 0 ? (
-                                            <div className="text-center text-[var(--text-muted)] text-sm my-auto">No messages yet. Send a message to the engineering team.</div>
-                                        ) : (
-                                            messages.map((msg) => (
-                                                <div key={msg.id} className={`flex ${msg.sender === 'client' ? 'justify-end' : 'justify-start'}`}>
-                                                    <div className={`max-w-[85%] rounded-lg p-3 text-sm ${msg.sender === 'client'
-                                                        ? 'bg-[var(--accent-cyan)] text-black rounded-br-none'
-                                                        : 'bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] text-white rounded-bl-none'
-                                                        }`}>
-                                                        <div className="font-bold text-[10px] uppercase tracking-wider mb-1 opacity-70">
-                                                            {msg.sender === 'client' ? 'You' : 'Talos Team'}
+                        {/* ── INVOICES TAB ──────────────────────────────── */}
+                        {activeTab === 'invoices' && (
+                            <motion.div
+                                key="invoices"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                {clientInvoices.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[var(--border-color)] rounded-xl text-center">
+                                        <FileText size={32} className="text-[var(--text-muted)] mb-3 opacity-40" />
+                                        <p className="text-sm text-[var(--text-secondary)]">No invoices linked to your account yet.</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {clientInvoices.map(inv => {
+                                            const total = inv.items.reduce((s, item) => s + item.quantity * item.rate, 0);
+                                            const style = INVOICE_STATUS_STYLE[inv.status] || INVOICE_STATUS_STYLE.draft;
+                                            return (
+                                                <motion.div
+                                                    key={inv.id}
+                                                    initial={{ opacity: 0, y: 8 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-5 hover:border-[rgba(210,193,182,0.25)] transition-all"
+                                                >
+                                                    <div className="flex justify-between items-start mb-3">
+                                                        <div>
+                                                            <div className="text-[10px] font-mono text-[var(--text-muted)] mb-1">#{inv.invoiceNumber}</div>
+                                                            <div className="text-2xl font-display font-bold font-mono">${total.toFixed(2)}</div>
                                                         </div>
-                                                        <div className="whitespace-pre-wrap">{msg.text}</div>
-                                                        <div className="text-[10px] mt-2 opacity-50 text-right">
-                                                            {msg.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        </div>
+                                                        <span
+                                                            className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border"
+                                                            style={{ color: style.color, background: style.bg, borderColor: style.border }}
+                                                        >
+                                                            {inv.status}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                            ))
-                                        )}
+                                                    <div className="border-t border-[var(--border-color)] pt-3 flex justify-between text-xs text-[var(--text-muted)]">
+                                                        <span>Issued: <span className="text-[var(--text-secondary)]">{inv.issueDate}</span></span>
+                                                        <span>Due: <span className={inv.status === 'overdue' ? 'text-red-400' : 'text-[var(--text-secondary)]'}>{inv.dueDate}</span></span>
+                                                    </div>
+                                                    {inv.items.length > 0 && (
+                                                        <div className="mt-3 space-y-1">
+                                                            {inv.items.map((item, i) => (
+                                                                <div key={i} className="flex justify-between text-xs text-[var(--text-muted)]">
+                                                                    <span className="truncate max-w-[70%]">{item.description}</span>
+                                                                    <span className="font-mono">${(item.quantity * item.rate).toFixed(2)}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="bg-[rgba(0,0,0,0.2)] border border-[var(--border-color)] border-t-0 p-3 rounded-b-lg">
-                                        <form onSubmit={handleSendMessage} className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                value={newMessage}
-                                                onChange={(e) => setNewMessage(e.target.value)}
-                                                placeholder="Message the team..."
-                                                className="flex-1 bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent-cyan)] transition-colors"
-                                            />
-                                            <button
-                                                type="submit"
-                                                disabled={sending || !newMessage.trim()}
-                                                className="bg-[var(--accent-cyan)] text-black p-2 rounded hover:bg-[var(--accent-cyan-glow)] disabled:opacity-50 transition-colors flex items-center justify-center"
-                                            >
-                                                <Send size={16} />
-                                            </button>
-                                        </form>
-                                    </div>
-                                </motion.section>
-                            )}
-                        </div>
-                    </div>
-                )}
+                                )}
+                            </motion.div>
+                        )}
+
+                        {/* ── MESSAGES TAB ──────────────────────────────── */}
+                        {activeTab === 'messages' && (
+                            <motion.div
+                                key="messages"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                                className="flex-1 flex flex-col min-h-0 h-full"
+                            >
+                                <ChatPanel projects={clientProjects} />
+                            </motion.div>
+                        )}
+
+                    </AnimatePresence>
+                </div>
+
             </main>
         </div>
     );

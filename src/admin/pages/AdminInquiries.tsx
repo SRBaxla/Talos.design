@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useInquiries, updateInquiry, addProject } from '../store/adminStore';
 import type { InquiryStatus } from '../store/adminStore';
 import { sendWelcomeEmail } from '../../lib/emailService';
-import { Mail, Building, Clock, DollarSign, CheckCircle } from 'lucide-react';
+import { DollarSign, CheckCircle } from 'lucide-react';
 
 const STATUS_COLORS: Record<InquiryStatus, string> = {
     unread: '#f59e0b',
@@ -21,7 +21,7 @@ export default function AdminInquiries() {
     const navigate = useNavigate();
 
     if (loading) {
-        return <div className="admin-loading"><div className="admin-spinner" /></div>;
+        return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-accent-orange rounded-full animate-spin" /></div>;
     }
 
     const handleStatusChange = async (id: string, newStatus: string) => {
@@ -61,12 +61,13 @@ export default function AdminInquiries() {
                 startDate: new Date().toISOString().split('T')[0],
                 endDate: '',
                 budget: inquiry.value || '',
-                description: `Automatically created from Neural Link ID: ${inquiry.id}\n\nOriginal Message:\n${inquiry.message}`,
+                description: `Automatically created from inquiry ID: ${inquiry.id}\n\nOriginal Message:\n${inquiry.message}`,
                 notes: 'Pending final scope and team allotment.',
                 tags: ['converted-lead'],
                 technologies: [],
                 liveUrl: '',
                 link: '',
+                accessCode: accessCode,
                 teamAllotment: [],
                 selectedFeatures: [],
                 costRevisions: [],
@@ -107,97 +108,117 @@ export default function AdminInquiries() {
         }
     };
 
-    return (
-        <div className="admin-page">
-            <div className="admin-page-header">
-                <div>
-                    <h1 className="admin-page-title">Lead CRM</h1>
-                    <p className="admin-page-subtitle">Manage neural link transmissions and deal pipeline</p>
-                </div>
-            </div>
+    // Group inquiries for Kanban
+    const columns: { title: string; keys: InquiryStatus[] }[] = [
+        { title: 'New Leads', keys: ['unread', 'read'] },
+        { title: 'In Discussion', keys: ['contacted', 'negotiating'] },
+        { title: 'Decided', keys: ['won', 'lost'] },
+    ];
 
-            <div className="admin-dashboard-grid mt-6">
-                <div className="admin-card" style={{ gridColumn: 'span 2' }}>
-                    <div className="admin-card-header">
-                        <div className="admin-card-header-left">
-                            <Mail size={16} className="text-[var(--accent-orange)]" />
-                            <h3>All Leads & Transmissions</h3>
-                        </div>
-                    </div>
-                    <div className="admin-card-body p-0">
-                        {inquiries.length === 0 ? (
-                            <div className="admin-card-empty py-12">No inquiries received yet</div>
-                        ) : (
-                            <div className="flex flex-col">
-                                {inquiries.map((inquiry) => (
-                                    <div key={inquiry.id} className="admin-activity-item border-b border-[var(--border-color)] last:border-0 rounded-none p-4 hover:bg-[rgba(245,158,11,0.05)] transition-colors">
-                                        <div className="flex flex-col w-full gap-4">
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex items-center gap-3">
-                                                    <span
-                                                        className="admin-activity-dot mt-1"
-                                                        style={{ background: STATUS_COLORS[inquiry.status] || '#71717a' }}
-                                                    />
-                                                    <div>
-                                                        <h4 className="font-bold text-lg mb-1">{inquiry.name} <span className="text-sm font-normal text-[var(--text-muted)] ml-2">({inquiry.email})</span></h4>
-                                                        <div className="flex items-center gap-4 text-sm text-[var(--text-secondary)]">
-                                                            <span className="flex items-center gap-1"><Building size={14} /> {inquiry.company}</span>
-                                                            <span className="flex items-center gap-1"><Clock size={14} /> {inquiry.createdAt?.toDate().toLocaleDateString() || 'Recent'}</span>
-                                                        </div>
-                                                    </div>
+    return (
+        <div className="h-full w-full flex flex-col overflow-hidden">
+            {/* Header */}
+            <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h1 className="font-display font-bold text-xl">Deals & Inquiries</h1>
+                    <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Manage neural link transmissions</p>
+                </div>
+            </header>
+
+            {/* Kanban Board */}
+            <main className="flex-1 overflow-x-auto overflow-y-hidden p-6">
+                <div className="flex gap-6 h-full min-w-max items-start">
+                    {columns.map((col) => {
+                        const colInquiries = inquiries.filter(i => col.keys.includes(i.status as InquiryStatus));
+
+                        return (
+                            <div key={col.title} className="w-[380px] flex flex-col h-full max-h-full">
+                                {/* Column Header */}
+                                <div className="flex items-center justify-between mb-4 px-1">
+                                    <h3 className="font-display font-bold text-sm text-[var(--text-secondary)]">{col.title}</h3>
+                                    <span className="text-[10px] font-mono bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] px-2 py-0.5 rounded-full">
+                                        {colInquiries.length}
+                                    </span>
+                                </div>
+
+                                {/* Column Track */}
+                                <div className="flex-1 overflow-y-auto space-y-3 pb-8 pr-2 custom-scrollbar">
+                                    {colInquiries.length === 0 ? (
+                                        <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono">
+                                            Empty
+                                        </div>
+                                    ) : (
+                                        colInquiries.map(inquiry => (
+                                            <div
+                                                key={inquiry.id}
+                                                className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4 hover:border-[var(--accent-orange)] transition-colors group relative"
+                                            >
+                                                {/* Status dot */}
+                                                <div
+                                                    className="absolute top-4 right-4 w-2 h-2 rounded-full"
+                                                    style={{ backgroundColor: STATUS_COLORS[inquiry.status] || '#71717a' }}
+                                                />
+
+                                                <h4 className="font-bold text-[15px] mb-1 pr-6 truncate">{inquiry.company || inquiry.name}</h4>
+                                                <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] mb-4 font-mono">
+                                                    <span>{inquiry.name}</span>
+                                                    <span>•</span>
+                                                    <span className="truncate">{inquiry.email}</span>
                                                 </div>
 
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex items-center border border-[var(--border-color)] bg-[rgba(0,0,0,0.2)] rounded px-2">
-                                                        <DollarSign size={14} className="text-[var(--text-muted)]" />
+                                                <div className="bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.05)] rounded-lg p-3 mb-4 text-[12px] text-[var(--text-secondary)] line-clamp-3">
+                                                    {inquiry.message}
+                                                </div>
+
+                                                <div className="flex items-center justify-between mt-auto pt-2 border-t border-[rgba(255,255,255,0.05)]">
+                                                    <div className="flex items-center gap-1.5 bg-[var(--bg-base)] border border-[var(--border-color)] rounded px-2 py-1 focus-within:border-[var(--accent-orange)] transition-colors">
+                                                        <DollarSign size={12} className="text-[var(--text-muted)]" />
                                                         <input
                                                             type="text"
-                                                            placeholder="Deal Value"
+                                                            placeholder="Value"
                                                             defaultValue={inquiry.value || ''}
                                                             onBlur={(e) => handleValueChange(inquiry.id, e.target.value)}
-                                                            className="bg-transparent border-none text-sm w-24 py-1 px-2 focus:outline-none text-white"
+                                                            className="bg-transparent border-none text-[11px] font-mono w-16 focus:outline-none text-white placeholder-[rgba(255,255,255,0.2)]"
                                                         />
                                                     </div>
+
                                                     <select
                                                         value={inquiry.status}
                                                         onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
-                                                        className="bg-[rgba(0,0,0,0.3)] border border-[var(--border-color)] text-xs rounded px-2 py-1 focus:outline-none focus:border-[var(--accent-orange)] transition-colors"
+                                                        className="bg-transparent text-[11px] font-mono font-medium focus:outline-none appearance-none cursor-pointer pr-4 hover:opacity-80 transition-opacity text-right"
                                                         style={{ color: STATUS_COLORS[inquiry.status] }}
                                                     >
-                                                        <option value="unread">Unread</option>
-                                                        <option value="read">Read</option>
-                                                        <option value="contacted">Contacted</option>
-                                                        <option value="negotiating">Negotiating</option>
-                                                        <option value="won">Won / Converted</option>
-                                                        <option value="lost">Lost</option>
-                                                        <option value="archived">Archived</option>
+                                                        <option className="bg-[#111] text-white" value="unread">Unread</option>
+                                                        <option className="bg-[#111] text-white" value="read">Read</option>
+                                                        <option className="bg-[#111] text-white" value="contacted">Contacted</option>
+                                                        <option className="bg-[#111] text-white" value="negotiating">Negotiating</option>
+                                                        <option className="bg-[#111] text-white" value="won">Won</option>
+                                                        <option className="bg-[#111] text-white" value="lost">Lost</option>
+                                                        <option className="bg-[#111] text-white" value="archived">Archived</option>
                                                     </select>
                                                 </div>
+
+                                                {/* Convert Button */}
                                                 {inquiry.status === 'won' && (
                                                     <button
                                                         onClick={() => handleConvertToProject(inquiry)}
                                                         disabled={convertingId === inquiry.id}
-                                                        className="admin-btn-primary ml-2 flex items-center gap-2 px-3 py-1 text-xs h-auto"
+                                                        className="w-full mt-3 bg-[rgba(34,197,94,0.1)] hover:bg-[rgba(34,197,94,0.2)] text-[#22c55e] border border-[rgba(34,197,94,0.2)] hover:border-[#22c55e] transition-colors rounded-lg py-2 flex items-center justify-center gap-2 text-xs font-bold"
                                                     >
                                                         <CheckCircle size={14} />
-                                                        {convertingId === inquiry.id ? 'Converting...' : 'Accept & Convert'}
+                                                        {convertingId === inquiry.id ? 'Converting...' : 'Convert to Project'}
                                                     </button>
                                                 )}
                                             </div>
-
-                                            <div className="bg-[rgba(0,0,0,0.2)] p-4 rounded border border-[var(--border-color)]">
-                                                <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap font-mono relative pl-4 border-l-2 border-[var(--accent-cyan)]">
-                                                    {inquiry.message}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                        ))
+                                    )}
+                                </div>
                             </div>
-                        )}
-                    </div>
+                        );
+                    })}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
+

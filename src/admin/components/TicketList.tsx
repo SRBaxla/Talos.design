@@ -99,113 +99,132 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
     const doneCount = tickets.filter(t => t.status === 'done').length;
 
     return (
-        <div className="admin-tickets">
-            <div className="admin-tickets-header">
-                <h3 className="admin-tickets-title">
-                    Tickets
-                    <span className="admin-tickets-count">{tickets.length}</span>
-                </h3>
-                <button className="admin-btn-primary" onClick={() => { resetForm(); setShowForm(true); }}>
-                    <Plus size={14} /> Add Ticket
+        <div className="flex flex-col h-full bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl shadow-sm overflow-hidden">
+            <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)] gap-4">
+                <div className="flex items-center gap-3">
+                    <h3 className="font-display font-bold text-white text-base tracking-wide flex items-center gap-2">
+                        Project Tickets
+                        <span className="bg-[rgba(255,255,255,0.1)] text-white text-[10px] px-2 py-0.5 rounded-full font-mono">{tickets.length}</span>
+                    </h3>
+                </div>
+                <button
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-[rgba(245,158,11,0.9)] transition-colors shadow-sm"
+                    onClick={() => { resetForm(); setShowForm(true); }}
+                >
+                    <Plus size={14} strokeWidth={2.5} /> Add Ticket
                 </button>
             </div>
 
             {/* Filter pills */}
-            <div className="admin-ticket-filters">
-                <button className={`admin-ticket-filter ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>
+            <div className="px-5 py-4 flex flex-wrap gap-2 border-b border-[var(--border-color)]">
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'all' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('all')}>
                     All ({tickets.length})
                 </button>
-                <button className={`admin-ticket-filter ${filter === 'todo' ? 'active' : ''}`} onClick={() => setFilter('todo')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'todo' ? 'bg-[rgba(113,113,122,0.8)] text-white' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('todo')}>
                     To Do ({todoCount})
                 </button>
-                <button className={`admin-ticket-filter ${filter === 'in-progress' ? 'active' : ''}`} onClick={() => setFilter('in-progress')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'in-progress' ? 'bg-[rgba(0,229,255,0.8)] text-black' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('in-progress')}>
                     In Progress ({inProgressCount})
                 </button>
-                <button className={`admin-ticket-filter ${filter === 'done' ? 'active' : ''}`} onClick={() => setFilter('done')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'done' ? 'bg-[rgba(34,197,94,0.8)] text-white' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('done')}>
                     Done ({doneCount})
                 </button>
             </div>
 
             {/* Inline add/edit form */}
             {showForm && (
-                <div className="admin-ticket-form">
+                <div className="p-5 bg-[rgba(255,255,255,0.02)] border-b border-[var(--border-color)] flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
                     <input
-                        className="admin-input"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium"
                         placeholder="Ticket title *"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         autoFocus
                     />
                     <textarea
-                        className="admin-textarea"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-secondary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all min-h-[80px]"
                         rows={2}
                         placeholder="Description (optional)"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
-                    <div className="admin-ticket-form-row">
-                        <select className="admin-select" value={status} onChange={(e) => setStatus(e.target.value as TicketStatus)}>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={status} onChange={(e) => setStatus(e.target.value as TicketStatus)}>
                             <option value="todo">To Do</option>
                             <option value="in-progress">In Progress</option>
                             <option value="done">Done</option>
                         </select>
-                        <select className="admin-select" value={priority} onChange={(e) => setPriority(e.target.value as TicketPriority)}>
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
+                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={priority} onChange={(e) => setPriority(e.target.value as TicketPriority)}>
+                            <option value="low">Low Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="high">High Priority</option>
                             <option value="urgent">Urgent</option>
                         </select>
-                        <input className="admin-input" placeholder="Assignee" value={assignee} onChange={(e) => setAssignee(e.target.value)} />
-                        <input type="date" className="admin-input" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                        <input className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)]" placeholder="Assignee (user id or email)" value={assignee} onChange={(e) => setAssignee(e.target.value)} />
+                        <input type="date" className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] color-scheme-dark" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={{ colorScheme: 'dark' }} />
                     </div>
-                    <div className="admin-ticket-form-actions">
-                        <button className="admin-btn-secondary" onClick={resetForm}>Cancel</button>
-                        <button className="admin-btn-primary" onClick={handleSave}>
-                            {editTicket ? 'Update' : 'Create'}
+                    <div className="flex justify-end gap-3 mt-2">
+                        <button className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm font-bold transition-colors" onClick={resetForm}>Cancel</button>
+                        <button className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:bg-[rgba(0,229,255,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors" onClick={handleSave}>
+                            {editTicket ? 'Update Ticket' : 'Create Ticket'}
                         </button>
                     </div>
                 </div>
             )}
 
             {/* Ticket list */}
-            <div className="admin-ticket-list">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-5 flex flex-col gap-3 h-[400px]">
                 {filtered.length === 0 ? (
-                    <div className="admin-ticket-empty">No tickets yet. Add one to start tracking work.</div>
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[rgba(255,255,255,0.01)] rounded-xl border border-dashed border-[var(--border-color)] min-h-[200px]">
+                        <Clock className="text-[var(--text-muted)] mb-3" size={32} />
+                        <p className="text-[var(--text-secondary)] font-medium text-sm">No tickets found.</p>
+                        <p className="text-xs text-[var(--text-muted)] mt-1">Add a ticket to start tracking work.</p>
+                    </div>
                 ) : (
                     filtered.map((t) => {
                         const StatusIcon = STATUS_ICONS[t.status];
                         return (
-                            <div key={t.id} className="admin-ticket-item">
+                            <div key={t.id} className="group flex items-start sm:items-center gap-4 p-4 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all">
                                 <button
-                                    className="admin-ticket-status-btn"
+                                    className="pt-0.5 sm:pt-0 shrink-0 hover:scale-110 transition-transform"
                                     onClick={() => handleToggleStatus(t)}
                                     style={{ color: STATUS_COLORS[t.status] }}
                                     title={`Status: ${t.status} — click to advance`}
                                 >
-                                    <StatusIcon size={18} />
+                                    <StatusIcon size={20} strokeWidth={2.5} />
                                 </button>
-                                <div className="admin-ticket-info">
-                                    <div className="admin-ticket-title-row">
-                                        <span className={`admin-ticket-name ${t.status === 'done' ? 'done' : ''}`}>
-                                            {t.title}
-                                        </span>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
                                         <span
-                                            className="admin-ticket-priority-dot"
+                                            className="w-2 h-2 rounded-full shrink-0 shadow-sm"
                                             style={{ background: PRIORITY_COLORS[t.priority] }}
-                                            title={t.priority}
+                                            title={`Priority: ${t.priority}`}
                                         />
+                                        <h4 className={`text-sm font-bold truncate transition-colors ${t.status === 'done' ? 'text-[var(--text-muted)] line-through' : 'text-white group-hover:text-[var(--accent-cyan)]'}`}>
+                                            {t.title}
+                                        </h4>
                                     </div>
+
                                     {t.description && (
-                                        <div className="admin-ticket-desc">{t.description}</div>
+                                        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mb-2 leading-relaxed">
+                                            {t.description}
+                                        </p>
                                     )}
-                                    <div className="admin-ticket-meta">
-                                        {t.assignee && <span>{t.assignee}</span>}
-                                        {t.dueDate && <span>Due: {t.dueDate}</span>}
+
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono font-medium text-[var(--text-muted)]">
+                                        {t.assignee && <span className="flex items-center gap-1.5"><div className="w-4 h-4 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center text-[8px] text-white">{t.assignee.charAt(0).toUpperCase()}</div> <span className="truncate max-w-[100px]">{t.assignee}</span></span>}
+                                        {t.dueDate && <span className="flex items-center gap-1"><Clock size={10} /> {t.dueDate}</span>}
                                     </div>
                                 </div>
-                                <div className="admin-ticket-actions">
-                                    <button onClick={() => handleEdit(t)}><Edit2 size={13} /></button>
-                                    <button className="admin-action-danger" onClick={() => handleDelete(t.id)}><Trash2 size={13} /></button>
+
+                                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                    <button onClick={() => handleEdit(t)} className="p-2 text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)] rounded-lg transition-colors" title="Edit">
+                                        <Edit2 size={14} />
+                                    </button>
+                                    <button onClick={() => handleDelete(t.id)} className="p-2 text-[var(--text-muted)] hover:text-red-400 hover:bg-[rgba(239,68,68,0.1)] rounded-lg transition-colors" title="Delete">
+                                        <Trash2 size={14} />
+                                    </button>
                                 </div>
                             </div>
                         );

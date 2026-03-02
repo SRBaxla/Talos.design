@@ -1,218 +1,256 @@
-import { Layers, Lightbulb, Workflow } from 'lucide-react';
+import { LayoutGrid, Bot, Settings, ArrowRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+const TABS = [
+    { id: 'web-design', label: 'Web Design' },
+    { id: 'chatbots', label: 'AI Chatbots' },
+    { id: 'automation', label: 'System Automation' },
+];
+
+const services = [
+    {
+        id: 'web-design',
+        number: '01',
+        icon: LayoutGrid,
+        title: 'Web Design',
+        benefit: 'A website that turns visitors into clients',
+        description:
+            'We build high-performance, fully custom websites that are fast, accessible, and designed to convert. Every project includes mobile responsiveness, SEO fundamentals, and an easy-to-manage structure.',
+        features: [
+            'Fully responsive across all devices',
+            'SEO-optimised structure & metadata',
+            'Fast load times — 90+ PageSpeed scores',
+            'Clean admin panel or CMS if needed',
+            'Booking, payments or inquiry forms',
+        ],
+        to: '/services/web-design',
+        accentColor: 'var(--accent-orange)',
+        accentBg: 'rgba(210,193,182,0.08)',
+        accentBorder: 'rgba(210,193,182,0.25)',
+    },
+    {
+        id: 'chatbots',
+        number: '02',
+        icon: Bot,
+        title: 'AI Chatbots',
+        benefit: '24/7 customer handling — no extra staff needed',
+        description:
+            'We deploy custom AI agents trained on your business content. They handle FAQs, qualify leads, take bookings, and escalate complex queries — all day, every day, without supervision.',
+        features: [
+            'Trained on your products, policies & FAQs',
+            'Handles enquiries, bookings & lead capture',
+            'Seamless hand-off to human agents',
+            'Integrates with WhatsApp, website & email',
+            'Analytics dashboard for conversation insights',
+        ],
+        to: '/services/chatbots',
+        accentColor: 'var(--accent-cyan)',
+        accentBg: 'rgba(69,104,130,0.08)',
+        accentBorder: 'rgba(69,104,130,0.25)',
+    },
+    {
+        id: 'automation',
+        number: '03',
+        icon: Settings,
+        title: 'System Automation',
+        benefit: 'Eliminate the repetitive work eating your day',
+        description:
+            'We map your existing workflows and build automated pipelines that connect your apps, databases, and communications — so you can focus on decisions, not data entry.',
+        features: [
+            'Connect any two apps or platforms',
+            'Auto-send invoices, confirmations & reminders',
+            'CRM sync and lead routing',
+            'Custom dashboards and reporting',
+            'Saves 10+ hours per week on average',
+        ],
+        to: '/services/automation',
+        accentColor: '#c084fc',
+        accentBg: 'rgba(192,132,252,0.08)',
+        accentBorder: 'rgba(192,132,252,0.25)',
+    },
+];
 
 export default function Services() {
+    const [activeTab, setActiveTab] = useState('web-design');
+
+    // Highlight tab based on scroll position
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveTab(entry.target.id);
+                    }
+                });
+            },
+            { rootMargin: '-40% 0px -55% 0px' }
+        );
+        TABS.forEach(({ id }) => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+        return () => observer.disconnect();
+    }, []);
+
+    const scrollTo = (id: string) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const OFFSET = 64 + 48 + 16; // navbar + tab bar + breathing room
+        const top = el.getBoundingClientRect().top + window.scrollY - OFFSET;
+        window.scrollTo({ top, behavior: 'smooth' });
+    };
+
     return (
-        <div className="container py-16 flex flex-col items-center flex-grow">
-            {/* Hero Section */}
-            <div className="flex flex-col items-center text-center max-w-3xl mb-32">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="w-32 h-32 mb-8 relative"
-                >
-                    <div className="absolute inset-0 bg-[var(--accent-orange)] blur-[60px] opacity-20 rounded-full"></div>
-                    <div className="w-full h-full border-t-[8px] border-l-[8px] border-r-[8px] border-b-0 border-white relative flex items-center justify-center pt-4">
-                        <div className="w-[80%] h-[80%] bg-[rgba(255,255,255,0.05)] text-8xl font-display font-bold text-[var(--accent-orange)] flex items-center justify-center pb-4">T</div>
-                    </div>
-                </motion.div>
+        <div className="flex flex-col flex-grow w-full">
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-5xl md:text-7xl font-display uppercase tracking-tighter mb-6 leading-none"
-                >
-                    Automate Your <br />
-                    <span className="text-[var(--accent-orange)]">Aesthetic</span>
-                </motion.h1>
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="badge badge-active mb-6 font-mono text-xs"
-                >
-                    [SYSTEM_STATUS: ACTIVE]
-                </motion.div>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-[var(--text-secondary)] mb-10 text-lg leading-relaxed max-w-2xl px-4"
-                >
-                    Bridging the gap between human intuition and machine precision. We engineer AI systems that design at scale.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="flex gap-4"
-                >
-                    <Link to="/projects" className="btn btn-outline border-[var(--accent-cyan)] text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)] hover:text-black hover:shadow-[0_0_20px_var(--accent-cyan-glow)] uppercase text-xs tracking-widest px-8 flex items-center justify-center">
-                        Initialize Project +
-                    </Link>
-                    <Link to="/contact" className="btn btn-outline uppercase text-xs tracking-widest px-8 flex items-center justify-center">
-                        Get in Touch
-                    </Link>
-                </motion.div>
-            </div>
-
-            {/* Autonomous Design Ops */}
-            <div className="w-full max-w-6xl mb-32">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="flex justify-between items-end mb-12 border-b border-[var(--border-color)] pb-4"
-                >
-                    <div>
-                        <div className="flex items-center gap-4 mb-2">
-                            <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
-                            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Core Modules // 01</span>
-                        </div>
-                        <h2 className="text-3xl font-display uppercase tracking-tight">Autonomous Design <br /> Ops</h2>
-                    </div>
-                    <p className="hidden md:block text-xs text-[var(--text-muted)] max-w-xs text-right mb-2">Leveraging neural networks to optimize UX workflows and visual brand consistency.</p>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Card 1 */}
+            {/* ── HERO ─────────────────────────────────────────────────────── */}
+            <div className="relative w-full py-24 flex flex-col items-center justify-center border-b border-[rgba(255,255,255,0.05)]">
+                <div className="container flex flex-col items-center text-center">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="glass-panel p-8 bg-[rgba(18,18,20,0.8)] border-t border-t-[rgba(255,255,255,0.1)]"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="badge badge-active mb-8 font-mono text-xs"
                     >
-                        <div className="w-10 h-10 rounded bg-[rgba(0,229,255,0.1)] flex items-center justify-center text-[var(--accent-cyan)] mb-16">
-                            <Layers size={20} />
-                        </div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Generative UI Systems</h3>
-                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-auto h-24">
-                            Procedural layout generation that adapts in real-time to user behavior and platform constraints.
-                        </p>
-                        <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Dynamic Components</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Variable Theming</div>
-                        </div>
+                        [SERVICES: ACTIVE]
                     </motion.div>
 
-                    {/* Card 2 */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                    <motion.h1
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.1 }}
-                        className="glass-panel p-8 bg-[rgba(18,18,20,0.8)] border-t border-t-[rgba(255,255,255,0.1)]"
+                        className="text-5xl md:text-7xl font-display tracking-tight mb-6 leading-[1.1] max-w-4xl"
                     >
-                        <div className="w-10 h-10 rounded bg-[rgba(245,158,11,0.1)] flex items-center justify-center text-[var(--accent-orange)] mb-16">
-                            <Lightbulb size={20} />
-                        </div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest mb-4">AI Brand Identity</h3>
-                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-auto h-24">
-                            Algorithmic visual identities that evolve while maintaining the core presence of your unique prestige.
-                        </p>
-                        <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Neural Logos</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]"></span> Semantic Palettes</div>
-                        </div>
-                    </motion.div>
+                        Everything We <br />
+                        <span className="text-gradient-orange drop-shadow-[0_0_20px_rgba(245,158,11,0.2)]">Build For You</span>
+                    </motion.h1>
 
-                    {/* Card 3 */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="glass-panel p-8 bg-[rgba(18,18,20,0.8)] border-t border-t-[rgba(255,255,255,0.1)]"
+                        className="text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-10"
                     >
-                        <div className="w-10 h-10 rounded bg-[rgba(0,229,255,0.1)] flex items-center justify-center text-[var(--accent-cyan)] mb-16">
-                            <Workflow size={20} />
-                        </div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest mb-4">Automated Design Ops</h3>
-                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-auto h-24">
-                            Seamless integration of AI into your existing Figma or GitHub workflows to eliminate repetitive tasks.
-                        </p>
-                        <div className="flex flex-col gap-2 mt-8">
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Asset Pipelines</div>
-                            <div className="flex items-center gap-2 text-[10px] text-[var(--text-primary)] font-mono uppercase"><span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]"></span> Auto-Documentation</div>
-                        </div>
+                        Three focused services — web, AI, and automation — delivered end-to-end for businesses that want results, not just deliverables.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="flex gap-4"
+                    >
+                        <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">
+                            Book a Free Call
+                        </Link>
+                        <Link to="/projects" className="btn btn-outline py-3 px-8">
+                            See Our Work
+                        </Link>
                     </motion.div>
                 </div>
             </div>
 
-            {/* Case Studies */}
-            <div className="w-full max-w-6xl mb-16">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="flex flex-col items-center text-center mb-16"
-                >
-                    <div className="flex items-center justify-center gap-4 mb-4">
-                        <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange-glow)]"></span>
-                        <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Case Studies // 02</span>
-                    </div>
-                    <h2 className="text-4xl font-display uppercase tracking-tight">System Outputs</h2>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Project 1 */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        className="glass-panel overflow-hidden group border-t border-t-[rgba(255,255,255,0.1)]"
-                    >
-                        <div className="h-64 bg-[#1c1c22] relative flex items-center justify-center p-8">
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] to-transparent z-10"></div>
-                            {/* Abstract Flower Graphic */}
-                            <div className="w-32 h-32 relative z-0 opacity-50 group-hover:scale-105 transition-transform duration-700">
-                                <div className="absolute inset-0 bg-white rounded-full blur-[40px] opacity-20"></div>
-                                <svg viewBox="0 0 100 100" className="w-full h-full text-white fill-current opacity-80">
-                                    <path d="M50 10 C 60 40, 90 40, 90 50 C 90 60, 60 70, 50 90 C 40 70, 10 60, 10 50 C 10 40, 40 40, 50 10 Z" />
-                                    <circle cx="50" cy="50" r="15" fill="black" />
-                                    <circle cx="50" cy="50" r="5" fill="white" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
-                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(0,229,255,0.1)] text-[var(--text-primary)] border border-[rgba(0,229,255,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
-                                Metrics: +214% ROI
-                            </div>
-                            <h3 className="text-xl font-display font-bold uppercase tracking-wide mb-2">Project: Neural Vault</h3>
-                            <p className="text-[var(--text-muted)] text-sm">Automated 4,000+ interface states in 0.4 seconds.</p>
-                        </div>
-                    </motion.div>
-
-                    {/* Project 2 */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
-                        className="glass-panel overflow-hidden group border-t border-t-[rgba(255,255,255,0.1)]"
-                    >
-                        <div className="h-64 bg-[#1c1c22] relative flex items-center justify-center p-8">
-                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] to-transparent z-10"></div>
-                            {/* Abstract Letter Graphic */}
-                            <div className="w-32 h-32 relative z-0 opacity-50 group-hover:scale-105 transition-transform duration-700 flex justify-center items-center">
-                                <div className="absolute inset-0 bg-white rounded-full blur-[40px] opacity-20"></div>
-                                <div className="text-8xl font-serif text-white font-bold italic tracking-tighter pr-4">L</div>
-                            </div>
-                        </div>
-                        <div className="p-8 relative z-20 bg-[var(--bg-surface-elevated)] border-t border-[var(--border-color)]">
-                            <div className="inline-flex items-center justify-center px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[var(--text-primary)] border border-[rgba(245,158,11,0.2)] text-[10px] font-mono uppercase mb-4 rounded-sm">
-                                Latency: 12 Seconds
-                            </div>
-                            <h3 className="text-xl font-display font-bold uppercase tracking-wide mb-2">Project: Aether Lux <span className="text-[10px] font-mono text-[var(--text-muted)] ml-2">BETA</span></h3>
-                            <p className="text-[var(--text-muted)] text-sm">Generative identity system for a hyper-premium car brand.</p>
-                        </div>
-                    </motion.div>
+            {/* ── STICKY TAB NAV ───────────────────────────────────────────── */}
+            <div className="sticky top-[64px] z-40 w-full bg-[var(--bg-base)] border-b border-[var(--border-color)] backdrop-blur-md">
+                <div className="container flex gap-0 overflow-x-auto">
+                    {TABS.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => scrollTo(tab.id)}
+                            className={`px-6 py-4 text-xs font-mono uppercase tracking-widest transition-all whitespace-nowrap border-b-2 ${activeTab === tab.id
+                                ? 'border-[var(--accent-orange)] text-[var(--text-primary)]'
+                                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                                }`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
+            </div>
+
+            {/* ── SERVICE SECTIONS ─────────────────────────────────────────── */}
+            <div className="container py-0 flex flex-col items-center">
+                {services.map((svc, i) => {
+                    const Icon = svc.icon;
+                    return (
+                        <section
+                            key={svc.id}
+                            id={svc.id}
+                            className="w-full max-w-5xl py-24 border-b border-[var(--border-color)] last:border-0"
+                        >
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-80px' }}
+                                transition={{ delay: i * 0.05 }}
+                                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start"
+                            >
+                                {/* Left — text content */}
+                                <div>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div
+                                            className="w-12 h-12 rounded-xl flex items-center justify-center"
+                                            style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}
+                                        >
+                                            <Icon size={22} style={{ color: svc.accentColor }} />
+                                        </div>
+                                        <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
+                                    </div>
+
+                                    <h2 className="text-4xl font-display uppercase tracking-tight mb-3">{svc.title}</h2>
+                                    <p className="text-lg font-medium mb-6" style={{ color: svc.accentColor }}>{svc.benefit}</p>
+                                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-8">{svc.description}</p>
+
+                                    <Link
+                                        to={svc.to}
+                                        className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:gap-3"
+                                        style={{ color: svc.accentColor }}
+                                    >
+                                        Full details <ArrowRight size={14} />
+                                    </Link>
+                                </div>
+
+                                {/* Right — feature list */}
+                                <div
+                                    className="glass-panel p-8 rounded-2xl"
+                                    style={{ borderColor: svc.accentBorder }}
+                                >
+                                    <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-5">What's included</div>
+                                    <ul className="flex flex-col gap-4">
+                                        {svc.features.map((feat) => (
+                                            <li key={feat} className="flex items-start gap-3 text-sm text-[var(--text-secondary)]">
+                                                <CheckCircle size={15} className="shrink-0 mt-0.5" style={{ color: svc.accentColor }} />
+                                                {feat}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </motion.div>
+                        </section>
+                    );
+                })}
+            </div>
+
+            {/* ── CTA ──────────────────────────────────────────────────────── */}
+            <div className="container py-16 flex justify-center">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    className="w-full max-w-5xl border border-[var(--border-color)] p-10 md:px-14 md:py-16 flex flex-col md:flex-row items-center justify-between gap-8 rounded-3xl bg-[rgba(255,255,255,0.01)] backdrop-blur-sm relative overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-r from-[rgba(210,193,182,0.04)] to-transparent pointer-events-none" />
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-display mb-2">Not sure which service fits?</h2>
+                        <p className="text-[var(--text-secondary)]">Book a free 30-minute call — we'll map the right solution for your business.</p>
+                    </div>
+                    <div className="relative z-10">
+                        <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] whitespace-nowrap">
+                            Book a Free Call
+                        </Link>
+                    </div>
+                </motion.div>
             </div>
 
         </div>

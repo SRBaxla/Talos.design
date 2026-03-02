@@ -42,49 +42,70 @@ export default function KanbanBoard({ projects, onEdit, onCardClick }: KanbanBoa
     };
 
     return (
-        <div className="admin-kanban">
+        <div className="flex gap-6 h-full min-w-max items-start overflow-x-auto pb-4 custom-scrollbar">
             {COLUMNS.map((col) => {
                 const cards = projects.filter((p) => p.status === col.key);
                 return (
                     <div
                         key={col.key}
-                        className="admin-kanban-col"
+                        className="w-[320px] flex flex-col max-h-[calc(100vh-180px)]"
                         onDragOver={handleDragOver}
                         onDrop={() => handleDrop(col.key)}
                     >
-                        <div className="admin-kanban-col-header">
-                            <span
-                                className="admin-kanban-dot"
-                                style={{ background: col.color }}
-                            />
-                            <span className="admin-kanban-col-title">{col.label}</span>
-                            <span className="admin-kanban-count">{cards.length}</span>
+                        {/* Column Header */}
+                        <div className="flex items-center justify-between mb-4 px-1">
+                            <div className="flex items-center gap-2">
+                                <span
+                                    className="w-2 h-2 rounded-full"
+                                    style={{ background: col.color }}
+                                />
+                                <h3 className="font-display font-bold text-sm text-[var(--text-secondary)]">{col.label}</h3>
+                            </div>
+                            <span className="text-[10px] font-mono bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-muted)]">
+                                {cards.length}
+                            </span>
                         </div>
 
-                        <div className="admin-kanban-cards">
-                            {cards.map((p) => (
-                                <div
-                                    key={p.id}
-                                    className={`admin-kanban-card ${draggedId === p.id ? 'dragging' : ''}`}
-                                    draggable
-                                    onDragStart={() => handleDragStart(p.id)}
-                                    onClick={() => onCardClick ? onCardClick(p) : onEdit(p)}
-                                >
-                                    <div className="admin-kanban-card-name">{p.title || (p as any).name}</div>
-                                    {p.client && (
-                                        <div className="admin-kanban-card-client">{p.client}</div>
-                                    )}
-                                    <div className="admin-kanban-card-footer">
-                                        <span
-                                            className="admin-kanban-priority"
-                                            style={{ background: PRIORITY_DOT[p.priority] || '#71717a' }}
-                                        />
-                                        <span className="admin-kanban-card-type">
-                                            {p.type === 'web-design' ? 'Web' : p.type === 'ai-chatbot' ? 'AI' : p.type === 'automation' ? 'Auto' : 'Custom'}
-                                        </span>
-                                    </div>
+                        {/* Drop Zone / Cards List */}
+                        <div className="flex-1 overflow-y-auto space-y-3 pb-8 pr-2 custom-scrollbar min-h-[150px]">
+                            {cards.length === 0 ? (
+                                <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono bg-[rgba(255,255,255,0.01)]">
+                                    Drop here
                                 </div>
-                            ))}
+                            ) : (
+                                cards.map((p) => (
+                                    <div
+                                        key={p.id}
+                                        className={`bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4 hover:border-[var(--accent-orange)] transition-colors cursor-grab active:cursor-grabbing group relative ${draggedId === p.id ? 'opacity-50 scale-95 border-dashed border-[var(--text-muted)]' : ''}`}
+                                        draggable
+                                        onDragStart={() => handleDragStart(p.id)}
+                                        onClick={() => onCardClick ? onCardClick(p) : onEdit(p)}
+                                    >
+                                        <div className="font-bold text-[14px] mb-1 pr-6 truncate text-[var(--text-primary)] group-hover:text-[var(--accent-orange)] transition-colors">
+                                            {p.title || (p as any).name}
+                                        </div>
+
+                                        {p.client ? (
+                                            <div className="text-[11px] text-[var(--text-muted)] mb-3 font-mono truncate">
+                                                {p.client}
+                                            </div>
+                                        ) : (
+                                            <div className="h-3 mb-3" />
+                                        )}
+
+                                        <div className="flex items-center justify-between mt-2 pt-3 border-t border-[rgba(255,255,255,0.05)]">
+                                            <span
+                                                className="w-2.5 h-2.5 rounded-full"
+                                                style={{ background: PRIORITY_DOT[p.priority] || '#71717a' }}
+                                                title={`Priority: ${p.priority}`}
+                                            />
+                                            <span className="text-[10px] font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wide bg-[rgba(255,255,255,0.05)] px-2 py-1 rounded">
+                                                {p.type === 'web-design' ? 'Web' : p.type === 'ai-chatbot' ? 'AI' : p.type === 'automation' ? 'Auto' : 'Custom'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 );

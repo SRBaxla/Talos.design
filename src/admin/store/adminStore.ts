@@ -56,6 +56,7 @@ export interface Project {
     tags: string[];
     // Advanced CRM Tracking
     clientUid?: string;
+    accessCode?: string;           // One-time code given to client for first portal login
     teamAllotment?: string[];
     selectedFeatures?: string[];
     costRevisions?: CostRevision[];
