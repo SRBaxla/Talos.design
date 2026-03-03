@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useInquiries, updateInquiry, addProject } from '../store/adminStore';
 import type { InquiryStatus } from '../store/adminStore';
 import { sendWelcomeEmail } from '../../lib/emailService';
-import { DollarSign, CheckCircle } from 'lucide-react';
+import { DollarSign, CheckCircle, Archive, ArchiveRestore } from 'lucide-react';
 
 const STATUS_COLORS: Record<InquiryStatus, string> = {
     unread: '#f59e0b',
@@ -18,6 +18,7 @@ const STATUS_COLORS: Record<InquiryStatus, string> = {
 export default function AdminInquiries() {
     const { inquiries, loading } = useInquiries();
     const [convertingId, setConvertingId] = useState<string | null>(null);
+    const [showArchived, setShowArchived] = useState(false);
     const navigate = useNavigate();
 
     if (loading) {
@@ -108,12 +109,24 @@ export default function AdminInquiries() {
         }
     };
 
+    const handleUnarchive = async (inquiryId: string) => {
+        try {
+            await updateInquiry(inquiryId, { status: 'unread' });
+        } catch (err) {
+            console.error('Failed to unarchive inquiry:', err);
+        }
+    };
+
     // Group inquiries for Kanban
-    const columns: { title: string; keys: InquiryStatus[] }[] = [
+    let columns: { title: string; keys: InquiryStatus[] }[] = [
         { title: 'New Leads', keys: ['unread', 'read'] },
         { title: 'In Discussion', keys: ['contacted', 'negotiating'] },
         { title: 'Decided', keys: ['won', 'lost'] },
     ];
+
+    if (showArchived) {
+        columns = [{ title: 'Archived', keys: ['archived'] }];
+    }
 
     return (
         <div className="h-full w-full flex flex-col overflow-hidden">
@@ -123,6 +136,13 @@ export default function AdminInquiries() {
                     <h1 className="font-display font-bold text-xl">Deals & Inquiries</h1>
                     <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Manage neural link transmissions</p>
                 </div>
+                <button
+                    onClick={() => setShowArchived(!showArchived)}
+                    className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] text-[var(--text-secondary)] hover:text-white border border-[var(--border-color)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-mono"
+                >
+                    {showArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
+                    {showArchived ? 'Hide Archived' : 'Show Archived'}
+                </button>
             </header>
 
             {/* Kanban Board */}
@@ -207,6 +227,17 @@ export default function AdminInquiries() {
                                                     >
                                                         <CheckCircle size={14} />
                                                         {convertingId === inquiry.id ? 'Converting...' : 'Convert to Project'}
+                                                    </button>
+                                                )}
+
+                                                {/* Unarchive Button */}
+                                                {inquiry.status === 'archived' && (
+                                                    <button
+                                                        onClick={() => handleUnarchive(inquiry.id)}
+                                                        className="w-full mt-3 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] text-[var(--text-primary)] border border-[var(--border-color)] transition-colors rounded-lg py-2 flex items-center justify-center gap-2 text-xs font-bold"
+                                                    >
+                                                        <ArchiveRestore size={14} />
+                                                        Unarchive Lead
                                                     </button>
                                                 )}
                                             </div>
