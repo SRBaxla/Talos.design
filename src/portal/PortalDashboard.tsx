@@ -3,12 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut, FolderKanban, FileText, MessageSquare, ExternalLink,
-    Send, Clock, CheckCircle, ChevronRight, Hexagon, User,
+    Send, Clock, CheckCircle, ChevronRight, Hexagon, User as UserIcon, Download, DollarSign,
 } from 'lucide-react';
 import {
     useProjects, useInvoices, useMessages, sendMessage,
 } from '../admin/store/adminStore';
 import type { Project } from '../admin/store/adminStore';
+import { onClientAuthChange, signOutClient } from './portalStore';
+import type { User as FirebaseUser } from 'firebase/auth';
 
 /* ── Stage stepper data ─────────────────────────────────────── */
 const STAGES: { key: Project['status']; label: string }[] = [
@@ -146,6 +148,12 @@ function ProjectCard({ project, onMessageClick }: { project: Project; onMessageC
                                         <div className="font-mono text-[var(--text-primary)]">{project.endDate}</div>
                                     </div>
                                 )}
+                                {(project as any).budget && (
+                                    <div>
+                                        <div className="text-[var(--text-muted)] mb-0.5 flex items-center gap-1"><DollarSign size={10} /> Budget</div>
+                                        <div className="font-mono text-[var(--text-primary)] font-bold">${Number((project as any).budget).toLocaleString()}</div>
+                                    </div>
+                                )}
                             </div>
                             {project.selectedFeatures && project.selectedFeatures.length > 0 && (
                                 <div>
@@ -155,6 +163,32 @@ function ProjectCard({ project, onMessageClick }: { project: Project; onMessageC
                                             <span key={i} className="text-[10px] bg-[rgba(255,255,255,0.04)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-secondary)]">
                                                 {f}
                                             </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            {(project as any).clientRequirements && (project as any).clientRequirements.length > 0 && (
+                                <div>
+                                    <div className="text-[10px] text-[var(--text-muted)] mb-2 uppercase tracking-widest">Your Requirements</div>
+                                    <ul className="space-y-1">
+                                        {((project as any).clientRequirements as string[]).map((r, i) => (
+                                            <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-2">
+                                                <span className="w-1 h-1 rounded-full bg-[var(--accent-orange)] mt-1.5 shrink-0" />
+                                                {r}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            {(project as any).costRevisions && (project as any).costRevisions.length > 0 && (
+                                <div>
+                                    <div className="text-[10px] text-[var(--text-muted)] mb-2 uppercase tracking-widest">Cost History</div>
+                                    <div className="space-y-1">
+                                        {((project as any).costRevisions as { amount: number; reason: string }[]).map((cr, i) => (
+                                            <div key={i} className="flex justify-between text-xs border border-[var(--border-color)] rounded px-3 py-1.5">
+                                                <span className="text-[var(--text-secondary)]">{cr.reason}</span>
+                                                <span className="font-mono font-bold text-[var(--text-primary)]">${cr.amount?.toLocaleString()}</span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
@@ -277,31 +311,35 @@ type Tab = 'projects' | 'invoices' | 'messages';
 
 export default function PortalDashboard() {
     const navigate = useNavigate();
-    const [clientEmail, setClientEmail] = useState<string | null>(null);
+    const [clientUser, setClientUser] = useState<FirebaseUser | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<Tab>('projects');
 
-    const { projects, loading: pLoading } = useProjects();
-    const { invoices, loading: iLoading } = useInvoices();
-
     useEffect(() => {
-        const email = localStorage.getItem('talosClientEmail');
-        if (!email) navigate('/portal');
-        else setClientEmail(email);
+        const unsub = onClientAuthChange((user) => {
+            if (!user) navigate('/portal');
+            else setClientUser(user);
+            setAuthLoading(false);
+        });
+        return unsub;
     }, [navigate]);
 
-    const clientProjects = projects.filter(
-        p => p.clientEmail?.toLowerCase() === clientEmail?.toLowerCase()
-    );
-    const clientInvoices = invoices.filter(
-        i => i.clientEmail?.toLowerCase() === clientEmail?.toLowerCase()
-    );
+    const clientEmail = clientUser?.email || undefined;
 
-    const handleLogout = () => {
-        localStorage.removeItem('talosClientEmail');
+    // Pass clientEmail so the Firestore query includes where('clientEmail', '==', email)
+    const { projects, loading: pLoading } = useProjects(clientEmail);
+    const { invoices, loading: iLoading } = useInvoices(clientEmail);
+
+    // Projects/invoices are already filtered at query level
+    const clientProjects = projects;
+    const clientInvoices = invoices;
+
+    const handleLogout = async () => {
+        await signOutClient();
         navigate('/portal');
     };
 
-    if (pLoading || iLoading) {
+    if (authLoading || pLoading || iLoading) {
         return (
             <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center">
                 <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-orange)] border-t-transparent animate-spin" />
@@ -334,7 +372,7 @@ export default function PortalDashboard() {
                             to="/portal/profile"
                             className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                         >
-                            <User size={14} /> Profile
+                            <UserIcon size={14} /> Profile
                         </Link>
                         <button
                             onClick={handleLogout}
@@ -458,12 +496,26 @@ export default function PortalDashboard() {
                                                             <div className="text-[10px] font-mono text-[var(--text-muted)] mb-1">#{inv.invoiceNumber}</div>
                                                             <div className="text-2xl font-display font-bold font-mono">${total.toFixed(2)}</div>
                                                         </div>
-                                                        <span
-                                                            className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border"
-                                                            style={{ color: style.color, background: style.bg, borderColor: style.border }}
-                                                        >
-                                                            {inv.status}
-                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                onClick={() => {
+                                                                    const statusColor = INVOICE_STATUS_STYLE[inv.status]?.color || '#fff';
+                                                                    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Invoice #${inv.invoiceNumber}</title><style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;color:#1a1a1a;padding:48px;max-width:800px;margin:0 auto}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px;padding-bottom:32px;border-bottom:2px solid #e5e5e5}.brand h1{font-size:28px;font-weight:700;letter-spacing:-0.5px}.brand p{color:#888;font-size:12px;margin-top:4px}.invoice-meta{text-align:right}.invoice-meta h2{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700}.invoice-meta .status{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 12px;border-radius:20px;margin-top:8px;color:${statusColor};background:${statusColor}15;border:1px solid ${statusColor}40}.details{display:flex;justify-content:space-between;margin-bottom:40px}.details-block h3{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999;font-weight:600;margin-bottom:8px}.details-block p{font-size:14px;line-height:1.6}.details-block .mono{font-family:'JetBrains Mono',monospace;font-size:13px}table{width:100%;border-collapse:collapse;margin-bottom:24px}thead th{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999;font-weight:600;padding:12px 16px;border-bottom:2px solid #e5e5e5;text-align:left}thead th:nth-child(2),thead th:nth-child(3),thead th:nth-child(4){text-align:right}tbody td{padding:14px 16px;border-bottom:1px solid #f0f0f0;font-size:14px}tbody td:nth-child(2),tbody td:nth-child(3),tbody td:nth-child(4){text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px}.total-row{display:flex;justify-content:flex-end;padding:20px 0;border-top:2px solid #1a1a1a;margin-top:-1px}.total-row .label{font-size:14px;font-weight:600;color:#666;margin-right:32px;padding-top:4px}.total-row .amount{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700}.footer{margin-top:48px;padding-top:24px;border-top:1px solid #e5e5e5;text-align:center;color:#bbb;font-size:11px}@media print{body{padding:24px}@page{margin:0.5in}}</style></head><body><div class="header"><div class="brand"><h1>TALOS.DESIGN</h1><p>Design & Development Studio</p></div><div class="invoice-meta"><h2>#${inv.invoiceNumber}</h2><div class="status">${inv.status}</div></div></div><div class="details"><div class="details-block"><h3>Bill To</h3><p><strong>${inv.clientName}</strong></p>${inv.clientEmail ? `<p>${inv.clientEmail}</p>` : ''}</div><div class="details-block" style="text-align:right"><h3>Invoice Details</h3><p>Issue Date: <span class="mono">${inv.issueDate}</span></p><p>Due Date: <span class="mono">${inv.dueDate}</span></p></div></div><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>${inv.items.map(item => `<tr><td>${item.description}</td><td>${item.quantity}</td><td>$${item.rate.toFixed(2)}</td><td>$${(item.quantity * item.rate).toFixed(2)}</td></tr>`).join('')}</tbody></table><div class="total-row"><span class="label">Total Due</span><span class="amount">$${total.toFixed(2)}</span></div>${inv.notes ? `<div style="margin-top:40px;padding:20px;background:#fafafa;border-radius:8px;border:1px solid #f0f0f0"><h3 style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999;font-weight:600;margin-bottom:8px">Notes & Terms</h3><p style="font-size:13px;line-height:1.6;color:#666">${inv.notes}</p></div>` : ''}<div class="footer"><p>Thank you for your business — TALOS.DESIGN</p></div></body></html>`;
+                                                                    const w = window.open('', '_blank');
+                                                                    if (w) { w.document.write(html); w.document.close(); setTimeout(() => w.print(), 400); }
+                                                                }}
+                                                                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors rounded"
+                                                                title="Download PDF"
+                                                            >
+                                                                <Download size={14} />
+                                                            </button>
+                                                            <span
+                                                                className="text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-full border"
+                                                                style={{ color: style.color, background: style.bg, borderColor: style.border }}
+                                                            >
+                                                                {inv.status}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                     <div className="border-t border-[var(--border-color)] pt-3 flex justify-between text-xs text-[var(--text-muted)]">
                                                         <span>Issued: <span className="text-[var(--text-secondary)]">{inv.issueDate}</span></span>

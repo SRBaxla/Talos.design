@@ -7,9 +7,11 @@ import {
     onSnapshot,
     query,
     orderBy,
+    where,
     Timestamp,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getAuth, onAuthStateChanged as onAuthChanged } from 'firebase/auth';
 import { db } from '../firebase/firebaseConfig';
 import { useState, useEffect } from 'react';
 
@@ -74,6 +76,7 @@ export interface Worker {
     uid: string; // Firebase Auth UID
     name: string;
     email: string;
+    role?: WorkerRole;
     department: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
@@ -127,19 +130,35 @@ export interface Ticket {
 
 /* ── Firestore Hooks ───────────────────────────────── */
 
-export function useProjects() {
+export function useProjects(clientEmail?: string) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
+    const { role, loading: roleLoading } = useCurrentWorkerRole();
 
     useEffect(() => {
-        const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+        // Wait for role to resolve before fetching — prevents flash of all data
+        if (roleLoading) return;
+
+        const auth = getAuth();
+        const currentUid = auth.currentUser?.uid;
+
+        // If clientEmail is provided, add a query filter so Firestore rules are satisfied
+        const constraints: any[] = [orderBy('createdAt', 'desc')];
+        if (clientEmail) {
+            constraints.unshift(where('clientEmail', '==', clientEmail));
+        }
+        const q = query(collection(db, 'projects'), ...constraints);
+
         const unsub = onSnapshot(q, (snap) => {
-            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project));
+            let data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project));
+            if (!clientEmail && role && role !== 'admin' && role !== 'manager' && currentUid) {
+                data = data.filter(p => p.teamAllotment?.includes(currentUid));
+            }
             setProjects(data);
             setLoading(false);
         });
         return unsub;
-    }, []);
+    }, [role, roleLoading, clientEmail]);
 
     return { projects, loading };
 }
@@ -147,16 +166,24 @@ export function useProjects() {
 export function useCaseStudies() {
     const [studies, setStudies] = useState<CaseStudy[]>([]);
     const [loading, setLoading] = useState(true);
+    const { role, loading: roleLoading } = useCurrentWorkerRole();
 
     useEffect(() => {
+        if (roleLoading) return;
+
+        const auth = getAuth();
+        const currentUid = auth.currentUser?.uid;
         const q = query(collection(db, 'caseStudies'), orderBy('createdAt', 'desc'));
         const unsub = onSnapshot(q, (snap) => {
-            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as CaseStudy));
+            let data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as CaseStudy));
+            if (role && role !== 'admin' && role !== 'manager' && currentUid) {
+                data = data.filter(cs => cs.assignedWorkers?.includes(currentUid));
+            }
             setStudies(data);
             setLoading(false);
         });
         return unsub;
-    }, []);
+    }, [role, roleLoading]);
 
     return { studies, loading };
 }
@@ -226,6 +253,39 @@ export function useActivityLogs(workerUid?: string) {
     return { logs, loading };
 }
 
+/* ── Role Management ──────────────────────────────── */
+
+export function useCurrentWorkerRole() {
+    const [role, setRole] = useState<WorkerRole | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const auth = getAuth();
+        const unsub = onAuthChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const tokenResult = await user.getIdTokenResult(true);
+                    setRole((tokenResult.claims.role as WorkerRole) || null);
+                } catch {
+                    setRole(null);
+                }
+            } else {
+                setRole(null);
+            }
+            setLoading(false);
+        });
+        return unsub;
+    }, []);
+
+    return { role, loading, isAdmin: role === 'admin', isManager: role === 'manager' };
+}
+
+export async function setWorkerRoleClaim(uid: string, role: WorkerRole): Promise<void> {
+    const functions = getFunctions();
+    const setRole = httpsCallable(functions, 'setWorkerRole');
+    await setRole({ uid, role });
+}
+
 /* ── CRUD Operations ───────────────────────────────── */
 
 export async function addProject(data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) {
@@ -276,10 +336,10 @@ export async function addWorker(data: Omit<Worker, 'id' | 'createdAt' | 'updated
     });
 }
 
-export async function createWorkerAuth(email: string, name: string, department?: string): Promise<string> {
+export async function createWorkerAuth(email: string, name: string, department?: string, role?: WorkerRole): Promise<string> {
     const functions = getFunctions();
     const createWorkerAccount = httpsCallable(functions, 'createWorkerAccount');
-    const result = await createWorkerAccount({ email, name, department });
+    const result = await createWorkerAccount({ email, name, department, role });
     return (result.data as any).uid;
 }
 
@@ -490,19 +550,23 @@ export async function deleteInvoice(id: string) {
     return deleteDoc(doc(db, 'invoices', id));
 }
 
-export function useInvoices() {
+export function useInvoices(clientEmail?: string) {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const q = query(collection(db, 'invoices'), orderBy('createdAt', 'desc'));
+        const constraints: any[] = [orderBy('createdAt', 'desc')];
+        if (clientEmail) {
+            constraints.unshift(where('clientEmail', '==', clientEmail));
+        }
+        const q = query(collection(db, 'invoices'), ...constraints);
         const unsub = onSnapshot(q, (snap) => {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Invoice));
             setInvoices(data);
             setLoading(false);
         });
         return unsub;
-    }, []);
+    }, [clientEmail]);
 
     return { invoices, loading };
 }

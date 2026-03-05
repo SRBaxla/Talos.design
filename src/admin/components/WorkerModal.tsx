@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { addWorker, updateWorker, createWorkerAuth } from '../store/adminStore';
-import type { Worker } from '../store/adminStore';
+import type { Worker, WorkerRole } from '../store/adminStore';
 import { X, Save, AlertCircle } from 'lucide-react';
 
 interface WorkerModalProps {
@@ -12,6 +12,7 @@ interface WorkerModalProps {
 export default function WorkerModal({ open, onClose, worker }: WorkerModalProps) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState<WorkerRole>('developer');
     const [department, setDepartment] = useState('');
 
     const [loading, setLoading] = useState(false);
@@ -22,10 +23,12 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
             if (worker) {
                 setName(worker.name);
                 setEmail(worker.email);
+                setRole(worker.role || 'developer');
                 setDepartment(worker.department || '');
             } else {
                 setName('');
                 setEmail('');
+                setRole('developer');
                 setDepartment('');
             }
             setError(null);
@@ -46,11 +49,11 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
         try {
             if (worker) {
                 // When updating, we retain the original UID
-                await updateWorker(worker.id, { name, email, department });
+                await updateWorker(worker.id, { name, email, role, department });
             } else {
                 // When creating, we ping Firebase Functions to create an Auth user and get the fresh UID
-                const autoUid = await createWorkerAuth(email, name, department);
-                await addWorker({ name, email, uid: autoUid, department });
+                const autoUid = await createWorkerAuth(email, name, department, role);
+                await addWorker({ name, email, uid: autoUid, role, department });
             }
             onClose();
         } catch (err: any) {
@@ -108,7 +111,21 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Department / Role</label>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Role</label>
+                            <select
+                                value={role}
+                                onChange={e => setRole(e.target.value as WorkerRole)}
+                                className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="admin">Admin</option>
+                                <option value="manager">Manager</option>
+                                <option value="developer">Developer</option>
+                                <option value="designer">Designer</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Department</label>
                             <input
                                 type="text"
                                 value={department}

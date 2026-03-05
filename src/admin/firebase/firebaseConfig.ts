@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 
 // TODO: Replace with your Firebase project config
 // Go to Firebase Console → Project Settings → Your apps → Web app
@@ -17,3 +18,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const functions = getFunctions(app);
+

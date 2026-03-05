@@ -64,6 +64,16 @@ export default function AdminTeam() {
                                 </button>
                             </div>
 
+                            {worker.role && (
+                                <span className={`inline-block text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4 ${worker.role === 'admin' ? 'bg-red-500/15 text-red-400 border border-red-500/30' :
+                                        worker.role === 'manager' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' :
+                                            worker.role === 'developer' ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30' :
+                                                'bg-purple-500/15 text-purple-400 border border-purple-500/30'
+                                    }`}>
+                                    {worker.role}
+                                </span>
+                            )}
+
                             <div className="space-y-2 mb-6">
                                 <div className="flex items-center justify-between text-xs border-b border-white/5 pb-2">
                                     <span className="text-[var(--text-muted)]">Email</span>

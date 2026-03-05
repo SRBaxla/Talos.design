@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Lock, Eye, EyeOff, CheckCircle, User } from 'lucide-react';
-import { updatePortalPassword, verifyPortalUser } from './portalStore';
+import { onClientAuthChange, changeClientPassword } from './portalStore';
 
 function StrengthBar({ password }: { password: string }) {
     const len = password.length;
@@ -37,9 +37,11 @@ export default function PortalProfile() {
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
-        const email = localStorage.getItem('talosClientEmail');
-        if (!email) navigate('/portal');
-        else setClientEmail(email);
+        const unsub = onClientAuthChange((user) => {
+            if (!user) navigate('/portal');
+            else setClientEmail(user.email);
+        });
+        return unsub;
     }, [navigate]);
 
     const handleChangePassword = async (e: React.FormEvent) => {
@@ -58,20 +60,18 @@ export default function PortalProfile() {
 
         setLoading(true);
         try {
-            const valid = await verifyPortalUser(clientEmail!, currentPassword);
-            if (!valid) {
-                setError('Current password is incorrect.');
-                setLoading(false);
-                return;
-            }
-            await updatePortalPassword(clientEmail!, newPassword);
+            await changeClientPassword(currentPassword, newPassword);
             setSuccess(true);
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            setError('Failed to update password. Please try again.');
+            if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                setError('Current password is incorrect.');
+            } else {
+                setError('Failed to update password. Please try again.');
+            }
         } finally {
             setLoading(false);
         }

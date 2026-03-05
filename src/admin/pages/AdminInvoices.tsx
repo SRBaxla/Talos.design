@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Invoice, InvoiceItem, Project } from '../store/adminStore';
 import { useInvoices, addInvoice, updateInvoice, deleteInvoice, useProjects } from '../store/adminStore';
-import { FileText, Plus, Trash2, Edit, FolderKanban, Search, X } from 'lucide-react';
+import { FileText, Plus, Trash2, Edit, FolderKanban, Search, X, Download } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, string> = {
     'draft': '#71717a',
@@ -198,6 +198,109 @@ export default function AdminInvoices() {
         return items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
     };
 
+    const generateInvoicePDF = (invoice: Invoice) => {
+        const total = calculateTotal(invoice.items);
+        const projectTitle = getProjectTitle(invoice.projectId);
+        const statusColor = STATUS_COLORS[invoice.status] || '#fff';
+
+        const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>Invoice #${invoice.invoiceNumber}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #1a1a1a; padding: 48px; max-width: 800px; margin: 0 auto; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; padding-bottom: 32px; border-bottom: 2px solid #e5e5e5; }
+  .brand h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .brand p { color: #888; font-size: 12px; margin-top: 4px; }
+  .invoice-meta { text-align: right; }
+  .invoice-meta h2 { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1a1a1a; }
+  .invoice-meta .status { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 20px; margin-top: 8px; color: ${statusColor}; background: ${statusColor}15; border: 1px solid ${statusColor}40; }
+  .details { display: flex; justify-content: space-between; margin-bottom: 40px; }
+  .details-block h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; font-weight: 600; margin-bottom: 8px; }
+  .details-block p { font-size: 14px; line-height: 1.6; }
+  .details-block .mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  thead th { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; font-weight: 600; padding: 12px 16px; border-bottom: 2px solid #e5e5e5; text-align: left; }
+  thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4) { text-align: right; }
+  tbody td { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+  tbody td:nth-child(2), tbody td:nth-child(3), tbody td:nth-child(4) { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .total-row { display: flex; justify-content: flex-end; padding: 20px 0; border-top: 2px solid #1a1a1a; margin-top: -1px; }
+  .total-row .label { font-size: 14px; font-weight: 600; color: #666; margin-right: 32px; padding-top: 4px; }
+  .total-row .amount { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+  .notes { margin-top: 40px; padding: 20px; background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; }
+  .notes h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #999; font-weight: 600; margin-bottom: 8px; }
+  .notes p { font-size: 13px; line-height: 1.6; color: #666; }
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e5e5; text-align: center; color: #bbb; font-size: 11px; }
+  @media print { body { padding: 24px; } @page { margin: 0.5in; } }
+</style>
+</head><body>
+  <div class="header">
+    <div class="brand">
+      <h1>TALOS.DESIGN</h1>
+      <p>Design & Development Studio</p>
+    </div>
+    <div class="invoice-meta">
+      <h2>#${invoice.invoiceNumber}</h2>
+      <div class="status">${invoice.status}</div>
+    </div>
+  </div>
+
+  <div class="details">
+    <div class="details-block">
+      <h3>Bill To</h3>
+      <p><strong>${invoice.clientName}</strong></p>
+      ${invoice.clientEmail ? `<p>${invoice.clientEmail}</p>` : ''}
+      ${projectTitle ? `<p style="color:#888; margin-top:4px;">Project: ${projectTitle}</p>` : ''}
+    </div>
+    <div class="details-block" style="text-align:right;">
+      <h3>Invoice Details</h3>
+      <p>Issue Date: <span class="mono">${invoice.issueDate}</span></p>
+      <p>Due Date: <span class="mono">${invoice.dueDate}</span></p>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
+    </thead>
+    <tbody>
+      ${invoice.items.map(item => `
+        <tr>
+          <td>${item.description}</td>
+          <td>${item.quantity}</td>
+          <td>$${item.rate.toFixed(2)}</td>
+          <td>$${(item.quantity * item.rate).toFixed(2)}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+
+  <div class="total-row">
+    <span class="label">Total Due</span>
+    <span class="amount">$${total.toFixed(2)}</span>
+  </div>
+
+  ${invoice.notes ? `
+    <div class="notes">
+      <h3>Notes &amp; Terms</h3>
+      <p>${invoice.notes.replace(/\n/g, '<br>')}</p>
+    </div>
+  ` : ''}
+
+  <div class="footer">
+    <p>Thank you for your business — TALOS.DESIGN</p>
+  </div>
+</body></html>`;
+
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+            printWindow.document.write(html);
+            printWindow.document.close();
+            setTimeout(() => printWindow.print(), 400);
+        }
+    };
+
     // Find linked project title for display
     const getProjectTitle = (projectId?: string) => {
         if (!projectId) return null;
@@ -289,6 +392,13 @@ export default function AdminInvoices() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => generateInvoicePDF(invoice)}
+                                                    className="p-1.5 text-[var(--text-muted)] hover:text-emerald-400 hover:bg-emerald-400/10 rounded transition-colors"
+                                                    title="Download PDF"
+                                                >
+                                                    <Download size={16} />
+                                                </button>
                                                 <button
                                                     onClick={() => openEditModal(invoice)}
                                                     className="p-1.5 text-[var(--text-muted)] hover:text-blue-400 hover:bg-blue-400/10 rounded transition-colors"

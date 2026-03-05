@@ -18,15 +18,16 @@ import {
     Users,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
+import { useCurrentWorkerRole } from '../store/adminStore';
 
 const sidebarLinks = [
-    { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
-    { name: 'Inquiries (CRM)', path: '/admin/inquiries', icon: Mail, end: false },
-    { name: 'Invoices', path: '/admin/invoices', icon: FileText, end: false },
-    { name: 'Client Projects', path: '/admin/projects', icon: FolderKanban, end: false },
-    { name: 'Case Studies', path: '/admin/case-studies', icon: BookOpen, end: false },
-    { name: 'Team', path: '/admin/team', icon: Users, end: false },
-    { name: 'Settings', path: '/admin/settings', icon: Settings, end: false },
+    { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true, adminOnly: false },
+    { name: 'Inquiries (CRM)', path: '/admin/inquiries', icon: Mail, end: false, adminOnly: false },
+    { name: 'Invoices', path: '/admin/invoices', icon: FileText, end: false, adminOnly: false },
+    { name: 'Client Projects', path: '/admin/projects', icon: FolderKanban, end: false, adminOnly: false },
+    { name: 'Case Studies', path: '/admin/case-studies', icon: BookOpen, end: false, adminOnly: false },
+    { name: 'Team', path: '/admin/team', icon: Users, end: false, adminOnly: true },
+    { name: 'Settings', path: '/admin/settings', icon: Settings, end: false, adminOnly: true },
 ];
 
 export default function AdminLayout() {
@@ -34,6 +35,11 @@ export default function AdminLayout() {
     const [authLoading, setAuthLoading] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const navigate = useNavigate();
+    const { role, isAdmin, isManager } = useCurrentWorkerRole();
+
+    // No role set = original admin (show all), or admin/manager = show all
+    const canSeeAdminPages = !role || isAdmin || isManager;
+    const visibleLinks = sidebarLinks.filter(l => !l.adminOnly || canSeeAdminPages);
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => {
@@ -92,7 +98,7 @@ export default function AdminLayout() {
                 </div>
 
                 <nav className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 relative z-10">
-                    {sidebarLinks.map((link) => (
+                    {visibleLinks.map((link) => (
                         <NavLink
                             key={link.name}
                             to={link.path}

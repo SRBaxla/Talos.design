@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: is the user authenticated?
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: get user role safely (returns 'none' if no claim)
+    function getRole() {
+      return ('role' in request.auth.token) ? request.auth.token.role : 'none';
+    }
+
+    // Helper: is the user an admin or manager?
+    function isAdminOrManager() {
+      return isAuth() && (
+        getRole() == 'admin' ||
+        getRole() == 'manager' ||
+        getRole() == 'none'  // original admin with no custom claim
+      );
+    }
+
+    // Helper: is the user a client?
+    function isClient() {
+      return isAuth() && getRole() == 'client';
+    }
+
+    // Helper: is the user a worker (any internal role)?
+    function isInternal() {
+      return isAuth() && (
+        getRole() == 'admin' ||
+        getRole() == 'manager' ||
+        getRole() == 'developer' ||
+        getRole() == 'designer' ||
+        getRole() == 'none'
+      );
+    }
+
+    // ── Projects ──────────────────────────────────────
+    match /projects/{projectId} {
+      allow read: if isInternal() ||
+        (isClient() && resource.data.clientEmail == request.auth.token.email);
+      allow create, update, delete: if isAdminOrManager();
+
+      // Messages subcollection
+      match /messages/{messageId} {
+        allow read, write: if isInternal() ||
+          (isClient() && get(/databases/$(database)/documents/projects/$(projectId)).data.clientEmail == request.auth.token.email);
+      }
+    }
+
+    // ── Case Studies ──────────────────────────────────
+    match /caseStudies/{studyId} {
+      allow read: if true;
+      allow create, update, delete: if isAdminOrManager();
+    }
+
+    // ── Workers ───────────────────────────────────────
+    match /workers/{workerId} {
+      allow read: if isInternal();
+      allow create, delete: if isAdminOrManager();
+      allow update: if isAdminOrManager() ||
+        (isAuth() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── Activity Logs ─────────────────────────────────
+    match /activityLogs/{logId} {
+      allow read: if isInternal();
+      allow create: if isInternal();
+      allow update, delete: if isAdminOrManager();
+    }
+
+    // ── Inquiries ─────────────────────────────────────
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow read, update, delete: if isAdminOrManager();
+    }
+
+    // ── Invoices ──────────────────────────────────────
+    match /invoices/{invoiceId} {
+      allow read: if isInternal() ||
+        (isClient() && resource.data.clientEmail == request.auth.token.email);
+      allow create, update, delete: if isAdminOrManager();
+    }
+
+    // ── Portal Users (deprecated) ────────────────────
+    match /portalUsers/{email} {
+      allow read, write: if false;
+    }
+  }
+}

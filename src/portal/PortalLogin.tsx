@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hexagon, ArrowRight, Lock, Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react';
 import {
-    emailHasProject, getPortalUser,
-    createPortalUser, verifyPortalUser, verifyAccessCode,
+    emailHasProject, createClientAccount, signInClient,
 } from './portalStore';
 
 type Step = 'email' | 'first-login' | 'returning';
@@ -32,8 +31,21 @@ export default function PortalLogin() {
                 setLoading(false);
                 return;
             }
-            const portalUser = await getPortalUser(email);
-            setStep(portalUser ? 'returning' : 'first-login');
+            // Try signing in with a dummy password to check if account exists
+            try {
+                await signInClient(email, '__check_existence__');
+                // Won't reach here normally
+                setStep('returning');
+            } catch (err: any) {
+                if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                    setStep('first-login');
+                } else if (err.code === 'auth/wrong-password') {
+                    setStep('returning');
+                } else {
+                    // Could be invalid-credential (Firebase v9+), assume first-login
+                    setStep('first-login');
+                }
+            }
         } catch (err) {
             console.error(err);
             setError('Something went wrong. Please try again.');
@@ -60,18 +72,17 @@ export default function PortalLogin() {
         }
         setLoading(true);
         try {
-            const codeValid = await verifyAccessCode(email, accessCode);
-            if (!codeValid) {
-                setError('Invalid access code. Check the code in your welcome email from Talos.');
-                setLoading(false);
-                return;
-            }
-            await createPortalUser(email, password);
-            localStorage.setItem('talosClientEmail', email);
+            // Cloud Function verifies access code + creates Firebase Auth user + returns custom token
+            await createClientAccount(email, password, accessCode);
             navigate('/portal/dashboard');
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            setError('Failed to create account. Please try again.');
+            const msg = err?.message || '';
+            if (msg.includes('access code') || msg.includes('Invalid')) {
+                setError('Invalid access code. Check the code in your welcome email from Talos.');
+            } else {
+                setError('Failed to create account. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -83,16 +94,15 @@ export default function PortalLogin() {
         setError('');
         setLoading(true);
         try {
-            const ok = await verifyPortalUser(email, password);
-            if (ok) {
-                localStorage.setItem('talosClientEmail', email);
-                navigate('/portal/dashboard');
-            } else {
-                setError('Incorrect password. Please try again.');
-            }
-        } catch (err) {
+            await signInClient(email, password);
+            navigate('/portal/dashboard');
+        } catch (err: any) {
             console.error(err);
-            setError('Something went wrong. Please try again.');
+            if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                setError('Incorrect password. Please try again.');
+            } else {
+                setError('Something went wrong. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -281,7 +291,7 @@ export default function PortalLogin() {
                     </div>
 
                     <div className="bg-[rgba(0,0,0,0.15)] px-8 py-3 border-t border-[var(--border-color)] flex items-center justify-center gap-2 text-[10px] text-[var(--text-muted)]">
-                        <Lock size={10} /> Secured connection · Passwords are hashed with SHA-256
+                        <Lock size={10} /> Secured connection · Firebase Authentication
                     </div>
                 </div>
             </motion.div>
