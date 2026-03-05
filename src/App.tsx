@@ -27,12 +27,14 @@ const Legal = lazy(() => import('./pages/Legal'));
 const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
 const AdminDashboard = lazy(() => import('./admin/pages/AdminDashboard'));
 const AdminProjects = lazy(() => import('./admin/pages/AdminProjects'));
+const AdminTeam = lazy(() => import('./admin/pages/AdminTeam'));
 const AdminCaseStudies = lazy(() => import('./admin/pages/AdminCaseStudies'));
 const AdminSettings = lazy(() => import('./admin/pages/AdminSettings'));
 const AdminInquiries = lazy(() => import('./admin/pages/AdminInquiries'));
 const AdminInvoices = lazy(() => import('./admin/pages/AdminInvoices'));
 const ProjectDetail = lazy(() => import('./admin/pages/ProjectDetail'));
 const CaseStudyDetail = lazy(() => import('./admin/pages/CaseStudyDetail'));
+const AdminProfile = lazy(() => import('./admin/pages/AdminProfile'));
 
 // ── Client portal — lazy loaded ──────────────────────────────────────────────
 const PortalLogin = lazy(() => import('./portal/PortalLogin'));
@@ -82,8 +84,10 @@ function App() {
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="case-studies" element={<AdminCaseStudies />} />
             <Route path="case-studies/:id" element={<CaseStudyDetail />} />
+            <Route path="team" element={<AdminTeam />} />
             <Route path="inquiries" element={<AdminInquiries />} />
             <Route path="invoices" element={<AdminInvoices />} />
+            <Route path="profile" element={<AdminProfile />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Routes>

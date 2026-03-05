@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
-import { useTickets, deleteCaseStudy } from '../store/adminStore';
+import { useTickets, deleteCaseStudy, updateCaseStudy, useWorkers, addActivityLog } from '../store/adminStore';
 import type { CaseStudy } from '../store/adminStore';
 import TicketList from '../components/TicketList';
 import CaseStudyModal from '../components/CaseStudyModal';
-import { ArrowLeft, Edit2, Trash2, ExternalLink, Tag } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2, ExternalLink, Tag, Users, X } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
     draft: { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
@@ -23,6 +23,22 @@ export default function CaseStudyDetail() {
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const { tickets, loading: ticketsLoading } = useTickets('caseStudies', id || '');
+    const { workers } = useWorkers();
+
+    const [promptModal, setPromptModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        fields: { name: string; label: string; type?: string; placeholder?: string; options?: { value: string; label: string }[] }[];
+        onConfirm: (values: Record<string, string>) => void;
+    }>({ isOpen: false, title: '', fields: [], onConfirm: () => { } });
+
+    const openPrompt = (
+        title: string,
+        fields: { name: string; label: string; type?: string; placeholder?: string; options?: { value: string; label: string }[] }[],
+        onConfirm: (values: Record<string, string>) => void
+    ) => {
+        setPromptModal({ isOpen: true, title, fields, onConfirm });
+    };
 
     useEffect(() => {
         if (!id) return;
@@ -40,6 +56,61 @@ export default function CaseStudyDetail() {
         if (window.confirm(`Delete "${study.title}"? This will also delete all tickets.`)) {
             await deleteCaseStudy(study.id);
             navigate('/admin/case-studies');
+        }
+    };
+
+    const handleUpdateArray = async (field: keyof CaseStudy, newArray: any[]) => {
+        if (!study) return;
+        try {
+            await updateCaseStudy(study.id, { [field]: newArray });
+        } catch (err) {
+            console.error(`Failed to update ${field}:`, err);
+            alert(`Failed to update ${field}`);
+        }
+    };
+
+    const addTeamMember = () => {
+        const availableOptions = workers.map(w => ({ value: w.uid, label: w.name }));
+        if (availableOptions.length === 0) {
+            alert("No workers available. Please add some in the Team section.");
+            return;
+        }
+
+        openPrompt('Assign Team Member', [
+            { name: 'uid', label: 'Select Worker', type: 'select', options: availableOptions }
+        ], async (values) => {
+            const uid = values.uid;
+            if (uid && study) {
+                const current = study.assignedWorkers || [];
+                if (!current.includes(uid)) {
+                    await handleUpdateArray('assignedWorkers', [...current, uid]);
+                    await addActivityLog({
+                        workerUid: uid,
+                        action: 'assigned_case_study',
+                        description: `Assigned to case study: ${study.title}`,
+                        referenceId: study.id,
+                        referenceType: 'caseStudy'
+                    });
+                }
+            }
+        });
+    };
+
+    const removeTeamMember = async (index: number) => {
+        if (!study || !study.assignedWorkers) return;
+        const current = [...study.assignedWorkers];
+        const removedUid = current[index];
+        current.splice(index, 1);
+        await handleUpdateArray('assignedWorkers', current);
+
+        if (removedUid) {
+            await addActivityLog({
+                workerUid: removedUid,
+                action: 'removed_from_case_study',
+                description: `Removed from case study: ${study.title}`,
+                referenceId: study.id,
+                referenceType: 'caseStudy'
+            });
         }
     };
 
@@ -145,10 +216,103 @@ export default function CaseStudyDetail() {
                             </div>
                         </div>
                     )}
+
+                    {/* Team Allocation */}
+                    <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl flex flex-col shadow-sm overflow-hidden">
+                        <div className="p-5 border-b border-[var(--border-color)] flex justify-between items-center bg-[rgba(255,255,255,0.02)]">
+                            <h3 className="font-display font-bold text-white flex items-center gap-2 text-sm uppercase tracking-wider">
+                                <Users size={16} className="text-[var(--accent-orange)]" /> Team Allocation
+                            </h3>
+                            <button onClick={addTeamMember} className="text-[10px] font-bold uppercase tracking-widest bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] px-3 py-1.5 rounded transition-colors text-[var(--text-secondary)]">Assign</button>
+                        </div>
+                        <div className="p-5 flex-1 overflow-y-auto custom-scrollbar">
+                            {(!study.assignedWorkers || study.assignedWorkers.length === 0) ? (
+                                <div className="h-full flex items-center justify-center text-sm text-[var(--text-muted)] font-mono bg-[rgba(255,255,255,0.01)] rounded-xl border border-dashed border-[var(--border-color)] min-h-[100px]">No members assigned.</div>
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    {study.assignedWorkers.map((memberUid, idx) => {
+                                        const worker = workers.find(w => w.uid === memberUid);
+                                        const dispName = worker ? worker.name : 'Unknown Worker';
+                                        return (
+                                            <div key={idx} className="flex items-center gap-3 bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.2)] pl-4 pr-2 py-3 rounded-xl w-full justify-between group transition-colors hover:border-[rgba(245,158,11,0.4)]">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-6 h-6 rounded-full bg-[rgba(245,158,11,0.2)] text-[var(--accent-orange)] flex items-center justify-center text-[10px] font-bold uppercase">{dispName.charAt(0)}</div>
+                                                    <span className="text-sm text-white font-medium tracking-wide">{dispName}</span>
+                                                </div>
+                                                <button onClick={() => removeTeamMember(idx)} className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[rgba(245,158,11,0.2)] text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-all">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
             <CaseStudyModal open={modalOpen} onClose={() => setModalOpen(false)} study={study} />
+
+            {/* Prompt Modal */}
+            {promptModal.isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+                    <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-6 w-full max-w-md shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-5 rounded-bl-full pointer-events-none"></div>
+                        <div className="flex justify-between items-center relative z-10">
+                            <h2 className="font-display font-bold text-xl text-white">{promptModal.title}</h2>
+                            <button onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-lg">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <form
+                            className="flex flex-col gap-5 relative z-10"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                const formData = new FormData(e.currentTarget);
+                                const values: Record<string, string> = {};
+                                promptModal.fields.forEach(f => {
+                                    values[f.name] = formData.get(f.name) as string;
+                                });
+                                promptModal.onConfirm(values);
+                                setPromptModal({ ...promptModal, isOpen: false });
+                            }}
+                        >
+                            {promptModal.fields.map((field) => (
+                                <div key={field.name} className="flex flex-col gap-2">
+                                    <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest pl-1">{field.label}</label>
+                                    {field.type === 'select' ? (
+                                        <select
+                                            name={field.name}
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm appearance-none"
+                                            required
+                                        >
+                                            <option value="" disabled selected>Select an option</option>
+                                            {field.options?.map(opt => (
+                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <input
+                                            name={field.name}
+                                            type={field.type || "text"}
+                                            placeholder={field.placeholder}
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
+                                            required
+                                            autoFocus={field.name === promptModal.fields[0].name}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">
+                                <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm font-bold transition-colors">Cancel</button>
+                                <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-black hover:bg-[rgba(245,158,11,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

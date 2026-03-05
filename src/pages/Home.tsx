@@ -1,6 +1,7 @@
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FeaturedCaseStudies } from '../components/FeaturedCaseStudies';
 
 export default function Home() {
   return (
@@ -56,7 +57,7 @@ export default function Home() {
       {/* ── SECTION 2: WHAT WE BUILD ────────────────────────────────── */}
       <div className="container py-24 flex flex-col items-center flex-grow relative z-10">
 
-
+        <FeaturedCaseStudies />
 
         {/* ── SECTION 3: PROOF STRIP ──────────────────────────────────── */}
         <motion.div

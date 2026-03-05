@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import { db } from '../firebase/firebaseConfig';
-import { useTickets, deleteProject, updateProject, useMessages, sendMessage } from '../store/adminStore';
+import { useTickets, deleteProject, updateProject, useMessages, sendMessage, useWorkers, addActivityLog } from '../store/adminStore';
 import type { Project } from '../store/adminStore';
 import TicketList from '../components/TicketList';
 import ProjectModal from '../components/ProjectModal';
@@ -33,6 +34,7 @@ export default function ProjectDetail() {
     const [modalOpen, setModalOpen] = useState(false);
     const { tickets, loading: ticketsLoading } = useTickets('projects', id || '');
     const { messages, loading: mLoading } = useMessages(id || '');
+    const { workers } = useWorkers(); // Get workers for assigning
     const [newMessage, setNewMessage] = useState('');
     const [sendingMsg, setSendingMsg] = useState(false);
     const [activeTab, setActiveTab] = useState<'overview' | 'crm' | 'tickets'>('overview');
@@ -51,13 +53,13 @@ export default function ProjectDetail() {
     const [promptModal, setPromptModal] = useState<{
         isOpen: boolean;
         title: string;
-        fields: { name: string; label: string; type?: string; placeholder?: string }[];
+        fields: { name: string; label: string; type?: string; placeholder?: string; options?: { value: string; label: string }[] }[];
         onConfirm: (values: Record<string, string>) => void;
     }>({ isOpen: false, title: '', fields: [], onConfirm: () => { } });
 
     const openPrompt = (
         title: string,
-        fields: { name: string; label: string; type?: string; placeholder?: string }[],
+        fields: { name: string; label: string; type?: string; placeholder?: string; options?: { value: string; label: string }[] }[],
         onConfirm: (values: Record<string, string>) => void
     ) => {
         setPromptModal({ isOpen: true, title, fields, onConfirm });
@@ -82,20 +84,49 @@ export default function ProjectDetail() {
     };
 
     const addTeamMember = () => {
-        openPrompt('Assign Team Member', [{ name: 'name', label: 'Name', placeholder: 'Enter team member name' }], (values) => {
-            const name = values.name;
-            if (name && project) {
+        const availableOptions = workers.map(w => ({ value: w.uid, label: w.name }));
+        if (availableOptions.length === 0) {
+            alert("No workers available. Please add some in the Team section.");
+            return;
+        }
+
+        openPrompt('Assign Team Member', [
+            { name: 'uid', label: 'Select Worker', type: 'select', options: availableOptions }
+        ], async (values) => {
+            const uid = values.uid;
+            if (uid && project) {
+                // Prevent duplicate assignment
                 const current = project.teamAllotment || [];
-                handleUpdateArray('teamAllotment', [...current, name]);
+                if (!current.includes(uid)) {
+                    await handleUpdateArray('teamAllotment', [...current, uid]);
+                    await addActivityLog({
+                        workerUid: uid,
+                        action: 'assigned_project',
+                        description: `Assigned to project: ${project.title}`,
+                        referenceId: project.id,
+                        referenceType: 'project'
+                    });
+                }
             }
         });
     };
 
-    const removeTeamMember = (index: number) => {
+    const removeTeamMember = async (index: number) => {
         if (!project || !project.teamAllotment) return;
         const current = [...project.teamAllotment];
+        const removedUid = current[index];
         current.splice(index, 1);
-        handleUpdateArray('teamAllotment', current);
+        await handleUpdateArray('teamAllotment', current);
+
+        if (removedUid) {
+            await addActivityLog({
+                workerUid: removedUid,
+                action: 'removed_from_project',
+                description: `Removed from project: ${project.title}`,
+                referenceId: project.id,
+                referenceType: 'project'
+            });
+        }
     };
 
     const addFeature = () => {
@@ -185,7 +216,9 @@ export default function ProjectDetail() {
         if (!newMessage.trim() || !project) return;
         setSendingMsg(true);
         try {
-            await sendMessage(project.id, newMessage, 'admin');
+            const auth = getAuth();
+            const currentUid = auth.currentUser?.uid;
+            await sendMessage(project.id, newMessage, 'admin', currentUid);
             setNewMessage('');
         } catch (err) {
             console.error('Failed to send message:', err);
@@ -428,17 +461,21 @@ export default function ProjectDetail() {
                                     <div className="h-full flex items-center justify-center text-sm text-[var(--text-muted)] font-mono bg-[rgba(255,255,255,0.01)] rounded-xl border border-dashed border-[var(--border-color)] min-h-[100px]">No members.</div>
                                 ) : (
                                     <div className="flex flex-col gap-3">
-                                        {project.teamAllotment.map((member, idx) => (
-                                            <div key={idx} className="flex items-center gap-3 bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.2)] pl-4 pr-2 py-3 rounded-xl w-full justify-between group transition-colors hover:border-[rgba(245,158,11,0.4)]">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-6 h-6 rounded-full bg-[rgba(245,158,11,0.2)] text-[var(--accent-orange)] flex items-center justify-center text-[10px] font-bold uppercase">{member.charAt(0)}</div>
-                                                    <span className="text-sm text-white font-medium tracking-wide">{member}</span>
+                                        {project.teamAllotment.map((memberUid, idx) => {
+                                            const worker = workers.find(w => w.uid === memberUid);
+                                            const dispName = worker ? worker.name : 'Unknown Worker';
+                                            return (
+                                                <div key={idx} className="flex items-center gap-3 bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.2)] pl-4 pr-2 py-3 rounded-xl w-full justify-between group transition-colors hover:border-[rgba(245,158,11,0.4)]">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-6 h-6 rounded-full bg-[rgba(245,158,11,0.2)] text-[var(--accent-orange)] flex items-center justify-center text-[10px] font-bold uppercase">{dispName.charAt(0)}</div>
+                                                        <span className="text-sm text-white font-medium tracking-wide">{dispName}</span>
+                                                    </div>
+                                                    <button onClick={() => removeTeamMember(idx)} className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[rgba(245,158,11,0.2)] text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-all">
+                                                        <Trash2 size={16} />
+                                                    </button>
                                                 </div>
-                                                <button onClick={() => removeTeamMember(idx)} className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[rgba(245,158,11,0.2)] text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-all">
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
                                 )}
                             </div>
@@ -681,14 +718,27 @@ export default function ProjectDetail() {
                             {promptModal.fields.map((field) => (
                                 <div key={field.name} className="flex flex-col gap-2">
                                     <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest pl-1">{field.label}</label>
-                                    <input
-                                        name={field.name}
-                                        type={field.type || "text"}
-                                        placeholder={field.placeholder}
-                                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
-                                        required
-                                        autoFocus={field.name === promptModal.fields[0].name}
-                                    />
+                                    {field.type === 'select' ? (
+                                        <select
+                                            name={field.name}
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm appearance-none"
+                                            required
+                                        >
+                                            <option value="" disabled selected>Select an option</option>
+                                            {field.options?.map(opt => (
+                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <input
+                                            name={field.name}
+                                            type={field.type || "text"}
+                                            placeholder={field.placeholder}
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
+                                            required
+                                            autoFocus={field.name === promptModal.fields[0].name}
+                                        />
+                                    )}
                                 </div>
                             ))}
                             <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">

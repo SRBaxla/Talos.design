@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus, CheckCircle2, Circle, Clock, Trash2, Edit2 } from 'lucide-react';
 import type { Ticket, TicketStatus, TicketPriority } from '../store/adminStore';
-import { addTicket, updateTicket, deleteTicket } from '../store/adminStore';
+import { addTicket, updateTicket, deleteTicket, useWorkers, addActivityLog } from '../store/adminStore';
 import { Timestamp } from 'firebase/firestore';
 
 interface TicketListProps {
@@ -40,6 +40,8 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
     const [dueDate, setDueDate] = useState('');
     const [filter, setFilter] = useState<'all' | TicketStatus>('all');
 
+    const { workers } = useWorkers();
+
     const resetForm = () => {
         setTitle('');
         setDescription('');
@@ -64,17 +66,32 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
 
     const handleSave = async () => {
         if (!title.trim()) return;
+        let createdTicketId = '';
         if (editTicket) {
             await updateTicket(parentCollection, parentId, editTicket.id, {
                 title, description, status, priority, assignee, dueDate,
             });
+            createdTicketId = editTicket.id;
         } else {
-            await addTicket(parentCollection, parentId, {
+            const newTicket = await addTicket(parentCollection, parentId, {
                 title, description, status, priority, assignee, dueDate,
                 createdAt: Timestamp.now(),
                 updatedAt: Timestamp.now(),
             } as unknown as Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>);
+            createdTicketId = newTicket.id;
         }
+
+        // Log if assignee exists and was changed/set
+        if (assignee && (!editTicket || editTicket.assignee !== assignee)) {
+            await addActivityLog({
+                workerUid: assignee,
+                action: 'assigned_ticket',
+                description: `Assigned to ticket: ${title}`,
+                referenceId: createdTicketId,
+                referenceType: 'ticket'
+            });
+        }
+
         resetForm();
     };
 
@@ -160,7 +177,12 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                             <option value="high">High Priority</option>
                             <option value="urgent">Urgent</option>
                         </select>
-                        <input className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)]" placeholder="Assignee (user id or email)" value={assignee} onChange={(e) => setAssignee(e.target.value)} />
+                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={assignee} onChange={(e) => setAssignee(e.target.value)}>
+                            <option value="">Unassigned</option>
+                            {workers.map(w => (
+                                <option key={w.uid} value={w.uid}>{w.name}</option>
+                            ))}
+                        </select>
                         <input type="date" className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] color-scheme-dark" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={{ colorScheme: 'dark' }} />
                     </div>
                     <div className="flex justify-end gap-3 mt-2">
@@ -213,7 +235,11 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                                     )}
 
                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-mono font-medium text-[var(--text-muted)]">
-                                        {t.assignee && <span className="flex items-center gap-1.5"><div className="w-4 h-4 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center text-[8px] text-white">{t.assignee.charAt(0).toUpperCase()}</div> <span className="truncate max-w-[100px]">{t.assignee}</span></span>}
+                                        {t.assignee && (() => {
+                                            const worker = workers.find(w => w.uid === t.assignee);
+                                            const dispName = worker ? worker.name : t.assignee;
+                                            return <span className="flex items-center gap-1.5"><div className="w-4 h-4 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center text-[8px] text-white">{dispName.charAt(0).toUpperCase()}</div> <span className="truncate max-w-[100px]">{dispName}</span></span>;
+                                        })()}
                                         {t.dueDate && <span className="flex items-center gap-1"><Clock size={10} /> {t.dueDate}</span>}
                                     </div>
                                 </div>

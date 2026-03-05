@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInquiries, updateInquiry, addProject } from '../store/adminStore';
+import { useInquiries, updateInquiry, addProject, addActivityLog } from '../store/adminStore';
 import type { InquiryStatus } from '../store/adminStore';
+import { getAuth } from 'firebase/auth';
 import { sendWelcomeEmail } from '../../lib/emailService';
 import { DollarSign, CheckCircle, Archive, ArchiveRestore } from 'lucide-react';
 
@@ -52,7 +53,7 @@ export default function AdminInquiries() {
             // Generate a temporary access code for the client
             const accessCode = Math.random().toString(36).slice(-8).toUpperCase();
 
-            await addProject({
+            const newProjectRef = await addProject({
                 title: projectTitle,
                 client: inquiry.name,
                 clientEmail: inquiry.email,
@@ -71,10 +72,22 @@ export default function AdminInquiries() {
                 accessCode: accessCode,
                 teamAllotment: [],
                 selectedFeatures: [],
-                costRevisions: [],
                 clientRequirements: [],
                 meetings: []
             });
+
+            // Log activity
+            const auth = getAuth();
+            const workerUid = auth.currentUser?.uid;
+            if (workerUid) {
+                await addActivityLog({
+                    workerUid,
+                    action: 'converted_inquiry_to_project',
+                    description: `Converted inquiry from ${inquiry.company || inquiry.name} to project: ${projectTitle}`,
+                    referenceId: newProjectRef.id,
+                    referenceType: 'project'
+                });
+            }
 
             // Send welcome email to the client
             let emailSent = false;

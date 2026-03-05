@@ -30,6 +30,7 @@ const emptyForm = {
     tags: [] as string[],
     liveUrl: '',
     publishDate: '',
+    showOnWebsite: true,
 };
 
 export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalProps) {
@@ -51,6 +52,7 @@ export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalP
                 tags: study.tags || [],
                 liveUrl: study.liveUrl,
                 publishDate: study.publishDate,
+                showOnWebsite: study.showOnWebsite ?? true,
             });
         } else {
             setForm(emptyForm);
@@ -157,6 +159,17 @@ export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalP
                                 value={form.publishDate}
                                 onChange={(e) => setForm({ ...form, publishDate: e.target.value })}
                             />
+                        </div>
+                        <div className="admin-field flex items-center pt-8">
+                            <label className="admin-label !mb-0 flex items-center gap-2 cursor-pointer select-none text-[var(--text-primary)] hover:text-white transition-colors">
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 rounded border-[var(--border-color)] bg-[var(--bg-surface)] accent-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] cursor-pointer"
+                                    checked={form.showOnWebsite}
+                                    onChange={(e) => setForm({ ...form, showOnWebsite: e.target.checked })}
+                                />
+                                Show on Website
+                            </label>
                         </div>
                     </div>
 

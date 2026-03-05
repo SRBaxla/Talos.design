@@ -15,6 +15,7 @@ import {
     Home,
     Mail,
     FileText,
+    Users,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
 
@@ -24,6 +25,7 @@ const sidebarLinks = [
     { name: 'Invoices', path: '/admin/invoices', icon: FileText, end: false },
     { name: 'Client Projects', path: '/admin/projects', icon: FolderKanban, end: false },
     { name: 'Case Studies', path: '/admin/case-studies', icon: BookOpen, end: false },
+    { name: 'Team', path: '/admin/team', icon: Users, end: false },
     { name: 'Settings', path: '/admin/settings', icon: Settings, end: false },
 ];
 
@@ -125,15 +127,25 @@ export default function AdminLayout() {
 
                 <div className="p-4 border-t border-[var(--border-color)] bg-[rgba(255,255,255,0.01)] relative z-10 shrink-0 space-y-2">
                     {sidebarOpen && user && (
-                        <div className="flex items-center gap-3 px-3 py-3 w-full rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] shadow-sm mb-4">
+                        <NavLink
+                            to="/admin/profile"
+                            className={({ isActive }) =>
+                                `flex items-center gap-3 px-3 py-3 w-full rounded-xl border shadow-sm mb-4 transition-all duration-200
+                                ${isActive
+                                    ? 'bg-[rgba(255,255,255,0.06)] border-[var(--accent-orange)]/30 ring-1 ring-inset ring-[var(--accent-orange)]/20'
+                                    : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.1)]'
+                                }`
+                            }
+                            title="My Profile"
+                        >
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--bg-card)] to-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center shrink-0">
                                 <span className="font-mono font-bold text-white text-xs">{user.email?.charAt(0).toUpperCase()}</span>
                             </div>
                             <div className="overflow-hidden">
-                                <p className="text-xs text-[var(--text-muted)] uppercase tracking-widest font-mono font-bold mb-0.5">Admin Ops</p>
+                                <p className="text-xs text-[var(--text-muted)] uppercase tracking-widest font-mono font-bold mb-0.5">My Profile</p>
                                 <span className="text-[13px] text-white font-medium truncate block">{user.email}</span>
                             </div>
-                        </div>
+                        </NavLink>
                     )}
 
                     <div className="flex flex-col gap-1">

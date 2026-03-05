@@ -9,6 +9,7 @@ import {
     orderBy,
     Timestamp,
 } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db } from '../firebase/firebaseConfig';
 import { useState, useEffect } from 'react';
 
@@ -66,6 +67,28 @@ export interface Project {
     updatedAt: Timestamp;
 }
 
+export type WorkerRole = 'admin' | 'manager' | 'developer' | 'designer';
+
+export interface Worker {
+    id: string;
+    uid: string; // Firebase Auth UID
+    name: string;
+    email: string;
+    department: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface ActivityLog {
+    id: string;
+    workerUid: string;
+    action: string;
+    description: string;
+    referenceId?: string;
+    referenceType?: 'project' | 'caseStudy' | 'ticket' | 'message';
+    timestamp: Timestamp;
+}
+
 export type CaseStudyStatus = 'draft' | 'research' | 'writing' | 'review' | 'published';
 
 export interface CaseStudy {
@@ -81,6 +104,8 @@ export interface CaseStudy {
     tags: string[];
     liveUrl: string;
     publishDate: string;
+    showOnWebsite?: boolean;
+    assignedWorkers?: string[]; // Array of worker UIDs
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }
@@ -158,6 +183,49 @@ export function useTickets(parentCollection: string, parentId: string) {
     return { tickets, loading };
 }
 
+export function useWorkers() {
+    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const q = query(collection(db, 'workers'), orderBy('createdAt', 'desc'));
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Worker));
+            setWorkers(data);
+            setLoading(false);
+        });
+        return unsub;
+    }, []);
+
+    return { workers, loading };
+}
+
+export function useActivityLogs(workerUid?: string) {
+    const [logs, setLogs] = useState<ActivityLog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!workerUid) {
+            setLoading(false);
+            return;
+        }
+        const q = query(
+            collection(db, 'activityLogs'),
+            orderBy('timestamp', 'desc')
+        );
+        const unsub = onSnapshot(q, (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ActivityLog));
+            // In a better implementation we'd filter by workerUid in the query if we add an index.
+            // For now, client side filtering is okay.
+            setLogs(data.filter(log => log.workerUid === workerUid));
+            setLoading(false);
+        });
+        return unsub;
+    }, [workerUid]);
+
+    return { logs, loading };
+}
+
 /* ── CRUD Operations ───────────────────────────────── */
 
 export async function addProject(data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) {
@@ -196,6 +264,41 @@ export async function updateCaseStudy(id: string, data: Partial<CaseStudy>) {
 
 export async function deleteCaseStudy(id: string) {
     return deleteDoc(doc(db, 'caseStudies', id));
+}
+
+/* ── Worker & Activity Log CRUD ────────────────────── */
+
+export async function addWorker(data: Omit<Worker, 'id' | 'createdAt' | 'updatedAt'>) {
+    return addDoc(collection(db, 'workers'), {
+        ...data,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export async function createWorkerAuth(email: string, name: string, department?: string): Promise<string> {
+    const functions = getFunctions();
+    const createWorkerAccount = httpsCallable(functions, 'createWorkerAccount');
+    const result = await createWorkerAccount({ email, name, department });
+    return (result.data as any).uid;
+}
+
+export async function updateWorker(id: string, data: Partial<Worker>) {
+    return updateDoc(doc(db, 'workers', id), {
+        ...data,
+        updatedAt: Timestamp.now(),
+    });
+}
+
+export async function deleteWorker(id: string) {
+    return deleteDoc(doc(db, 'workers', id));
+}
+
+export async function addActivityLog(data: Omit<ActivityLog, 'id' | 'timestamp'>) {
+    return addDoc(collection(db, 'activityLogs'), {
+        ...data,
+        timestamp: Timestamp.now(),
+    });
 }
 
 /* ── Ticket CRUD ───────────────────────────────────── */
@@ -288,6 +391,7 @@ export interface ChatMessage {
     id: string;
     text: string;
     sender: 'admin' | 'client';
+    workerUid?: string; // Tying message to the logged-in admin
     read: boolean;
     createdAt: Timestamp;
 }
@@ -316,13 +420,30 @@ export function useMessages(projectId: string) {
     return { messages, loading };
 }
 
-export async function sendMessage(projectId: string, text: string, sender: 'admin' | 'client') {
-    return addDoc(collection(db, 'projects', projectId, 'messages'), {
+export async function sendMessage(projectId: string, text: string, sender: 'admin' | 'client', workerUid?: string) {
+    const data: any = {
         text,
         sender,
         read: false,
         createdAt: Timestamp.now()
-    });
+    };
+    if (workerUid) {
+        data.workerUid = workerUid;
+    }
+    const result = await addDoc(collection(db, 'projects', projectId, 'messages'), data);
+
+    // Log the activity if a worker sent it
+    if (workerUid && sender === 'admin') {
+        await addActivityLog({
+            workerUid,
+            action: 'sent_message',
+            description: `Sent message in project ${projectId}`,
+            referenceId: result.id,
+            referenceType: 'message'
+        });
+    }
+
+    return result;
 }
 
 /* ── Invoices ──────────────────────────────────────── */

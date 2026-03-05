@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import type { Invoice, InvoiceItem } from '../store/adminStore';
-import { useInvoices, addInvoice, updateInvoice, deleteInvoice } from '../store/adminStore';
-import { FileText, Plus, Trash2, Edit } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import type { Invoice, InvoiceItem, Project } from '../store/adminStore';
+import { useInvoices, addInvoice, updateInvoice, deleteInvoice, useProjects } from '../store/adminStore';
+import { FileText, Plus, Trash2, Edit, FolderKanban, Search, X } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, string> = {
     'draft': '#71717a',
@@ -12,13 +12,30 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AdminInvoices() {
     const { invoices, loading } = useInvoices();
+    const { projects } = useProjects();
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+    const [selectedProjectId, setSelectedProjectId] = useState<string>('');
+    const [projectSearch, setProjectSearch] = useState('');
+    const [showProjectResults, setShowProjectResults] = useState(false);
+    const searchRef = useRef<HTMLDivElement>(null);
+
+    // Close search results when clicking outside
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+                setShowProjectResults(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
 
     const [formState, setFormState] = useState<{
         invoiceNumber: string;
         clientName: string;
         clientEmail: string;
+        projectId: string;
         issueDate: string;
         dueDate: string;
         notes: string;
@@ -27,6 +44,7 @@ export default function AdminInvoices() {
         invoiceNumber: '',
         clientName: '',
         clientEmail: '',
+        projectId: '',
         issueDate: new Date().toISOString().split('T')[0],
         dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         notes: '',
@@ -37,16 +55,89 @@ export default function AdminInvoices() {
         return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-accent-orange rounded-full animate-spin" /></div>;
     }
 
+    // Build line items from a project's data
+    const buildItemsFromProject = (project: Project): InvoiceItem[] => {
+        const items: InvoiceItem[] = [];
+
+        // Base project budget as primary line item
+        const budgetNum = parseFloat(project.budget?.replace(/[^0-9.]/g, '') || '0');
+        if (budgetNum > 0) {
+            items.push({
+                description: `${project.title} — Project Development`,
+                quantity: 1,
+                rate: budgetNum,
+            });
+        }
+
+        // Add each selected feature as a line item
+        if (project.selectedFeatures && project.selectedFeatures.length > 0) {
+            project.selectedFeatures.forEach(feature => {
+                items.push({
+                    description: `Feature: ${feature}`,
+                    quantity: 1,
+                    rate: 0,
+                });
+            });
+        }
+
+        // Add cost revisions as line items
+        if (project.costRevisions && project.costRevisions.length > 0) {
+            project.costRevisions.forEach(rev => {
+                items.push({
+                    description: `Cost Revision: ${rev.reason} (${rev.date})`,
+                    quantity: 1,
+                    rate: rev.amount,
+                });
+            });
+        }
+
+        // Ensure at least one empty item
+        if (items.length === 0) {
+            items.push({ description: '', quantity: 1, rate: 0 });
+        }
+
+        return items;
+    };
+
+    const handleProjectSelect = (projectId: string) => {
+        setSelectedProjectId(projectId);
+        if (!projectId) {
+            // Reset to blank
+            setFormState(prev => ({
+                ...prev,
+                projectId: '',
+                clientName: '',
+                clientEmail: '',
+                items: [{ description: '', quantity: 1, rate: 0 }],
+            }));
+            return;
+        }
+
+        const project = projects.find(p => p.id === projectId);
+        if (!project) return;
+
+        setFormState(prev => ({
+            ...prev,
+            projectId: project.id,
+            clientName: project.client || '',
+            clientEmail: project.clientEmail || '',
+            items: buildItemsFromProject(project),
+            notes: prev.notes || `Invoice for project: ${project.title}`,
+        }));
+    };
+
     const openAddModal = () => {
         setFormState({
             invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
             clientName: '',
             clientEmail: '',
+            projectId: '',
             issueDate: new Date().toISOString().split('T')[0],
             dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             notes: '',
             items: [{ description: '', quantity: 1, rate: 0 }]
         });
+        setSelectedProjectId('');
         setEditingInvoice(null);
         setIsAddOpen(true);
     };
@@ -56,11 +147,13 @@ export default function AdminInvoices() {
             invoiceNumber: invoice.invoiceNumber,
             clientName: invoice.clientName,
             clientEmail: invoice.clientEmail,
+            projectId: invoice.projectId || '',
             issueDate: invoice.issueDate,
             dueDate: invoice.dueDate,
             notes: invoice.notes || '',
             items: invoice.items
         });
+        setSelectedProjectId(invoice.projectId || '');
         setEditingInvoice(invoice);
         setIsAddOpen(true);
     };
@@ -105,6 +198,13 @@ export default function AdminInvoices() {
         return items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
     };
 
+    // Find linked project title for display
+    const getProjectTitle = (projectId?: string) => {
+        if (!projectId) return null;
+        const p = projects.find(proj => proj.id === projectId);
+        return p ? p.title : null;
+    };
+
     return (
         <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] w-full flex flex-col">
             <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -127,6 +227,7 @@ export default function AdminInvoices() {
                             <tr className="border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)]">
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Invoice</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Client</th>
+                                <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Project</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Dates</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider text-right">Amount</th>
@@ -136,7 +237,7 @@ export default function AdminInvoices() {
                         <tbody className="divide-y divide-[var(--border-color)]">
                             {invoices.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-[var(--text-muted)] text-sm">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)] text-sm">
                                         No invoices generated yet.
                                     </td>
                                 </tr>
@@ -154,6 +255,16 @@ export default function AdminInvoices() {
                                         <td className="px-6 py-4">
                                             <div className="font-bold text-[var(--text-primary)] text-sm">{invoice.clientName}</div>
                                             <div className="text-[11px] text-[var(--text-muted)] mt-1 truncate max-w-[150px]">{invoice.clientEmail || '—'}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {getProjectTitle(invoice.projectId) ? (
+                                                <div className="flex items-center gap-1.5 text-xs text-[var(--accent-cyan)]">
+                                                    <FolderKanban size={12} />
+                                                    <span className="truncate max-w-[120px]">{getProjectTitle(invoice.projectId)}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-[var(--text-muted)]">—</span>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm text-[var(--text-secondary)]">Issued: <span className="font-mono text-[var(--text-primary)]">{invoice.issueDate}</span></div>
@@ -217,6 +328,94 @@ export default function AdminInvoices() {
                         </div>
 
                         <form onSubmit={handleSave} className="flex flex-col gap-8">
+                            {/* Project Selector — Type & Search */}
+                            <div className="bg-gradient-to-r from-[var(--accent-cyan)]/5 to-transparent border border-[var(--accent-cyan)]/20 rounded-xl p-5">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <FolderKanban size={16} className="text-[var(--accent-cyan)]" />
+                                    <label className="text-xs font-mono text-[var(--accent-cyan)] uppercase font-bold tracking-wider">Import from Project</label>
+                                </div>
+                                <div className="relative" ref={searchRef}>
+                                    <div className="relative">
+                                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                                        <input
+                                            type="text"
+                                            value={projectSearch}
+                                            onChange={(e) => {
+                                                setProjectSearch(e.target.value);
+                                                setShowProjectResults(true);
+                                                if (!e.target.value) {
+                                                    handleProjectSelect('');
+                                                }
+                                            }}
+                                            onFocus={() => setShowProjectResults(true)}
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg pl-10 pr-10 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] transition-colors placeholder:text-[var(--text-muted)]"
+                                            placeholder="Search by project name or client..."
+                                        />
+                                        {projectSearch && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setProjectSearch('');
+                                                    handleProjectSelect('');
+                                                    setShowProjectResults(false);
+                                                }}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-white rounded transition-colors"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Results Dropdown */}
+                                    {showProjectResults && projectSearch.trim().length > 0 && (() => {
+                                        const q = projectSearch.toLowerCase();
+                                        const filtered = projects.filter(p => {
+                                            const t = (p.title || '').toLowerCase();
+                                            const c = (p.client || '').toLowerCase();
+                                            const e = (p.clientEmail || '').toLowerCase();
+                                            const s = (p.status || '').toLowerCase();
+                                            return t.includes(q) || c.includes(q) || e.includes(q) || s.includes(q);
+                                        });
+                                        return (
+                                            <div className="absolute z-50 top-full mt-1 w-full bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-lg shadow-2xl max-h-60 overflow-y-auto custom-scrollbar">
+                                                {filtered.length === 0 ? (
+                                                    <div className="px-4 py-6 text-center text-[var(--text-muted)] text-xs font-mono">No projects match your search</div>
+                                                ) : (
+                                                    filtered.map(p => (
+                                                        <button
+                                                            key={p.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                handleProjectSelect(p.id);
+                                                                setProjectSearch(p.title || '');
+                                                                setShowProjectResults(false);
+                                                            }}
+                                                            className={`w-full text-left px-4 py-3 hover:bg-[rgba(255,255,255,0.05)] transition-colors flex items-center gap-3 border-b border-[var(--border-color)] last:border-b-0 ${selectedProjectId === p.id ? 'bg-[rgba(0,200,200,0.05)]' : ''}`}
+                                                        >
+                                                            <div className="w-7 h-7 rounded-lg bg-[rgba(0,200,200,0.1)] flex items-center justify-center shrink-0">
+                                                                <FolderKanban size={12} className="text-[var(--accent-cyan)]" />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="text-sm font-bold text-white truncate">{p.title}</div>
+                                                                <div className="text-[11px] text-[var(--text-muted)] font-mono truncate">{p.client || 'No client'} · {p.status}</div>
+                                                            </div>
+                                                            {p.budget && (
+                                                                <span className="text-[10px] font-mono text-[var(--text-secondary)] bg-[rgba(255,255,255,0.05)] px-2 py-0.5 rounded shrink-0">{p.budget}</span>
+                                                            )}
+                                                        </button>
+                                                    ))
+                                                )}
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                                {selectedProjectId && (
+                                    <p className="text-[11px] text-[var(--accent-cyan)] mt-2 font-mono">
+                                        ✓ Client info, budget, and features have been imported from the project.
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-xs font-mono text-[var(--text-muted)] uppercase mb-2">Invoice Number</label>
