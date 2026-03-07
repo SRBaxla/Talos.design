@@ -48,7 +48,7 @@ export default function Home() {
               Book a Free Call
             </Link>
             <Link to="/projects" className="btn btn-outline py-3 px-8">
-              See Our Work
+              See Our Packages
             </Link>
           </motion.div>
         </div>

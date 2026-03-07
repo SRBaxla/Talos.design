@@ -17,17 +17,17 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-semibold mb-6">Services</h4>
+                        <h3 className="font-semibold mb-6">Services</h3>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
                             <li><Link to="/services/web-design" className="hover:text-white transition-colors">Web Design</Link></li>
                             <li><Link to="/services/chatbots" className="hover:text-white transition-colors">AI Chatbots</Link></li>
                             <li><Link to="/services/automation" className="hover:text-white transition-colors">Automation</Link></li>
-                            <li><Link to="/projects" className="hover:text-white transition-colors">Projects</Link></li>
+                            <li><Link to="/projects" className="hover:text-white transition-colors">Packages</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-semibold mb-6">Company</h4>
+                        <h3 className="font-semibold mb-6">Company</h3>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
                             <li><Link to="/about-us" className="hover:text-white transition-colors">About Us</Link></li>
                             <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
@@ -36,10 +36,10 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-semibold mb-6">Connect</h4>
+                        <h3 className="font-semibold mb-6">Connect</h3>
                         <div className="flex gap-4 text-[var(--text-muted)]">
-                            <a href="#" className="hover:text-white transition-colors"><Twitter size={20} /></a>
-                            <a href="#" className="hover:text-white transition-colors"><Github size={20} /></a>
+                            <a href="#" className="hover:text-white transition-colors" aria-label="Twitter"><Twitter size={20} /></a>
+                            <a href="#" className="hover:text-white transition-colors" aria-label="Github"><Github size={20} /></a>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { addInquiry } from '../admin/store/adminStore';
+import { sendAutoResponderEmail } from '../lib/emailService';
 
 const nextSteps = [
     { label: 'We read your message', sub: 'Usually within a few hours' },
@@ -34,6 +35,14 @@ export default function Contact() {
         setIsTransmitting(true);
         try {
             await addInquiry({ name, email, company, message });
+
+            // Send the auto-responder email to the user
+            try {
+                await sendAutoResponderEmail({ clientName: name, clientEmail: email });
+            } catch (emailErr) {
+                console.error("Failed to send auto-responder email. Inquiry was still saved.", emailErr);
+            }
+
             setStatus('success');
             setTimeout(() => {
                 setStatus('idle');

@@ -8,7 +8,7 @@ export function Navbar() {
 
     const navLinks = [
         { name: 'Solutions', path: '/services' },
-        { name: 'Projects', path: '/projects' },
+        { name: 'Packages', path: '/projects' },
         { name: 'Studio', path: '/about' },
         { name: 'Contact', path: '/contact' },
     ];
@@ -54,6 +54,7 @@ export function Navbar() {
                     <button
                         className="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-2"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Toggle Mobile Menu"
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>

@@ -100,7 +100,7 @@ export default function Projects() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="badge badge-active mb-8 font-mono text-xs"
             >
-                [PROJECTS]
+                [PACKAGES]
             </motion.div>
 
             {/* Hero */}

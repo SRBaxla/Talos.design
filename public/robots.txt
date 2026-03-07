@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://talos.design/sitemap.xml
