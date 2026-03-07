@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useInquiries, updateInquiry, addProject, addActivityLog } from '../store/adminStore';
 import type { InquiryStatus } from '../store/adminStore';
 import { getAuth } from 'firebase/auth';
-import { sendWelcomeEmail } from '../../lib/emailService';
 import { DollarSign, CheckCircle, Archive, ArchiveRestore } from 'lucide-react';
 
 const STATUS_COLORS: Record<InquiryStatus, string> = {
@@ -89,30 +88,14 @@ export default function AdminInquiries() {
                 });
             }
 
-            // Send welcome email to the client
-            let emailSent = false;
-            try {
-                await sendWelcomeEmail({
-                    clientName: inquiry.name,
-                    clientEmail: inquiry.email,
-                    projectTitle: projectTitle,
-                    accessCode: accessCode,
-                });
-                emailSent = true;
-            } catch (emailErr) {
-                console.warn('Email send failed (check EmailJS config):', emailErr);
-            }
-
             // Auto-archive the lead so it doesn't clutter the view
             await updateInquiry(inquiry.id, { status: 'archived' });
 
             // Navigate to projects to manage it
             navigate('/admin/projects');
 
-            // Show the access code to admin so they can also share manually
-            if (!emailSent) {
-                alert(`Project created! Welcome email could not be sent automatically.\n\nPlease share manually:\nEmail: ${inquiry.email}\nAccess Code: ${accessCode}\nPortal: ${window.location.origin}/portal`);
-            }
+            // Show a quick success alert, or just silently succeed
+            alert(`Project created successfully! An automated welcome email with access code ${accessCode} will be sent to the client.`);
 
         } catch (err) {
             console.error('Failed to convert to project:', err);

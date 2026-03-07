@@ -198,10 +198,7 @@ exports.createClientAccount = functions.https.onCall(async (data, context) => {
         // Set client role custom claim
         await admin.auth().setCustomUserClaims(uid, { role: 'client' });
 
-        // Create a custom token so the client can sign in immediately
-        const customToken = await admin.auth().createCustomToken(uid);
-
-        return { uid, customToken, success: true };
+        return { uid, success: true };
     } catch (error) {
         console.error('Error creating client account:', error);
         throw new functions.https.HttpsError(
@@ -366,5 +363,52 @@ exports.onNewClientMessage = functions.firestore
         } catch (error) {
             console.error('Error sending message notification email:', error);
         }
+        return null;
+    });
+
+// ── Email: Welcome New Client ─────────────────────────
+exports.onProjectCreated = functions.firestore
+    .document('projects/{projectId}')
+    .onCreate(async (snap, context) => {
+        const project = snap.data();
+
+        // We only want to send the welcome email if this is a newly converted lead
+        // The frontend passes an accessCode during conversion to signal this
+        if (!project.clientEmail || !project.accessCode) {
+            console.log('Skipping welcome email: missing clientEmail or accessCode');
+            return null;
+        }
+
+        try {
+            const portalUrl = 'https://talos.design/portal'; // Replace with dynamic URL if domain changes
+
+            const transporter = getTransporter();
+            await transporter.sendMail({
+                from: `"TALOS.DESIGN" <${functions.config().email?.user}>`,
+                to: project.clientEmail,
+                subject: `Welcome to Talos Design: ${project.title}`,
+                html: `
+                    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;">
+                        <h1 style="font-size:24px;color:#1a1a1a;">Welcome to Talos Design</h1>
+                        <p>Hi <strong>${project.client || 'there'}</strong>,</p>
+                        <p>We're excited to begin working on <strong>${project.title}</strong> with you. Your project has been officially created in our system.</p>
+                        
+                        <div style="background:#f8f8f8;border-left:4px solid #f97316;padding:16px;margin:24px 0;border-radius:4px;">
+                            <h2 style="font-size:16px;margin-top:0;">Your Client Portal Access</h2>
+                            <p style="margin-bottom:8px;">You can log in to view project progress, invoices, and message our team directly.</p>
+                            <p style="margin-bottom:8px;"><strong>Portal Link:</strong> <a href="${portalUrl}">${portalUrl}</a></p>
+                            <p style="margin-bottom:0;font-family:monospace;font-size:16px;font-weight:bold;color:#1a1a1a;background:#e5e5e5;display:inline-block;padding:4px 8px;border-radius:4px;">Access Code: ${project.accessCode}</p>
+                        </div>
+                        
+                        <p>When you log in for the first time, you will use your email and the access code above to create your password.</p>
+                        <p style="color:#888;font-size:13px;margin-top:32px;">— The TALOS.DESIGN Team</p>
+                    </div>
+                `,
+            });
+            console.log(`Welcome email successfully sent to ${project.clientEmail}`);
+        } catch (error) {
+            console.error('Error sending welcome email:', error);
+        }
+
         return null;
     });

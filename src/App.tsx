@@ -31,6 +31,7 @@ const AdminTeam = lazy(() => import('./admin/pages/AdminTeam'));
 const AdminCaseStudies = lazy(() => import('./admin/pages/AdminCaseStudies'));
 const AdminSettings = lazy(() => import('./admin/pages/AdminSettings'));
 const AdminInquiries = lazy(() => import('./admin/pages/AdminInquiries'));
+const AdminLeads = lazy(() => import('./admin/pages/AdminLeads'));
 const AdminInvoices = lazy(() => import('./admin/pages/AdminInvoices'));
 const ProjectDetail = lazy(() => import('./admin/pages/ProjectDetail'));
 const CaseStudyDetail = lazy(() => import('./admin/pages/CaseStudyDetail'));
@@ -86,6 +87,7 @@ function App() {
             <Route path="case-studies/:id" element={<CaseStudyDetail />} />
             <Route path="team" element={<AdminTeam />} />
             <Route path="inquiries" element={<AdminInquiries />} />
+            <Route path="leads" element={<AdminLeads />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="profile" element={<AdminProfile />} />
             <Route path="settings" element={<AdminSettings />} />

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, Navigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     FolderKanban,
@@ -16,6 +16,7 @@ import {
     Mail,
     FileText,
     Users,
+    Target,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
 import { useCurrentWorkerRole } from '../store/adminStore';
@@ -23,6 +24,7 @@ import { useCurrentWorkerRole } from '../store/adminStore';
 const sidebarLinks = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true, adminOnly: false },
     { name: 'Inquiries (CRM)', path: '/admin/inquiries', icon: Mail, end: false, adminOnly: false },
+    { name: 'Leads & Outreach', path: '/admin/leads', icon: Target, end: false, adminOnly: false },
     { name: 'Invoices', path: '/admin/invoices', icon: FileText, end: false, adminOnly: false },
     { name: 'Client Projects', path: '/admin/projects', icon: FolderKanban, end: false, adminOnly: false },
     { name: 'Case Studies', path: '/admin/case-studies', icon: BookOpen, end: false, adminOnly: false },
@@ -35,7 +37,7 @@ export default function AdminLayout() {
     const [authLoading, setAuthLoading] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const navigate = useNavigate();
-    const { role, isAdmin, isManager } = useCurrentWorkerRole();
+    const { role, isAdmin, isManager, loading: roleLoading } = useCurrentWorkerRole();
 
     // No role set = original admin (show all), or admin/manager = show all
     const canSeeAdminPages = !role || isAdmin || isManager;
@@ -64,6 +66,10 @@ export default function AdminLayout() {
 
     if (!user) {
         return <AdminAuth />;
+    }
+
+    if (!roleLoading && role === 'client') {
+        return <Navigate to="/portal/dashboard" replace />;
     }
 
     return (

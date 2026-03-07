@@ -1,5 +1,5 @@
 import {
-    signInWithEmailAndPassword, signInWithCustomToken,
+    signInWithEmailAndPassword,
     signOut, onAuthStateChanged, updatePassword,
     EmailAuthProvider, reauthenticateWithCredential,
 } from 'firebase/auth';
@@ -22,13 +22,13 @@ export async function createClientAccount(
 ): Promise<void> {
     const fn = httpsCallable<
         { email: string; password: string; accessCode: string },
-        { uid: string; customToken: string; success: boolean }
+        { uid: string; success: boolean }
     >(functions, 'createClientAccount');
 
-    const result = await fn({ email, password, accessCode });
+    await fn({ email, password, accessCode });
 
-    // Sign in with the custom token returned by the Cloud Function
-    await signInWithCustomToken(auth, result.data.customToken);
+    // Sign in with the exact same password that was just set
+    await signInWithEmailAndPassword(auth, email, password);
 }
 
 /* ── Sign in existing client ─────────────────────────── */

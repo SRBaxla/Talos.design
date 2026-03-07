@@ -71,10 +71,24 @@ service cloud.firestore {
       allow update, delete: if isAdminOrManager();
     }
 
-    // ── Inquiries ─────────────────────────────────────
+    // ── Inquiries & Leads ─────────────────────────────
     match /inquiries/{inquiryId} {
       allow create: if true;
       allow read, update, delete: if isAdminOrManager();
+    }
+    
+    match /leads/{leadId} {
+      allow read, write: if isAdminOrManager();
+    }
+
+    // ── Settings (e.g., API Limits) ───────────────────
+    match /settings/{docId} {
+      allow read, write: if isAdminOrManager();
+    }
+
+    // ── Map Searches (Caching) ────────────────────────
+    match /mapSearches/{searchId} {
+      allow read, write: if isAdminOrManager();
     }
 
     // ── Invoices ──────────────────────────────────────

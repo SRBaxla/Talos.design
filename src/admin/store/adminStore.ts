@@ -69,7 +69,7 @@ export interface Project {
     updatedAt: Timestamp;
 }
 
-export type WorkerRole = 'admin' | 'manager' | 'developer' | 'designer';
+export type WorkerRole = 'admin' | 'manager' | 'developer' | 'designer' | 'client';
 
 export interface Worker {
     id: string;
@@ -143,18 +143,32 @@ export function useProjects(clientEmail?: string) {
         const currentUid = auth.currentUser?.uid;
 
         // If clientEmail is provided, add a query filter so Firestore rules are satisfied
-        const constraints: any[] = [orderBy('createdAt', 'desc')];
+        // Note: We MUST NOT use orderBy('createdAt', 'desc') when querying by clientEmail
+        // because it requires a composite index that isn't configured. We will sort locally.
+        const constraints: any[] = [];
         if (clientEmail) {
-            constraints.unshift(where('clientEmail', '==', clientEmail));
+            constraints.push(where('clientEmail', '==', clientEmail));
+        } else {
+            constraints.push(orderBy('createdAt', 'desc'));
         }
         const q = query(collection(db, 'projects'), ...constraints);
 
         const unsub = onSnapshot(q, (snap) => {
             let data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project));
+
+            // If we queried by clientEmail, we must sort the results locally
+            if (clientEmail) {
+                data.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+            }
+
             if (!clientEmail && role && role !== 'admin' && role !== 'manager' && currentUid) {
                 data = data.filter(p => p.teamAllotment?.includes(currentUid));
             }
             setProjects(data);
+            setLoading(false);
+        }, (err) => {
+            console.error('Projects subscription error:', err);
+            setProjects([]);
             setLoading(false);
         });
         return unsub;
@@ -181,6 +195,10 @@ export function useCaseStudies() {
             }
             setStudies(data);
             setLoading(false);
+        }, (err) => {
+            console.error('Case Studies subscription error:', err);
+            setStudies([]);
+            setLoading(false);
         });
         return unsub;
     }, [role, roleLoading]);
@@ -203,6 +221,10 @@ export function useTickets(parentCollection: string, parentId: string) {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Ticket));
             setTickets(data);
             setLoading(false);
+        }, (err) => {
+            console.error('Tickets subscription error:', err);
+            setTickets([]);
+            setLoading(false);
         });
         return unsub;
     }, [parentCollection, parentId]);
@@ -219,6 +241,10 @@ export function useWorkers() {
         const unsub = onSnapshot(q, (snap) => {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Worker));
             setWorkers(data);
+            setLoading(false);
+        }, (err) => {
+            console.error('Workers subscription error:', err);
+            setWorkers([]);
             setLoading(false);
         });
         return unsub;
@@ -245,6 +271,10 @@ export function useActivityLogs(workerUid?: string) {
             // In a better implementation we'd filter by workerUid in the query if we add an index.
             // For now, client side filtering is okay.
             setLogs(data.filter(log => log.workerUid === workerUid));
+            setLoading(false);
+        }, (err) => {
+            console.error('Activity logs subscription error:', err);
+            setLogs([]);
             setLoading(false);
         });
         return unsub;
@@ -438,6 +468,10 @@ export function useInquiries() {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Inquiry));
             setInquiries(data);
             setLoading(false);
+        }, (err) => {
+            console.error('Inquiries subscription error:', err);
+            setInquiries([]);
+            setLoading(false);
         });
         return unsub;
     }, []);
@@ -472,6 +506,10 @@ export function useMessages(projectId: string) {
         const unsub = onSnapshot(q, (snap) => {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage));
             setMessages(data);
+            setLoading(false);
+        }, (err) => {
+            console.error('Messages subscription error:', err);
+            setMessages([]);
             setLoading(false);
         });
         return unsub;
@@ -555,14 +593,27 @@ export function useInvoices(clientEmail?: string) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const constraints: any[] = [orderBy('createdAt', 'desc')];
+        // Similar to projects, avoid orderBy when filtering by clientEmail to bypass composite index requirement
+        const constraints: any[] = [];
         if (clientEmail) {
-            constraints.unshift(where('clientEmail', '==', clientEmail));
+            constraints.push(where('clientEmail', '==', clientEmail));
+        } else {
+            constraints.push(orderBy('createdAt', 'desc'));
         }
+
         const q = query(collection(db, 'invoices'), ...constraints);
         const unsub = onSnapshot(q, (snap) => {
-            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Invoice));
+            let data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Invoice));
+
+            if (clientEmail) {
+                data.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
+            }
+
             setInvoices(data);
+            setLoading(false);
+        }, (err) => {
+            console.error('Invoices subscription error:', err);
+            setInvoices([]);
             setLoading(false);
         });
         return unsub;
