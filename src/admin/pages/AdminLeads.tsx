@@ -13,7 +13,8 @@ import {
     MapPin,
     Plus,
     LayoutList,
-    Trash2
+    Trash2,
+    Loader2
 } from 'lucide-react';
 import { collection, addDoc, getDocs, orderBy, query, serverTimestamp, getDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
@@ -32,6 +33,7 @@ interface Lead {
     email: string;
     phone?: string;
     company?: string;
+    website?: string | null;
     status: 'new' | 'contacted' | 'replied' | 'converted';
     createdAt?: ReturnType<typeof serverTimestamp>;
 }
@@ -74,8 +76,9 @@ export default function AdminLeads() {
     const [activeTab, setActiveTab] = useState<'table' | 'maps'>('table');
     const [mapQuery, setMapQuery] = useState('');
     const [mapLocation, setMapLocation] = useState('');
-    const [isSearchingMaps, setIsSearchingMaps] = useState(false);
     const [mapResults, setMapResults] = useState<MapResult[]>([]);
+    const [mapSearchNextPageToken, setMapSearchNextPageToken] = useState<string | null>(null);
+    const [isSearchingMaps, setIsSearchingMaps] = useState(false);
 
     // Track manually inputted emails for map results before saving
     const [mapResultEmails, setMapResultEmails] = useState<{ [place_id: string]: string }>({});
@@ -126,6 +129,8 @@ export default function AdminLeads() {
                 const emailIdx = headers.findIndex((h) => h.includes('email'));
                 const phoneIdx = headers.findIndex((h) => h.includes('phone') || h.includes('number'));
                 const companyIdx = headers.findIndex((h) => h.includes('company') || h.includes('org'));
+                const websiteIdx = headers.findIndex((h) => h.includes('website') || h.includes('url'));
+
 
                 if (nameIdx === -1 && emailIdx === -1) {
                     alert('Could not find Name or Email columns in the Excel file.');
@@ -142,6 +147,8 @@ export default function AdminLeads() {
                     const email = emailIdx !== -1 ? row[emailIdx] : null;
                     const phone = phoneIdx !== -1 ? row[phoneIdx] : '';
                     const company = companyIdx !== -1 ? row[companyIdx] : '';
+                    const website = websiteIdx !== -1 ? row[websiteIdx] : '';
+
 
                     if (email) {
                         newLeads.push({
@@ -149,6 +156,7 @@ export default function AdminLeads() {
                             email,
                             phone: phone ? String(phone) : '',
                             company: company || '',
+                            website: website ? String(website) : '',
                             status: 'new',
                             createdAt: serverTimestamp()
                         });
@@ -240,6 +248,7 @@ Best,
 
         setIsSearchingMaps(true);
         setMapResults([]);
+        setMapSearchNextPageToken(null); // Reset next page token for new search
 
         try {
             // 1. Check Rate Limiter in Firestore
@@ -268,21 +277,23 @@ Best,
             }
 
             // 1.5 Check Cache First
-            const cacheDocId = `${mapQuery.toLowerCase().trim()}_${mapLocation.toLowerCase().trim()} `.replace(/[^a-z0-9]/g, '_');
+            const cacheDocId = `${mapQuery.toLowerCase().trim()}_${mapLocation.toLowerCase().trim()}`.replace(/[^a-z0-9]/g, '_');
             const cacheRef = doc(db, 'mapSearches', cacheDocId);
             const cacheSnap = await getDoc(cacheRef);
 
             if (cacheSnap.exists()) {
                 const cacheData = cacheSnap.data();
-                // Check if cache is strictly newer than 30 days
-                const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
-                const cachedTime = cacheData.updatedAt?.toMillis() || 0;
+                const cacheTimestamp = cacheData.timestamp?.toDate();
+                const now = new Date();
+                const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
 
-                if (Date.now() - cachedTime < CACHE_MAX_AGE_MS) {
-                    console.log("Serving map results from cache.");
-                    setMapResults(cacheData.results as MapResult[]);
+                // If cache is less than 30 days old, use it
+                if (cacheTimestamp && now.getTime() - cacheTimestamp.getTime() < thirtyDaysInMs) {
+                    console.log("Serving from Cache:", cacheDocId);
+                    setMapResults(cacheData.results || []);
+                    setMapSearchNextPageToken(cacheData.nextPageToken || null);
                     setIsSearchingMaps(false);
-                    return; // Exit early, no API call needed!
+                    return;
                 }
             }
 
@@ -294,27 +305,29 @@ Best,
             const { Place } = await importLibrary('places') as any;
 
             const request = {
-                textQuery: `${mapQuery} in ${mapLocation} `,
-                fields: ['id', 'displayName', 'formattedAddress', 'rating', 'websiteURI', 'internationalPhoneNumber'],
+                textQuery: `${mapQuery} in ${mapLocation}`,
+                fields: ['id', 'displayName', 'formattedAddress', 'businessStatus', 'rating', 'websiteURI', 'internationalPhoneNumber'],
                 maxResultCount: 15,
             };
 
             try {
-                const { places } = await Place.searchByText(request);
+                const response = await Place.searchByText(request);
+                const places = response.places;
+                const nextPageToken = (response as any).nextPageToken || null; // The Place.searchByText returns nextPageToken on the response object in JS API
 
                 if (places && places.length > 0) {
                     const parsedResults: MapResult[] = places.map((place: any) => ({
                         place_id: place.id || Math.random().toString(),
                         name: place.displayName || 'Unknown',
-                        address: place.formattedAddress || '',
-                        // Firestore doesn't support 'undefined', use 'null' instead
+                        address: place.formattedAddress || 'Unknown Address',
+                        isOpen: typeof place.businessStatus === 'string'
+                            ? place.businessStatus === 'OPERATIONAL'
+                            : place.isOpen(),
                         rating: place.rating || null,
                         website: place.websiteURI || null,
-                        phoneNumber: place.internationalPhoneNumber || null
+                        phoneNumber: place.internationalPhoneNumber || null,
+                        email: null // Default to null, will allow manual input
                     }));
-
-                    setMapResults(parsedResults);
-                    setMapResultEmails({}); // reset manual emails on new search
 
                     // 3. Increment usage counter
                     await setDoc(limitsRef, {
@@ -323,14 +336,22 @@ Best,
                             count: usageCount + 1
                         }
                     }, { merge: true });
+
                     // 4. Save results to cache
                     await setDoc(cacheRef, {
-                        query: mapQuery,
-                        location: mapLocation,
+                        query: mapQuery.toLowerCase(),
+                        location: mapLocation.toLowerCase(),
                         results: parsedResults,
-                        updatedAt: serverTimestamp()
+                        nextPageToken: nextPageToken,
+                        timestamp: serverTimestamp()
                     });
+
+                    setMapResults(parsedResults);
+                    setMapSearchNextPageToken(nextPageToken);
+                    setMapResultEmails({}); // reset manual emails on new search
                 } else {
+                    setMapResults([]);
+                    setMapSearchNextPageToken(null);
                     alert("No results found.");
                 }
             } catch (searchError: any) {
@@ -340,13 +361,104 @@ Best,
                 } else {
                     alert(`Failed to fetch places.See console.`);
                 }
+            } finally {
+                setIsSearchingMaps(false);
             }
-
-            setIsSearchingMaps(false);
 
         } catch (error) {
             console.error('Error during map search:', error);
             alert('An error occurred while searching. Check console for details.');
+            setIsSearchingMaps(false);
+        }
+    };
+
+    const loadMoreMapResults = async () => {
+        if (!mapSearchNextPageToken) return;
+
+        setIsSearchingMaps(true);
+        try {
+            // Check Daily Limit again before spending another point
+            const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const limitsRef = doc(db, 'settings', 'apiLimits');
+            const limitsSnap = await getDoc(limitsRef);
+
+            let usageCount = 0;
+            let lastUsedDate = '';
+
+            if (limitsSnap.exists()) {
+                const data = limitsSnap.data();
+                if (data.dailyMapsSearches) {
+                    lastUsedDate = data.dailyMapsSearches.date;
+                    if (lastUsedDate === today) {
+                        usageCount = data.dailyMapsSearches.count || 0;
+                    }
+                }
+            }
+
+            const DAILY_LIMIT = 10;
+            if (usageCount >= DAILY_LIMIT) {
+                alert(`Daily limit of ${DAILY_LIMIT} searches reached to prevent unexpected API costs. Please try again tomorrow.`);
+                setIsSearchingMaps(false);
+                return;
+            }
+
+            // Increment Usage
+            await setDoc(limitsRef, {
+                dailyMapsSearches: {
+                    date: today,
+                    count: usageCount + 1
+                }
+            }, { merge: true });
+
+            const { Place } = await importLibrary("places") as any;
+
+            const request: any = {
+                textQuery: `${mapQuery} in ${mapLocation}`,
+                fields: ['id', 'displayName', 'formattedAddress', 'businessStatus', 'rating', 'websiteURI', 'internationalPhoneNumber'],
+                pageToken: mapSearchNextPageToken
+            };
+
+            const response = await Place.searchByText(request);
+            const places = response.places;
+            const newNextPageToken = (response as any).nextPageToken || null;
+
+            if (places && places.length > 0) {
+                const parsedResults: MapResult[] = places.map((place: any) => ({
+                    place_id: place.id || Math.random().toString(),
+                    name: place.displayName || 'Unknown',
+                    address: place.formattedAddress || 'Unknown Address',
+                    isOpen: typeof place.businessStatus === 'string'
+                        ? place.businessStatus === 'OPERATIONAL'
+                        : place.isOpen(),
+                    rating: place.rating || null,
+                    website: place.websiteURI || null,
+                    phoneNumber: place.internationalPhoneNumber || null,
+                    email: null
+                }));
+
+                const combinedResults = [...mapResults, ...parsedResults];
+
+                // Update Cache with combined results
+                const cacheDocId = `${mapQuery.toLowerCase().trim()}_${mapLocation.toLowerCase().trim()}`.replace(/[^a-z0-9]/g, '_');
+                const cacheRef = doc(db, 'mapSearches', cacheDocId);
+
+                await setDoc(cacheRef, {
+                    query: mapQuery.toLowerCase(),
+                    location: mapLocation.toLowerCase(),
+                    results: combinedResults,
+                    nextPageToken: newNextPageToken,
+                    timestamp: serverTimestamp() // Refresh the cache timer
+                });
+
+                setMapResults(combinedResults);
+                setMapSearchNextPageToken(newNextPageToken);
+            } else {
+                setMapSearchNextPageToken(null); // No more results
+            }
+        } catch (error) {
+            console.error('Error loading more map results:', error);
+            alert('An error occurred while loading more results.');
+        } finally {
             setIsSearchingMaps(false);
         }
     };
@@ -359,6 +471,7 @@ Best,
                 company: mapped.name,
                 email: assignedEmail,
                 phone: mapped.phoneNumber || '',
+                website: mapped.website || '', // Added website
                 status: 'new',
                 createdAt: serverTimestamp()
             };
@@ -481,9 +594,9 @@ Best,
                     <div className="flex bg-[rgba(255,255,255,0.02)] p-1 rounded-xl border border-[rgba(255,255,255,0.05)]">
                         <button
                             onClick={() => setActiveTab('table')}
-                            className={`flex items - center gap - 2 px - 4 py - 2 rounded - lg font - medium text - sm transition - all ${activeTab === 'table'
-                                    ? 'bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] shadow-sm'
-                                    : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'table'
+                                ? 'bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] shadow-sm'
+                                : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
                                 } `}
                         >
                             <LayoutList size={16} />
@@ -491,9 +604,9 @@ Best,
                         </button>
                         <button
                             onClick={() => setActiveTab('maps')}
-                            className={`flex items - center gap - 2 px - 4 py - 2 rounded - lg font - medium text - sm transition - all ${activeTab === 'maps'
-                                    ? 'bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] shadow-sm'
-                                    : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'maps'
+                                ? 'bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] shadow-sm'
+                                : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
                                 } `}
                         >
                             <MapPin size={16} />
@@ -645,6 +758,19 @@ Best,
                                     </tbody>
                                 </table>
                             </div>
+
+                            {mapSearchNextPageToken && (
+                                <div className="p-4 border-t border-[rgba(255,255,255,0.05)] flex justify-center">
+                                    <button
+                                        onClick={loadMoreMapResults}
+                                        disabled={isSearchingMaps}
+                                        className="px-6 py-2 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] rounded-full text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    >
+                                        {isSearchingMaps ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                        Load More Results
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -683,6 +809,7 @@ Best,
                                         <th className="p-4">Name</th>
                                         <th className="p-4">Contact</th>
                                         <th className="p-4">Company</th>
+                                        <th className="p-4">Website</th> {/* New Website Column */}
                                         <th className="p-4">Status</th>
                                         <th className="p-4 text-right pr-6">Actions</th>
                                     </tr>
@@ -690,7 +817,7 @@ Best,
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan={5} className="p-8 text-center text-[var(--text-muted)]">
+                                            <td colSpan={7} className="p-8 text-center text-[var(--text-muted)]">
                                                 <div className="flex justify-center mb-2">
                                                     <div className="w-6 h-6 border-2 border-[rgba(255,255,255,0.1)] border-t-[var(--accent-orange)] rounded-full animate-spin" />
                                                 </div>
@@ -699,13 +826,13 @@ Best,
                                         </tr>
                                     ) : filteredLeads.length === 0 ? (
                                         <tr>
-                                            <td colSpan={5} className="p-8 text-center text-[var(--text-muted)]">
+                                            <td colSpan={7} className="p-8 text-center text-[var(--text-muted)]">
                                                 No leads found. Import an Excel file or Discover via Maps to get started.
                                             </td>
                                         </tr>
                                     ) : (
                                         filteredLeads.map((lead) => (
-                                            <tr key={lead.id} className={`border - b border - [rgba(255, 255, 255, 0.03)] hover: bg - [rgba(255, 255, 255, 0.02)] transition - colors group ${selectedLeadIds.includes(lead.id as string) ? 'bg-[var(--accent-orange)]/5' : ''} `}>
+                                            <tr key={lead.id} className={`border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)] transition-colors group ${selectedLeadIds.includes(lead.id as string) ? 'bg-[var(--accent-orange)]/5' : ''} `}>
                                                 <td className="p-4 pl-6 w-12" onClick={(e) => e.stopPropagation()}>
                                                     <input
                                                         type="checkbox"
@@ -743,6 +870,23 @@ Best,
                                                 </td>
                                                 <td className="p-4 text-[var(--text-secondary)] text-sm">
                                                     {lead.company || '-'}
+                                                </td>
+                                                <td className="p-4">
+                                                    {lead.website ? (
+                                                        <a
+                                                            href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-400 hover:text-blue-300 hover:underline max-w-[150px] truncate block text-sm"
+                                                            title={lead.website}
+                                                        >
+                                                            {new URL(lead.website.startsWith('http') ? lead.website : `https://${lead.website}`).hostname.replace('www.', '')}
+                                                        </a>
+                                                    ) : (
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)]">
+                                                            No Website
+                                                        </span>
+                                                    )}
                                                 </td>
                                                 <td className="p-4">
                                                     <span className="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] border border-[rgba(255,255,255,0.1)]">
