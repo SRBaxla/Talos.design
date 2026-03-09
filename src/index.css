@@ -6,6 +6,7 @@
 @tailwind utilities;
 
 :root {
+    scroll-behavior: smooth;
     /* Colors — Teal/Sand palette (#1B3C53 · #234C6A · #456882 · #D2C1B6) */
     --bg-base: #0f2233;
     /* deeper than palette — true dark ocean */
@@ -385,6 +386,7 @@ button {
     .admin-form-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .admin-form-grid-3 {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -402,8 +404,8 @@ button {
     color: var(--text-secondary);
 }
 
-.admin-input, 
-.admin-select, 
+.admin-input,
+.admin-select,
 .admin-textarea {
     width: 100%;
     background-color: rgba(15, 34, 51, 0.5);
@@ -416,8 +418,8 @@ button {
     transition: all var(--transition-fast);
 }
 
-.admin-input:focus, 
-.admin-select:focus, 
+.admin-input:focus,
+.admin-select:focus,
 .admin-textarea:focus {
     outline: none;
     border-color: var(--accent-orange);
@@ -425,7 +427,7 @@ button {
     background-color: rgba(15, 34, 51, 0.8);
 }
 
-.admin-input::placeholder, 
+.admin-input::placeholder,
 .admin-textarea::placeholder {
     color: var(--text-muted);
     opacity: 0.5;
@@ -504,7 +506,8 @@ button {
 }
 
 .admin-tag button:hover {
-    color: #ef4444; /* red */
+    color: #ef4444;
+    /* red */
 }
 
 .admin-modal-actions {

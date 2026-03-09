@@ -29,7 +29,7 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold mb-6">Company</h3>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
-                            <li><Link to="/about-us" className="hover:text-white transition-colors">About Us</Link></li>
+                            <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
                             <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
                             <li><Link to="/legal" className="hover:text-white transition-colors">Legal</Link></li>
                         </ul>
@@ -38,7 +38,7 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold mb-6">Connect</h3>
                         <div className="flex gap-4 text-[var(--text-muted)]">
-                            <a href="#" className="hover:text-white transition-colors" aria-label="Twitter"><Twitter size={20} /></a>
+                            <a href="https://x.com/talosDesign" className="hover:text-white transition-colors" aria-label="Twitter"><Twitter size={20} /></a>
                             <a href="#" className="hover:text-white transition-colors" aria-label="Github"><Github size={20} /></a>
                         </div>
                     </div>

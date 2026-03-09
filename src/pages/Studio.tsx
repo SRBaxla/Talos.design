@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Heart, Zap, Globe, ArrowRight, CheckCircle, Phone, FileText, Hammer, Rocket } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+// import NetworkScene from '../components/NetworkScene';
 
 const values = [
     {
@@ -96,8 +97,8 @@ export default function Studio() {
 
             {/* ── STICKY HERO ──────────────────────────────────────────────── */}
             <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center z-0 overflow-hidden">
+                {/* <NetworkScene /> */}
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[var(--accent-orange)] opacity-[0.04] blur-[120px] rounded-full pointer-events-none" />
-                <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-[var(--accent-cyan)] opacity-[0.03] blur-[150px] rounded-full pointer-events-none" />
 
                 <motion.div
                     style={{ opacity: heroOpacity, scale: heroScale }}

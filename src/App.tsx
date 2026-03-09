@@ -22,7 +22,6 @@ const OfferHospitality = lazy(() => import('./pages/OfferHospitality'));
 const OfferEcommerce = lazy(() => import('./pages/OfferEcommerce'));
 const OfferProfessional = lazy(() => import('./pages/OfferProfessional'));
 const Legal = lazy(() => import('./pages/Legal'));
-const AboutUs = lazy(() => import('./pages/AboutUs'));
 
 // ── Admin panel — lazy loaded as a group ────────────────────────────────────
 const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
@@ -54,7 +53,6 @@ function App() {
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>
         <Routes>
-          {/* Public Site */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="services" element={<Services />} />
@@ -72,7 +70,6 @@ function App() {
             <Route path="offers/ecommerce" element={<OfferEcommerce />} />
             <Route path="offers/professional" element={<OfferProfessional />} />
             <Route path="legal" element={<Legal />} />
-            <Route path="about-us" element={<AboutUs />} />
           </Route>
 
           {/* Client Portal */}
