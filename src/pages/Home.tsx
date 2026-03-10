@@ -1,7 +1,7 @@
 import { ExternalLink, LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Sparkles, Mail, Clock, Send, Heart, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { addInquiry } from '../admin/store/adminStore';
 import { sendAutoResponderEmail } from '../lib/emailService';
 
@@ -77,12 +77,6 @@ export default function Home() {
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsTransmitting(true);
@@ -109,7 +103,7 @@ export default function Home() {
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col flex-grow w-full">
+    <div className="flex flex-col flex-grow w-full">
 
       {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
       <section id="hero" className="relative w-full min-h-[90vh] flex flex-col items-center justify-center overflow-hidden border-b border-[rgba(255,255,255,0.05)]">
@@ -159,7 +153,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
-      <section id="solutions" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]">
+      <section id="solutions" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]" style={{ willChange: 'transform' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -212,7 +206,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
-      <section id="packages" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]">
+      <section id="packages" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]" style={{ willChange: 'transform' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -259,7 +253,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
-      <section id="studio" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]">
+      <section id="studio" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]" style={{ willChange: 'transform' }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full max-w-5xl">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -301,7 +295,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 5: INDUSTRIES ───────────────────────────────────── */}
-      <section id="industries" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]">
+      <section id="industries" className="container py-32 md:py-40 flex flex-col items-center border-b border-[var(--border-color)]" style={{ willChange: 'transform' }}>
         <div className="w-full max-w-5xl">
           <div className="flex items-center gap-3 mb-2">
             <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]" />
@@ -370,7 +364,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 6: CONTACT ──────────────────────────────────────── */}
-      <section id="contact" className="container py-32 md:py-40 border-b border-[var(--border-color)]">
+      <section id="contact" className="container py-32 md:py-40 border-b border-[var(--border-color)]" style={{ willChange: 'transform' }}>
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             <div className="lg:col-span-12 mb-8">
@@ -463,8 +457,6 @@ export default function Home() {
           <Link to="/admin" className="text-[10px] font-mono uppercase hover:text-[var(--accent-orange)]">Admin Login</Link>
         </div>
       </footer>
-
     </div>
   );
 }
-

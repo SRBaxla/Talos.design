@@ -5,15 +5,7 @@ export default function ScrollToTop() {
     const { pathname, hash } = useLocation();
 
     useEffect(() => {
-        if (hash) {
-            // Wait for the page to render, then scroll to the element
-            setTimeout(() => {
-                const element = document.querySelector(hash);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 100);
-        } else {
+        if (!hash) {
             window.scrollTo(0, 0);
         }
     }, [pathname, hash]);
