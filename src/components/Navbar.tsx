@@ -1,27 +1,41 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { scrollToProgress, SECTION_Z_PROGRESS } from '../utils/scrollUtils';
 import logo from '../assets/bitmap.png';
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const navLinks = [
-        { name: 'Solutions', path: '#solutions' },
-        { name: 'Packages', path: '#packages' },
-        { name: 'Studio', path: '#studio' },
-        { name: 'Contact', path: '#contact' },
+        { name: 'Solutions', id: 'solutions' },
+        { name: 'Packages', id: 'packages' },
+        { name: 'Studio', id: 'studio' },
+        { name: 'Contact', id: 'contact' },
     ];
 
     const NavItem = ({ link, mobile = false }: { link: typeof navLinks[0], mobile?: boolean }) => {
-        const handleClick = () => {
+        const handleClick = (e: React.MouseEvent) => {
+            e.preventDefault();
+            if (location.pathname !== '/') {
+                navigate(`/#${link.id}`);
+                return;
+            }
+
+            const progress = SECTION_Z_PROGRESS[link.id as keyof typeof SECTION_Z_PROGRESS];
+            if (progress !== undefined) {
+                scrollToProgress(progress);
+            }
+
             if (mobile) setIsMobileMenuOpen(false);
         };
 
         return (
             <a
-                href={link.path}
+                href={`#${link.id}`}
                 onClick={handleClick}
                 className={mobile
                     ? "text-lg font-medium p-2 rounded-md transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]"
@@ -56,12 +70,16 @@ export function Navbar() {
                         <Shield size={14} />
                         <span>Admin</span>
                     </NavLink>
-                    <a href="#contact" className="btn btn-primary flex items-center justify-center p-2 sm:px-4" style={{ padding: '0.5rem 1rem' }}>
+                    <button
+                        onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
+                        className="btn btn-primary flex items-center justify-center p-2 sm:px-4"
+                        style={{ padding: '0.5rem 1rem' }}
+                    >
                         <span className="hidden sm:inline mr-2">Get Started</span>
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                    </a>
+                    </button>
 
                     {/* Mobile Menu Toggle Button */}
                     <button
