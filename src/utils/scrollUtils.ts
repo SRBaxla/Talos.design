@@ -1,11 +1,21 @@
-// ── Cinematic scroll animation with cubic easing ──────────────────────────
-// Replaces native smooth scroll with a controlled RAF-based animation
-// that matches the scroll-jacking transition feel.
+// ── Cinematic scroll animation — continuous sweep easing ──────────────────
+// Accelerates through the journey, with a soft landing at the end.
+// Feels like one fluid camera sweep from source → destination.
 
 let isAnimating = false;
 
-const easeInOutCubic = (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// Custom sweep easing: accelerates for 80%, gently decelerates for the final 20%
+// This creates the feeling of a single, continuous motion.
+const easeSweep = (t: number): number => {
+    if (t < 0.8) {
+        // Smooth acceleration (cubic ease-in, normalized to 0→0.92 over 80% of time)
+        const p = t / 0.8;
+        return p * p * p * 0.92;
+    }
+    // Gentle deceleration for the final 20% (soft landing)
+    const p = (t - 0.8) / 0.2;
+    return 0.92 + (1 - (1 - p) * (1 - p)) * 0.08;
+};
 
 export const scrollToProgress = (progress: number) => {
     if (isAnimating) return;
@@ -20,13 +30,13 @@ export const scrollToProgress = (progress: number) => {
     if (Math.abs(distance) < 5) return; // Already there
 
     isAnimating = true;
-    const duration = Math.min(1800, Math.max(1000, Math.abs(distance) / 3));
+    const duration = Math.min(1600, Math.max(900, Math.abs(distance) / 4));
     const startTime = performance.now();
 
     const animate = (now: number) => {
         const elapsed = now - startTime;
         const t = Math.min(elapsed / duration, 1);
-        const eased = easeInOutCubic(t);
+        const eased = easeSweep(t);
 
         window.scrollTo(0, startScroll + distance * eased);
 

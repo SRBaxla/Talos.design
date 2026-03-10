@@ -104,14 +104,20 @@ function useScrollSnap(containerRef: React.RefObject<HTMLDivElement | null>) {
     const duration = Math.min(2000, Math.max(1000, Math.abs(distance) / 4));
     const startTime = performance.now();
 
-    // Ease-in-out cubic
-    const easeInOutCubic = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    // Sweep easing: accelerates for 80%, soft deceleration for final 20%
+    const easeSweep = (t: number): number => {
+      if (t < 0.8) {
+        const p = t / 0.8;
+        return p * p * p * 0.92;
+      }
+      const p = (t - 0.8) / 0.2;
+      return 0.92 + (1 - (1 - p) * (1 - p)) * 0.08;
+    };
 
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = easeInOutCubic(progress);
+      const eased = easeSweep(progress);
 
       window.scrollTo(0, startScroll + distance * eased);
 
@@ -130,6 +136,10 @@ function useScrollSnap(containerRef: React.RefObject<HTMLDivElement | null>) {
   }, [containerRef]);
 
   useEffect(() => {
+    // Disable scroll-jacking on mobile — content overflows viewport
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
+
     let ticking = false;
 
     const handleWheel = (e: WheelEvent) => {
@@ -404,15 +414,15 @@ export default function Home() {
         {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
         <ZSection progress={scrollYProgress} range={[0.2, 0.4]}>
           <section id="solutions" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-6 md:mb-8">
-              <div className="badge badge-active mb-4 font-mono text-xs mx-auto">[SOLUTIONS]</div>
-              <h2 className="text-3xl md:text-5xl font-display uppercase mb-3">Built for <span className="text-gradient-orange">Performance</span></h2>
-              <p className="text-[var(--text-secondary)] max-w-xl mx-auto text-sm">Three focused services delivered end-to-end for businesses that want results.</p>
+            <div className="text-center mb-4 md:mb-8">
+              <div className="badge badge-active mb-2 md:mb-4 font-mono text-xs mx-auto">[SOLUTIONS]</div>
+              <h2 className="text-2xl md:text-5xl font-display uppercase mb-2 md:mb-3">Built for <span className="text-gradient-orange">Performance</span></h2>
+              <p className="text-[var(--text-secondary)] max-w-xl mx-auto text-xs md:text-sm">Three focused services delivered end-to-end for businesses that want results.</p>
             </div>
 
-            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
               {SERVICES.map((svc) => (
-                <div key={svc.id} className="glass-panel p-5 rounded-2xl flex flex-col" style={{ borderColor: svc.accentBorder }}>
+                <div key={svc.id} className="glass-panel p-3 md:p-5 rounded-2xl flex flex-col" style={{ borderColor: svc.accentBorder }}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}>
                       <svc.icon size={16} style={{ color: svc.accentColor }} />
@@ -425,13 +435,20 @@ export default function Home() {
                   <p className="text-xs font-medium mb-2" style={{ color: svc.accentColor }}>{svc.benefit}</p>
                   <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed mb-3">{svc.description}</p>
                   <div className="mt-auto pt-3 border-t border-[var(--border-color)]">
-                    <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
+                    <ul className="grid grid-cols-2 gap-x-2 gap-y-1 mb-3">
                       {svc.features.map(f => (
                         <li key={f} className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
                           <CheckCircle size={10} className="shrink-0" style={{ color: svc.accentColor }} /> {f}
                         </li>
                       ))}
                     </ul>
+                    <Link
+                      to={`/services/${svc.id}`}
+                      className="text-[11px] font-semibold transition-colors hover:brightness-125 flex items-center gap-1"
+                      style={{ color: svc.accentColor }}
+                    >
+                      Learn More <span className="text-xs">→</span>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -442,31 +459,39 @@ export default function Home() {
         {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
         <ZSection progress={scrollYProgress} range={[0.4, 0.6]}>
           <section id="packages" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-6 md:mb-8">
-              <div className="badge badge-active mb-4 font-mono text-xs mx-auto">[PACKAGES]</div>
-              <h2 className="text-3xl md:text-5xl font-display uppercase mb-3">Choose Your <span className="text-[var(--accent-cyan)]">Setup</span></h2>
+            <div className="text-center mb-4 md:mb-8">
+              <div className="badge badge-active mb-2 md:mb-4 font-mono text-xs mx-auto">[PACKAGES]</div>
+              <h2 className="text-2xl md:text-5xl font-display uppercase mb-2 md:mb-3">Choose Your <span className="text-[var(--accent-cyan)]">Setup</span></h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-6xl">
               {PROJECTS.map((project) => {
                 const a = accentMap[project.accent];
                 return (
-                  <div key={project.id} className="glass-panel p-6 flex flex-col group" style={{ borderColor: a.border }}>
-                    <span className="text-[10px] font-mono uppercase tracking-widest mb-4" style={{ color: a.color }}>{project.label}</span>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: a.bg }}>
+                  <div key={project.id} className="glass-panel p-4 md:p-6 flex flex-col group" style={{ borderColor: a.border }}>
+                    <span className="text-[10px] font-mono uppercase tracking-widest mb-2 md:mb-4" style={{ color: a.color }}>{project.label}</span>
+                    <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-4">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: a.bg }}>
                         <project.icon size={20} style={{ color: a.color }} />
                       </div>
                       <h3 className="text-lg font-display font-bold">{project.title}</h3>
                     </div>
-                    <p className="text-[var(--text-secondary)] text-xs mb-6 flex-grow">{project.description}</p>
-                    <button
-                      onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
-                      className="btn btn-outline w-full text-center text-xs py-2"
-                      style={{ color: a.color, borderColor: a.border }}
-                    >
-                      Book Now
-                    </button>
+                    <p className="text-[var(--text-secondary)] text-xs mb-2 md:mb-4 flex-grow">{project.description}</p>
+                    <div className="flex gap-2">
+                      <Link
+                        to={project.path}
+                        className="btn btn-outline flex-1 text-center text-xs py-2"
+                        style={{ color: a.color, borderColor: a.border }}
+                      >
+                        Learn More
+                      </Link>
+                      <button
+                        onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
+                        className="btn btn-primary flex-1 text-center text-xs py-2"
+                      >
+                        Book Now
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -495,6 +520,12 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
+                <Link
+                  to="/about"
+                  className="btn btn-outline mt-6 text-sm py-2 px-6 inline-flex items-center gap-2"
+                >
+                  About Us <span>→</span>
+                </Link>
               </div>
 
               <div className="relative glass-panel rounded-3xl overflow-hidden flex items-center justify-center p-8 md:p-12" style={{ minHeight: '280px' }}>
