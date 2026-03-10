@@ -23,7 +23,7 @@ function Scene() {
 
     useFrame(() => {
         if (group.current) {
-            const damping = 0.05;
+            const damping = 0.03;
             scrollCurrent.current = THREE.MathUtils.lerp(
                 scrollCurrent.current,
                 scrollTarget.current,

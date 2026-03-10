@@ -6,7 +6,6 @@
 @tailwind utilities;
 
 :root {
-    scroll-behavior: smooth;
     /* Colors — Teal/Sand palette (#1B3C53 · #234C6A · #456882 · #D2C1B6) */
     --bg-base: #0f2233;
     /* deeper than palette — true dark ocean */

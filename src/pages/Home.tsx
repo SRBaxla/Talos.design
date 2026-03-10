@@ -1,7 +1,7 @@
 import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Mail, Clock, Send, Heart, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { addInquiry } from '../admin/store/adminStore';
 import { sendAutoResponderEmail } from '../lib/emailService';
 import { scrollToProgress, SECTION_Z_PROGRESS } from '../utils/scrollUtils';
@@ -76,22 +76,220 @@ interface ZSectionProps {
   range: [number, number];
 }
 
+// ── Scroll-snap section boundaries and snap targets ──────────────────────────
+const SECTION_RANGES: [number, number][] = [
+  [0, 0.2], [0.2, 0.4], [0.4, 0.6], [0.6, 0.8], [0.8, 1.0],
+];
+const SNAP_TARGETS = SECTION_RANGES.map(([s, e]) => (s + e) / 2); // center of each section
+
+// ── Auto-scroll snap hook ────────────────────────────────────────────────────
+function useScrollSnap(containerRef: React.RefObject<HTMLDivElement | null>) {
+  const currentSection = useRef(0);
+  const isSnapping = useRef(false);
+  const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastScrollY = useRef(0);
+
+  const snapToSection = useCallback((targetIndex: number) => {
+    if (!containerRef.current) return;
+    if (targetIndex < 0 || targetIndex >= SNAP_TARGETS.length) return;
+    if (isSnapping.current) return;
+
+    isSnapping.current = true;
+    currentSection.current = targetIndex;
+
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const targetScroll = SNAP_TARGETS[targetIndex] * scrollHeight;
+    const startScroll = window.scrollY;
+    const distance = targetScroll - startScroll;
+    const duration = Math.min(2000, Math.max(1000, Math.abs(distance) / 4));
+    const startTime = performance.now();
+
+    // Ease-in-out cubic
+    const easeInOutCubic = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeInOutCubic(progress);
+
+      window.scrollTo(0, startScroll + distance * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Cooldown before allowing next snap
+        cooldownTimer.current = setTimeout(() => {
+          isSnapping.current = false;
+          lastScrollY.current = window.scrollY;
+        }, 150);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [containerRef]);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (isSnapping.current) {
+        e.preventDefault();
+        return;
+      }
+
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+
+      const scrollProgress = window.scrollY / scrollHeight;
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const idx = currentSection.current;
+
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          const [s, end] = SECTION_RANGES[idx];
+          const span = end - s;
+
+          // Scrolling DOWN: trigger snap when entering exit zone (last 16% of section)
+          if (direction > 0 && idx < SNAP_TARGETS.length - 1) {
+            const exitThreshold = end - span * 0.16;
+            if (scrollProgress >= exitThreshold) {
+              snapToSection(idx + 1);
+            }
+          }
+          // Scrolling UP: trigger snap when entering entrance zone (first 16% of section)
+          else if (direction < 0 && idx > 0) {
+            const enterThreshold = s + span * 0.16;
+            if (scrollProgress <= enterThreshold) {
+              snapToSection(idx - 1);
+            }
+          }
+
+          ticking = false;
+        });
+      }
+    };
+
+    // Also handle touch scrolling
+    let touchStartY = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isSnapping.current) {
+        e.preventDefault();
+        return;
+      }
+
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+
+      const scrollProgress = window.scrollY / scrollHeight;
+      const touchDelta = touchStartY - e.touches[0].clientY;
+      const direction = touchDelta > 0 ? 1 : -1;
+      const idx = currentSection.current;
+
+      if (Math.abs(touchDelta) > 30) { // Min touch threshold
+        const [s, end] = SECTION_RANGES[idx];
+        const span = end - s;
+
+        if (direction > 0 && idx < SNAP_TARGETS.length - 1) {
+          const exitThreshold = end - span * 0.16;
+          if (scrollProgress >= exitThreshold) {
+            snapToSection(idx + 1);
+          }
+        } else if (direction < 0 && idx > 0) {
+          const enterThreshold = s + span * 0.16;
+          if (scrollProgress <= enterThreshold) {
+            snapToSection(idx - 1);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    // Sync currentSection when programmatic scroll (navbar/button) completes
+    const handleSnapSync = (e: Event) => {
+      const { progress } = (e as CustomEvent).detail;
+      let closest = 0;
+      let minDist = Infinity;
+      SNAP_TARGETS.forEach((t, i) => {
+        const dist = Math.abs(progress - t);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      currentSection.current = closest;
+      isSnapping.current = false;
+      lastScrollY.current = window.scrollY;
+    };
+    window.addEventListener('scroll-snap-sync', handleSnapSync);
+
+    // Init: snap to closest section on mount
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollHeight > 0) {
+      const progress = window.scrollY / scrollHeight;
+      let closest = 0;
+      let minDist = Infinity;
+      SNAP_TARGETS.forEach((t, i) => {
+        const dist = Math.abs(progress - t);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      currentSection.current = closest;
+    }
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('scroll-snap-sync', handleSnapSync);
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+    };
+  }, [snapToSection]);
+
+  return { snapToSection };
+}
+
 function ZSection({ children, progress, range }: ZSectionProps) {
+  const [s, e] = range;
+  const span = e - s;
+  const isFirst = s === 0;
+  const isLast = e === 1;
+
+  // Fast entrance (4% of span) → long hold → dramatic exit (12% of span)
+  const enterEnd = s + span * 0.04;
+  const exitStart = e - span * 0.12;
+
+  // Scale: snap in from 0.92, hold at 1, swoop out to 2.5
   const scale = useTransform(progress,
-    [range[0], (range[0] + range[1]) / 2, range[1]],
-    [0.8, 1, 3]
+    [s, enterEnd, exitStart, e],
+    [isFirst ? 1 : 0.92, 1, 1, isLast ? 1 : 2.5]
   );
 
-  const startOpacity = range[0] === 0 ? 1 : 0;
-  const endOpacity = range[1] === 1 ? 1 : 0;
-
+  // Opacity: snap in quickly, hold, fade out during exit
   const opacity = useTransform(progress,
-    [range[0], range[0] + 0.05, (range[1] + range[0]) / 2, range[1] - 0.05, range[1]],
-    [startOpacity, 1, 1, 1, endOpacity]
+    [s, enterEnd, exitStart, e],
+    [isFirst ? 1 : 0, 1, 1, isLast ? 1 : 0]
   );
+
+  // Y offset: small slide-in from below, dramatic slide-out upward
+  const y = useTransform(progress,
+    [s, enterEnd, exitStart, e],
+    [isFirst ? 0 : 30, 0, 0, isLast ? 0 : -80]
+  );
+
+  // Blur: very slight on entrance, more on exit for depth
+  const blurValue = useTransform(progress,
+    [s, enterEnd, exitStart, e],
+    [isFirst ? 0 : 3, 0, 0, isLast ? 0 : 4]
+  );
+  const filter = useTransform(blurValue, (v) => `blur(${v}px)`);
 
   const pointerEvents = useTransform(progress, (v) =>
-    v >= range[0] && v <= range[1] ? 'auto' : 'none'
+    v >= s && v <= e ? 'auto' : 'none'
   );
 
   return (
@@ -99,6 +297,8 @@ function ZSection({ children, progress, range }: ZSectionProps) {
       style={{
         scale,
         opacity,
+        y,
+        filter,
         pointerEvents: pointerEvents as any,
         position: 'absolute',
         inset: 0,
@@ -106,7 +306,8 @@ function ZSection({ children, progress, range }: ZSectionProps) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 10
+        zIndex: 10,
+        willChange: 'transform, opacity, filter',
       }}
     >
       {children}
@@ -127,6 +328,9 @@ export default function Home() {
     target: containerRef,
     offset: ["start start", "end end"]
   });
+
+  // Auto-scroll snap hook
+  useScrollSnap(containerRef);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,7 +358,7 @@ export default function Home() {
   };
 
   return (
-    <div ref={containerRef} className="relative h-[1000vh] w-full bg-transparent">
+    <div ref={containerRef} className="relative h-[1500vh] w-full bg-transparent">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
 
         {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
@@ -200,31 +404,31 @@ export default function Home() {
         {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
         <ZSection progress={scrollYProgress} range={[0.2, 0.4]}>
           <section id="solutions" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-10 md:mb-16">
-              <div className="badge badge-active mb-6 font-mono text-xs mx-auto">[SOLUTIONS]</div>
-              <h2 className="text-4xl md:text-6xl font-display uppercase mb-6">Built for <span className="text-gradient-orange">Performance</span></h2>
-              <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">Three focused services delivered end-to-end for businesses that want results.</p>
+            <div className="text-center mb-6 md:mb-8">
+              <div className="badge badge-active mb-4 font-mono text-xs mx-auto">[SOLUTIONS]</div>
+              <h2 className="text-3xl md:text-5xl font-display uppercase mb-3">Built for <span className="text-gradient-orange">Performance</span></h2>
+              <p className="text-[var(--text-secondary)] max-w-xl mx-auto text-sm">Three focused services delivered end-to-end for businesses that want results.</p>
             </div>
 
-            <div className="w-full max-w-5xl grid grid-cols-1 gap-8">
+            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
               {SERVICES.map((svc) => (
-                <div key={svc.id} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center glass-panel p-6 rounded-3xl" style={{ borderColor: svc.accentBorder }}>
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}>
-                        <svc.icon size={18} style={{ color: svc.accentColor }} />
-                      </div>
-                      <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
+                <div key={svc.id} className="glass-panel p-5 rounded-2xl flex flex-col" style={{ borderColor: svc.accentBorder }}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}>
+                      <svc.icon size={16} style={{ color: svc.accentColor }} />
                     </div>
-                    <h3 className="text-2xl font-display uppercase mb-2">{svc.title}</h3>
-                    <p className="text-sm font-medium mb-2" style={{ color: svc.accentColor }}>{svc.benefit}</p>
-                    <p className="text-[var(--text-secondary)] text-xs leading-relaxed">{svc.description}</p>
+                    <div>
+                      <h3 className="text-base font-display uppercase font-bold leading-tight">{svc.title}</h3>
+                      <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
+                    </div>
                   </div>
-                  <div className="bg-[var(--bg-surface-elevated)] p-4 rounded-2xl border border-[var(--border-color)]">
-                    <ul className="grid grid-cols-1 gap-2">
+                  <p className="text-xs font-medium mb-2" style={{ color: svc.accentColor }}>{svc.benefit}</p>
+                  <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed mb-3">{svc.description}</p>
+                  <div className="mt-auto pt-3 border-t border-[var(--border-color)]">
+                    <ul className="grid grid-cols-2 gap-x-2 gap-y-1">
                       {svc.features.map(f => (
-                        <li key={f} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-                          <CheckCircle size={12} style={{ color: svc.accentColor }} /> {f}
+                        <li key={f} className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
+                          <CheckCircle size={10} className="shrink-0" style={{ color: svc.accentColor }} /> {f}
                         </li>
                       ))}
                     </ul>
@@ -238,9 +442,9 @@ export default function Home() {
         {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
         <ZSection progress={scrollYProgress} range={[0.4, 0.6]}>
           <section id="packages" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-10 md:mb-16">
-              <div className="badge badge-active mb-6 font-mono text-xs mx-auto">[PACKAGES]</div>
-              <h2 className="text-4xl md:text-6xl font-display uppercase mb-6">Choose Your <span className="text-[var(--accent-cyan)]">Setup</span></h2>
+            <div className="text-center mb-6 md:mb-8">
+              <div className="badge badge-active mb-4 font-mono text-xs mx-auto">[PACKAGES]</div>
+              <h2 className="text-3xl md:text-5xl font-display uppercase mb-3">Choose Your <span className="text-[var(--accent-cyan)]">Setup</span></h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
@@ -293,7 +497,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative glass-panel rounded-3xl overflow-hidden aspect-square flex items-center justify-center p-8 md:p-12">
+              <div className="relative glass-panel rounded-3xl overflow-hidden flex items-center justify-center p-8 md:p-12" style={{ minHeight: '280px' }}>
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
                 <div className="relative z-10 text-center">
                   <div className="text-5xl md:text-6xl mb-4">🇮🇳</div>
@@ -308,12 +512,12 @@ export default function Home() {
         <ZSection progress={scrollYProgress} range={[0.8, 1.0]}>
           <section id="contact" className="container px-6">
             <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
+              <div className="text-center mb-8">
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse" />
                   <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">We're available</span>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-display tracking-tight mb-5 uppercase">Let's <span className="text-gradient-orange">Talk.</span></h2>
+                <h2 className="text-3xl md:text-5xl font-display tracking-tight mb-4 uppercase">Let's <span className="text-gradient-orange">Talk.</span></h2>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -385,7 +589,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <footer className="mt-12 pt-8 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] opacity-40">
+              <footer className="mt-8 pt-6 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] opacity-40">
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] mb-4 md:mb-0">© 2026 TALOS DESIGN</div>
                 <div className="flex gap-8">
                   <button

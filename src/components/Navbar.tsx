@@ -50,7 +50,16 @@ export function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-x-0 border-t-0 border-b border-b-[var(--border-color)]" style={{ borderRadius: 0, padding: '1rem 0' }}>
             <div className="container flex items-center justify-between">
-                <NavLink to="/" className="flex items-center gap-2">
+                <NavLink
+                    to="/"
+                    className="flex items-center gap-2"
+                    onClick={(e) => {
+                        if (location.pathname === '/') {
+                            e.preventDefault();
+                            scrollToProgress(SECTION_Z_PROGRESS.hero);
+                        }
+                    }}
+                >
                     <img src={logo} alt="Talos.design" className="h-8" />
                 </NavLink>
 
