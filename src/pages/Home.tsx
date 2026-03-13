@@ -1,10 +1,10 @@
-import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Mail, Clock, Send, Heart, Zap } from 'lucide-react';
+import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Clock, Heart, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, useScroll } from 'framer-motion';
+import { useState } from 'react';
 import { addInquiry } from '../admin/store/adminStore';
 import { sendAutoResponderEmail } from '../lib/emailService';
-import { scrollToProgress, SECTION_Z_PROGRESS } from '../utils/scrollUtils';
+import { scrollToId } from '../utils/scrollUtils';
 import { ScrollTracker } from '../components/ScrollTracker';
 
 const SERVICES = [
@@ -68,174 +68,14 @@ const CONTACT_STEPS = [
 const accentMap: Record<string, { color: string; glow: string; bg: string; border: string }> = {
   orange: { color: 'var(--accent-orange)', glow: 'var(--accent-orange-glow)', bg: 'var(--accent-orange-glow)', border: 'var(--border-color)' },
   cyan: { color: 'var(--accent-cyan)', glow: 'var(--accent-cyan-glow)', bg: 'var(--accent-cyan-glow)', border: 'var(--border-color)' },
-  magenta: { color: 'var(--accent-magenta)', glow: 'var(--accent-magenta-glow)', bg: 'var(--accent-magenta-glow)', border: 'var(--border-color)' },
+  magenta: {
+    color: '#f06292',
+    glow: 'rgba(240, 98, 146, 0.2)',
+    bg: 'rgba(240, 98, 146, 0.08)',
+    border: 'rgba(240, 98, 146, 0.15)'
+  },
 };
 
-interface ZSectionProps {
-  children: React.ReactNode;
-  progress: MotionValue<number>;
-  range: [number, number];
-}
-
-// ── Scroll-snap section boundaries and snap targets ──────────────────────────
-const SECTION_RANGES: [number, number][] = [
-  [0, 0.2], [0.2, 0.4], [0.4, 0.6], [0.6, 0.8], [0.8, 1.0],
-];
-const SNAP_TARGETS = SECTION_RANGES.map(([s, e]) => (s + e) / 2); // center of each section
-
-// ── Debounced idle-snap hook ─────────────────────────────────────────────────
-// After user stops scrolling for IDLE_MS, auto-snap to nearest section center.
-const IDLE_MS = 400;
-
-function useIdleSnap() {
-  const isSnapping = useRef(false);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const snapToNearest = useCallback(() => {
-    if (isSnapping.current) return;
-
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (scrollHeight <= 0) return;
-
-    const currentProgress = window.scrollY / scrollHeight;
-
-    // Find nearest snap target
-    let closest = 0;
-    let minDist = Infinity;
-    SNAP_TARGETS.forEach((t, i) => {
-      const dist = Math.abs(currentProgress - t);
-      if (dist < minDist) { minDist = dist; closest = i; }
-    });
-
-    // If already very close, skip
-    const targetScroll = SNAP_TARGETS[closest] * scrollHeight;
-    if (Math.abs(window.scrollY - targetScroll) < 3) return;
-
-    isSnapping.current = true;
-
-    const startScroll = window.scrollY;
-    const distance = targetScroll - startScroll;
-    const duration = Math.min(800, Math.max(400, Math.abs(distance) * 1.5));
-    const startTime = performance.now();
-
-    // Smooth cubic ease-out
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const t = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startScroll + distance * easeOut(t));
-
-      if (t < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        window.dispatchEvent(new CustomEvent('scroll-snap-sync', {
-          detail: { progress: SNAP_TARGETS[closest] }
-        }));
-        setTimeout(() => { isSnapping.current = false; }, 100);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, []);
-
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
-
-    const handleScrollEnd = () => {
-      if (isSnapping.current) return;
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(snapToNearest, IDLE_MS);
-    };
-
-    // Block default scroll during snap animation
-    const handleWheel = (e: WheelEvent) => {
-      if (isSnapping.current) e.preventDefault();
-    };
-
-    window.addEventListener('scroll', handleScrollEnd, { passive: true });
-    window.addEventListener('wheel', handleWheel, { passive: false });
-
-    // Sync from programmatic scroll (buttons, tracker dots)
-    const handleSnapSync = () => {
-      isSnapping.current = false;
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
-    window.addEventListener('scroll-snap-sync', handleSnapSync);
-
-    return () => {
-      window.removeEventListener('scroll', handleScrollEnd);
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('scroll-snap-sync', handleSnapSync);
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-    };
-  }, [snapToNearest]);
-}
-
-function ZSection({ children, progress, range }: ZSectionProps) {
-  const [s, e] = range;
-  const span = e - s;
-  const isFirst = s === 0;
-  const isLast = e === 1;
-
-  // Near-continuous transitions: 40% enter → 20% hold → 40% exit
-  const enterEnd = s + span * 0.4;
-  const exitStart = e - span * 0.4;
-
-  // Scale: ease in from 0.88, hold at 1, swoop out to 2.2
-  const scale = useTransform(progress,
-    [s, enterEnd, exitStart, e],
-    [isFirst ? 1 : 0.88, 1, 1, isLast ? 1 : 2.2]
-  );
-
-  // Opacity: fade in smoothly, hold, fade out during exit
-  const opacity = useTransform(progress,
-    [s, enterEnd, exitStart, e],
-    [isFirst ? 1 : 0, 1, 1, isLast ? 1 : 0]
-  );
-
-  // Y offset: slide in from below, slide out upward
-  const y = useTransform(progress,
-    [s, enterEnd, exitStart, e],
-    [isFirst ? 0 : 50, 0, 0, isLast ? 0 : -60]
-  );
-
-  // Blur: smooth entrance blur, more on exit for depth
-  const blurValue = useTransform(progress,
-    [s, enterEnd, exitStart, e],
-    [isFirst ? 0 : 5, 0, 0, isLast ? 0 : 6]
-  );
-  const filter = useTransform(blurValue, (v) => `blur(${v}px)`);
-
-  const pointerEvents = useTransform(progress, (v) =>
-    v >= s && v <= e ? 'auto' : 'none'
-  );
-
-  return (
-    <motion.div
-      style={{
-        scale,
-        opacity,
-        y,
-        filter,
-        pointerEvents: 'none', // Wrapper lets clicks pass through empty space
-        position: 'absolute',
-        inset: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 10,
-        willChange: 'transform, opacity, filter',
-      }}
-    >
-      <motion.div style={{ pointerEvents: pointerEvents as any, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-}
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -245,14 +85,8 @@ export default function Home() {
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const { scrollYProgress } = useScroll();
 
-  // Auto-snap: after user stops scrolling, snap to nearest section
-  useIdleSnap();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -284,275 +118,452 @@ export default function Home() {
       {/* Scroll Progress Tracker — replaces the old Navbar */}
       <ScrollTracker scrollProgress={scrollYProgress} />
 
-      <div ref={containerRef} className="relative h-[300vh] w-full bg-transparent">
-        <div className="sticky top-0 h-screen w-full overflow-hidden bg-transparent">
+      <div className="relative w-full z-10 pointer-events-auto">
+        <main className="flex flex-col w-full md:w-[90%] lg:w-[85%] md:mr-auto px-4 sm:px-8 xl:pl-16">
 
-        {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
-        <ZSection progress={scrollYProgress} range={[0, 0.2]}>
-          <section id="hero" className="relative w-full flex flex-col items-center justify-center px-6">
-            <div className="container relative z-10 flex flex-col items-center py-10 md:py-0">
+          {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
+          <section id="hero" className="relative w-full flex flex-col items-center md:items-start justify-center min-vh-100 pt-28 md:pt-[10vh]">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.15, delayChildren: 0.2 }
+                }
+              }}
+              className="container relative z-10 flex flex-col items-center md:items-start text-center md:text-left py-10 md:py-0"
+            >
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
                 className="badge badge-online mb-6 md:mb-10 shadow-[0_0_15px_rgba(34,197,94,0.2)]"
               >
                 Systems Online
               </motion.div>
 
-              <h1 className="text-4xl md:text-7xl lg:text-8xl text-center mb-4 md:mb-6 max-w-5xl tracking-tight leading-[1.1]">
+              <motion.h1
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-[clamp(2.5rem,8vw,5.5rem)] text-center md:text-left mb-[clamp(0.5rem,2vh,1.5rem)] max-w-5xl tracking-tighter leading-[0.95]"
+              >
                 Engineering the <br />
-                <span className="text-gradient-orange drop-shadow-[0_0_20px_rgba(236,204,110,0.2)]">Future of Work</span>
-              </h1>
+                <span className="text-gradient-orange text-glow-orange">Future of Work</span>
+              </motion.h1>
 
-              <p className="text-lg md:text-xl text-[var(--text-secondary)] text-center max-w-2xl leading-relaxed mb-8 md:mb-10">
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-[clamp(1rem,3vw,1.35rem)] text-[var(--text-secondary)] text-center md:text-left max-w-2xl leading-relaxed mb-[clamp(1.5rem,4vh,3rem)] opacity-90"
+              >
                 We deploy intelligent agents and automate your critical workflows.
                 Scale your ambition with digital infrastructure built for tomorrow.
-              </p>
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, scale: 0.95 },
+                  visible: { opacity: 1, scale: 1 }
+                }}
+                className="flex flex-col sm:flex-row gap-5"
+              >
                 <button
-                  onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
-                  className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] text-sm md:text-base"
+                  onClick={() => scrollToId('contact')}
+                  className="btn btn-primary py-4 px-10 shadow-[0_0_30px_var(--accent-orange-glow)] text-base"
                 >
                   Book a Free Call
                 </button>
                 <button
-                  onClick={() => scrollToProgress(SECTION_Z_PROGRESS.packages)}
-                  className="btn btn-outline py-3 px-8 text-sm md:text-base"
+                  onClick={() => scrollToId('packages')}
+                  className="btn btn-outline py-4 px-10 text-base"
                 >
                   See Our Packages
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </section>
-        </ZSection>
 
-        {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
-        <ZSection progress={scrollYProgress} range={[0.2, 0.4]}>
-          <section id="solutions" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-4 md:mb-8">
-              <div className="badge badge-active mb-2 md:mb-4 font-mono text-xs mx-auto">[SOLUTIONS]</div>
-              <h2 className="text-2xl md:text-5xl font-display uppercase mb-2 md:mb-3">Built for <span className="text-gradient-orange">Performance</span></h2>
-              <p className="text-[var(--text-secondary)] max-w-xl mx-auto text-xs md:text-sm">Three focused services delivered end-to-end for businesses that want results.</p>
-            </div>
+          {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
+          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="text-center md:text-left mb-16"
+            >
+              <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[SOLUTIONS]</div>
+              <h2 className="text-[clamp(1.5rem,5vw,3rem)] font-display uppercase mb-4">Built for <span className="text-gradient-orange text-glow-orange">Performance</span></h2>
+              <p className="text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 text-[clamp(10px,2vw,14px)]">Three focused services delivered end-to-end for businesses that want results.</p>
+            </motion.div>
 
-            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
+              className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-3 gap-8"
+            >
               {SERVICES.map((svc) => (
-                <div key={svc.id} className="glass-panel p-3 md:p-5 rounded-2xl flex flex-col" style={{ borderColor: svc.accentBorder }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}>
-                      <svc.icon size={16} style={{ color: svc.accentColor }} />
+                <motion.div
+                  key={svc.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  whileHover={{ y: -5 }}
+                  className="glass-card p-10 rounded-3xl flex flex-col h-full overflow-hidden transition-all duration-300"
+                  style={{ borderColor: svc.accentBorder }}
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(0,0,0,0.2)]" style={{ background: svc.accentBg, border: `1px solid ${svc.accentBorder}` }}>
+                      <svc.icon size={20} style={{ color: svc.accentColor }} />
                     </div>
                     <div>
-                      <h3 className="text-base font-display uppercase font-bold leading-tight">{svc.title}</h3>
-                      <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
+                      <h3 className="text-lg font-display uppercase font-bold leading-tight tracking-tight">{svc.title}</h3>
+                      <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
                     </div>
                   </div>
-                  <p className="text-xs font-medium mb-2" style={{ color: svc.accentColor }}>{svc.benefit}</p>
-                  <p className="text-[var(--text-secondary)] text-[11px] leading-relaxed mb-3">{svc.description}</p>
-                  <div className="mt-auto pt-3 border-t border-[var(--border-color)]">
-                    <ul className="grid grid-cols-2 gap-x-2 gap-y-1 mb-3">
+                  <p className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: svc.accentColor }}>{svc.benefit}</p>
+                  <p className="text-[var(--text-secondary)] text-[0.8rem] leading-relaxed mb-6 opacity-80">{svc.description}</p>
+
+                  <div className="mt-auto pt-5 border-t border-[var(--border-color)]">
+                    <ul className="grid grid-cols-1 gap-y-2 mb-6">
                       {svc.features.map(f => (
-                        <li key={f} className="flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)]">
-                          <CheckCircle size={10} className="shrink-0" style={{ color: svc.accentColor }} /> {f}
+                        <li key={f} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                          <CheckCircle size={14} className="shrink-0" style={{ color: svc.accentColor }} /> {f}
                         </li>
                       ))}
                     </ul>
                     <Link
                       to={`/services/${svc.id}`}
-                      className="text-[11px] font-semibold transition-colors hover:brightness-125 flex items-center gap-1"
+                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:gap-3"
                       style={{ color: svc.accentColor }}
                     >
-                      Learn More <span className="text-xs">→</span>
+                      Explore Service <span>→</span>
                     </Link>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </section>
-        </ZSection>
 
-        {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
-        <ZSection progress={scrollYProgress} range={[0.4, 0.6]}>
-          <section id="packages" className="container flex flex-col items-center px-6">
-            <div className="text-center mb-4 md:mb-8">
-              <div className="badge badge-active mb-2 md:mb-4 font-mono text-xs mx-auto">[PACKAGES]</div>
-              <h2 className="text-2xl md:text-5xl font-display uppercase mb-2 md:mb-3">Choose Your <span className="text-[var(--accent-cyan)]">Setup</span></h2>
-            </div>
+          {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
+          <section id="packages" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="text-center md:text-left mb-16"
+            >
+              <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[PACKAGES]</div>
+              <h2 className="text-[clamp(1.5rem,5vw,3rem)] font-display uppercase mb-4">Choose Your <span className="text-[var(--accent-cyan)] text-glow">Setup</span></h2>
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-6xl">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.15 }
+                }
+              }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full max-w-6xl"
+            >
               {PROJECTS.map((project) => {
                 const a = accentMap[project.accent];
                 return (
-                  <div key={project.id} className="glass-panel p-4 md:p-6 flex flex-col group" style={{ borderColor: a.border }}>
-                    <span className="text-[10px] font-mono uppercase tracking-widest mb-2 md:mb-4" style={{ color: a.color }}>{project.label}</span>
-                    <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-4">
-                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: a.bg }}>
-                        <project.icon size={20} style={{ color: a.color }} />
+                  <motion.div
+                    key={project.id}
+                    variants={{
+                      hidden: { opacity: 0, y: 30 },
+                      visible: { opacity: 1, y: 0 }
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    className="glass-card p-10 flex flex-col group h-full justify-between rounded-3xl"
+                    style={{ borderColor: a.border }}
+                  >
+                    <div>
+                      <span className="text-[11px] font-mono uppercase tracking-[.25em] mb-4 block" style={{ color: a.color }}>{project.label}</span>
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: a.bg, border: `1px solid ${a.border}` }}>
+                          <project.icon size={22} style={{ color: a.color }} />
+                        </div>
+                        <h3 className="text-xl font-display font-bold tracking-tight">{project.title}</h3>
                       </div>
-                      <h3 className="text-lg font-display font-bold">{project.title}</h3>
+                      <p className="text-[var(--text-secondary)] text-[0.85rem] mb-8 leading-relaxed opacity-80">{project.description}</p>
+
+                      <ul className="space-y-3 mb-10">
+                        {project.highlights.map(h => (
+                          <li key={h} className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: a.color }} />
+                            {h}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <p className="text-[var(--text-secondary)] text-xs mb-2 md:mb-4 flex-grow">{project.description}</p>
-                    <div className="flex gap-2">
+
+                    <div className="flex gap-3">
                       <Link
                         to={project.path}
-                        className="btn btn-outline flex-1 text-center text-xs py-2"
+                        className="btn btn-outline flex-1 text-center text-xs py-3 rounded-xl font-bold uppercase tracking-widest"
                         style={{ color: a.color, borderColor: a.border }}
                       >
-                        Learn More
+                        Details
                       </Link>
                       <button
-                        onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
-                        className="btn btn-primary flex-1 text-center text-xs py-2"
+                        onClick={() => scrollToId('contact')}
+                        className="btn btn-primary flex-1 text-center text-xs py-3 rounded-xl font-bold uppercase tracking-widest shadow-xl"
+                        style={{ background: `linear-gradient(135deg, ${a.color} 0%, rgba(210, 193, 182, 0.8) 100%)` }}
                       >
                         Book Now
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           </section>
-        </ZSection>
 
-        {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
-        <ZSection progress={scrollYProgress} range={[0.6, 0.8]}>
-          <section id="studio" className="container flex flex-col items-center px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center w-full max-w-5xl">
-              <div>
+          {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
+          <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(2rem,6vw,6rem)] items-center w-full">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
                 <div className="badge badge-online mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">The Studio</div>
-                <h2 className="text-3xl md:text-5xl font-display uppercase mb-6 leading-tight">We Are <span className="text-gradient-orange">Talos</span></h2>
-                <p className="text-base md:text-lg text-[var(--text-secondary)] mb-8 leading-relaxed">
-                  Based in India, we engineer high-performance digital systems for ambitious businesses worldwide.
+                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">We Are <span className="text-gradient-orange text-glow-orange">Talos</span></h2>
+                <p className="text-[clamp(0.9rem,2vw,1.25rem)] text-[var(--text-secondary)] mb-10 leading-relaxed opacity-90">
+                  Based in India, we engineer high-performance digital systems for ambitious businesses worldwide. We bridge the gap between complex AI and practical business outcomes.
                 </p>
-                <div className="flex flex-col gap-4">
+
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: { staggerChildren: 0.1 }
+                    }
+                  }}
+                  className="flex flex-col gap-4"
+                >
                   {STUDIO_VALUES.map(val => (
-                    <div key={val.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[var(--bg-surface-elevated)] bg-opacity-30 border border-[var(--border-color)]">
-                      <val.icon className="shrink-0 mt-1" size={18} style={{ color: val.color }} />
+                    <motion.div
+                      key={val.title}
+                      variants={{
+                        hidden: { opacity: 0, x: -20 },
+                        visible: { opacity: 1, x: 0 }
+                      }}
+                      className="flex gap-4 items-start p-5 rounded-2xl bg-[var(--bg-surface-elevated)] bg-opacity-20 border border-[var(--border-color)] hover:border-[var(--border-color-light)] transition-colors group"
+                    >
+                      <val.icon className="shrink-0 mt-1 transition-transform group-hover:scale-110" size={20} style={{ color: val.color }} />
                       <div>
-                        <h4 className="font-bold text-sm mb-1 text-[var(--text-primary)]">{val.title}</h4>
-                        <p className="text-xs text-[var(--text-muted)]">{val.description}</p>
+                        <h4 className="font-bold text-base mb-1 text-[var(--text-primary)] tracking-tight">{val.title}</h4>
+                        <p className="text-xs text-[var(--text-muted)] leading-relaxed">{val.description}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
+
                 <Link
                   to="/about"
-                  className="btn btn-outline mt-6 text-sm py-2 px-6 inline-flex items-center gap-2"
+                  className="btn btn-outline mt-10 text-sm py-3 px-8 inline-flex items-center gap-2 group"
                 >
-                  About Us <span>→</span>
+                  Our Philosophy <span className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
-              </div>
+              </motion.div>
 
-              <div className="relative glass-panel rounded-3xl overflow-hidden flex items-center justify-center p-8 md:p-12" style={{ minHeight: '280px' }}>
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
-                <div className="relative z-10 text-center">
-                  <div className="text-5xl md:text-6xl mb-4">🇮🇳</div>
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-primary)] font-bold">Engineered in India</div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                className="hidden lg:block relative"
+              >
+                <div className="relative glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12 aspect-[4/3]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
+                  <div className="relative z-10 text-center">
+                    <motion.div
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className="text-7xl mb-6"
+                    >
+                      🇮🇳
+                    </motion.div>
+                    <div className="text-xs font-mono uppercase tracking-[0.3em] text-[var(--text-primary)] font-bold">Engineered in India</div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mt-2">Serving the World</div>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </section>
-        </ZSection>
 
-        {/* ── SECTION 5: CONTACT ──────────────────────────────────────── */}
-        <ZSection progress={scrollYProgress} range={[0.8, 1.0]}>
-          <section id="contact" className="container px-6">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-8">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse" />
-                  <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">We're available</span>
-                </div>
-                <h2 className="text-3xl md:text-5xl font-display tracking-tight mb-4 uppercase">Let's <span className="text-gradient-orange">Talk.</span></h2>
+          {/* ── SECTION 5: CONTACT + FOOTER ─────────────────────────────────────── */}
+          <section id="contact" className="container flex flex-col items-center md:items-start w-full justify-start py-32">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(2rem,5vw,6rem)] w-full items-start"
+            >
+              <div>
+                <div className="badge badge-active mb-6 font-mono text-xs">[TRANSMISSION]</div>
+                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">Let's start your <br /><span className="text-gradient-orange text-glow-orange">Digital Ascent</span></h2>
+                <p className="text-[var(--text-secondary)] mb-12 max-w-md leading-relaxed opacity-90">
+                  Ready to automate? Send us a briefing and we'll get back to you with a custom roadmap.
+                </p>
+
+                <motion.div
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: { staggerChildren: 0.15 }
+                    }
+                  }}
+                  className="space-y-8"
+                >
+                  {CONTACT_STEPS.map((step, i) => (
+                    <motion.div
+                      key={step.label}
+                      variants={{
+                        hidden: { opacity: 0, x: -10 },
+                        visible: { opacity: 1, x: 0 }
+                      }}
+                      className="flex gap-5 items-center group"
+                    >
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--border-color)] flex items-center justify-center font-mono text-sm text-[var(--text-muted)] group-hover:border-[var(--accent-orange)] group-hover:text-[var(--accent-orange)] transition-colors">
+                        0{i + 1}
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm tracking-wide uppercase">{step.label}</div>
+                        <div className="text-xs text-[var(--text-muted)] mt-1">{step.sub}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7">
-                  <form className="glass-panel p-6 flex flex-col gap-4" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <input
-                        type="text"
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="glass-card p-10 rounded-[2rem] w-full"
+              >
+                {status === 'success' ? (
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="flex flex-col items-center justify-center py-10 text-center"
+                  >
+                    <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
+                      <CheckCircle className="text-green-500" size={40} />
+                    </div>
+                    <h3 className="text-2xl font-display font-bold mb-2">Message Transmitted</h3>
+                    <p className="text-[var(--text-secondary)]">We'll respond within the next orbital cycle.</p>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Full Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                          placeholder="Commander Shepard"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Work Email</label>
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                          placeholder="shepard@n7.earth"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Project Brief</label>
+                      <textarea
                         required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Your Name"
-                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
-                      />
-                      <input
-                        type="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email Address"
-                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        rows={5}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none resize-none"
+                        placeholder="Tell us about the frontier you're exploring..."
                       />
                     </div>
-                    <input
-                      type="text"
-                      required
-                      value={company}
-                      onChange={(e) => setCompany(e.target.value)}
-                      placeholder="Company / Business Name"
-                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
-                    />
-                    <textarea
-                      required
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Tell us about your project..."
-                      rows={3}
-                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] resize-none"
-                    />
                     <button
                       type="submit"
                       disabled={isTransmitting}
-                      className="btn btn-primary w-full py-3 text-sm font-bold flex items-center justify-center gap-2"
+                      className="btn btn-primary w-full py-4 text-base font-bold uppercase tracking-[0.2em] shadow-xl relative overflow-hidden group"
                     >
-                      {status === 'success' ? <><CheckCircle size={16} /> Sent!</> : isTransmitting ? 'Sending...' : <><Send size={16} /> Send</>}
+                      {isTransmitting ? (
+                        <div className="flex items-center gap-3 justify-center">
+                          <Clock className="animate-spin text-accent-orange" size={18} />
+                          <span>Transmitting...</span>
+                        </div>
+                      ) : (
+                        <span>Initiate Contact</span>
+                      )}
+
+                      {!isTransmitting && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                      )}
                     </button>
                   </form>
-                </div>
+                )}
+              </motion.div>
+            </motion.div>
 
-                <div className="lg:col-span-5 flex flex-col gap-4">
-                  <div className="glass-panel p-4 flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--accent-orange-glow)] flex items-center justify-center shrink-0"><Mail className="text-[var(--accent-orange)]" size={18} /></div>
-                    <div>
-                      <h4 className="text-xs font-bold mb-1">Email us</h4>
-                      <a href="mailto:hello@talos.design" className="text-[var(--accent-orange)] text-xs font-mono">hello@talos.design</a>
-                    </div>
-                  </div>
-                  <div className="glass-panel p-4">
-                    <h4 className="text-xs font-bold mb-4 flex items-center gap-2"><Clock size={12} className="text-[var(--accent-magenta)]" /> Process</h4>
-                    <div className="flex flex-col gap-3">
-                      {CONTACT_STEPS.map((step, i) => (
-                        <div key={step.label} className="flex gap-3">
-                          <span className="text-[10px] font-mono text-[var(--text-muted)]">0{i + 1}</span>
-                          <div className="text-[10px] font-bold text-[var(--text-primary)]">{step.label}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+            {/* ── Inline Footer ─────────────────────────────────────────── */}
+            <div className="w-full mt-20 pt-8 pb-20 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] gap-4">
+              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-secondary)] font-bold">© 2026 TALOS DESIGN — FUTURE PROOF SYSTEMS</div>
+              <div className="flex gap-8">
+                <button
+                  onClick={() => scrollToId('hero')}
+                  className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors tracking-widest"
+                >
+                  Back to Top
+                </button>
+                <Link to="/admin" className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors tracking-widest">Orbital Portal</Link>
               </div>
-
-              <footer className="mt-8 pt-6 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)]">
-                <div className="text-[10px] font-mono uppercase tracking-[0.2em] mb-4 md:mb-0 text-[var(--text-muted)]">© 2026 TALOS DESIGN</div>
-                <div className="flex gap-8">
-                  <button
-                    onClick={() => scrollToProgress(SECTION_Z_PROGRESS.hero)}
-                    className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)]"
-                  >
-                    Back to Top
-                  </button>
-                  <Link to="/admin" className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)]">Admin</Link>
-                </div>
-              </footer>
             </div>
           </section>
-        </ZSection>
-
-        </div>
+        </main>
       </div>
     </>
   );

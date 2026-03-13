@@ -6,7 +6,18 @@ export default function ScrollToTop() {
 
     useEffect(() => {
         if (!hash) {
-            window.scrollTo(0, 0);
+            // Use a slight timeout to ensure route transition and any layout shifts are complete
+            // and to override snap-scroll behaviors from previous pages.
+            const timer = setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'instant'
+                });
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 10);
+            return () => clearTimeout(timer);
         }
     }, [pathname, hash]);
 

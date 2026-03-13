@@ -3,13 +3,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Stars, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { getProject } from '@theatre/core';
-import studio from '@theatre/studio';
 import { SheetProvider, editable as e } from '@theatre/r3f';
 
-// Initialize Theatre.js Studio in development
-if (import.meta.env.DEV) {
-    studio.initialize();
-}
+// Theatre.js Studio initialization removed for clean production rendering
+// If studio mode is needed, import and initialize it exclusively.
 
 // Create a project and sheet for Theatre.js animations
 const demoProject = getProject('TalosBackgroundProject');
@@ -146,56 +143,6 @@ function SatelliteSwarm({ count = 200 }: { count?: number }) {
     );
 }
 
-interface EarthClick {
-    id: string;
-    position: THREE.Vector3;
-    isDarkMode: boolean;
-    createdAt: number;
-}
-
-function InteractiveMarker({ click }: { click: EarthClick }) {
-    const meshRef = useRef<THREE.Mesh>(null);
-    const lightRef = useRef<THREE.PointLight>(null);
-    const [cloudMap] = useTexture(['/textures/earth/8k_earth_clouds.jpg']);
-    
-    useFrame(() => {
-        const timeElapsed = (Date.now() - click.createdAt) / 1000;
-        const life = Math.max(0, 1 - (timeElapsed / 2.0)); // Fade out over 2 seconds
-        
-        if (click.isDarkMode && lightRef.current) {
-            // Flicker and die out for lightning
-            lightRef.current.intensity = (Math.random() > 0.5 ? 20 : 5) * life;
-        } else if (!click.isDarkMode && meshRef.current) {
-            // Expand and fade out for clouds
-            const scale = 1 + timeElapsed * 1.5;
-            meshRef.current.scale.setScalar(scale);
-            if (meshRef.current.material instanceof THREE.Material) {
-                meshRef.current.material.opacity = 0.8 * life;
-            }
-        }
-    });
-
-    return (
-        <group position={click.position}>
-            {click.isDarkMode ? (
-                <pointLight ref={lightRef} distance={4} color="#aaccff" decay={2} intensity={20} />
-            ) : (
-                <mesh ref={meshRef}>
-                    <sphereGeometry args={[0.15, 16, 16]} />
-                    <meshBasicMaterial 
-                        map={cloudMap}
-                        color="#ffffff" 
-                        transparent 
-                        opacity={0.8} 
-                        depthWrite={false} 
-                        blending={THREE.AdditiveBlending}
-                    />
-                </mesh>
-            )}
-        </group>
-    );
-}
-
 function LightningStorm({ visible }: { visible: boolean }) {
     const [intensity, setIntensity] = useState(0);
     const [pos, setPos] = useState(new THREE.Vector3());
@@ -247,29 +194,6 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
     const smoothThemeAngle = useRef(0);
     const targetThemeAngle = useRef(0);
     const prevIsDarkMode = useRef(isDarkMode);
-    const [clicks, setClicks] = useState<EarthClick[]>([]);
-
-    const handleEarthClick = (e: any) => {
-        e.stopPropagation();
-        if (!earthRef.current) return;
-        
-        // Convert world point to Earth local point to stick to the rotating surface
-        const localPoint = earthRef.current.worldToLocal(e.point.clone());
-        
-        const newClick: EarthClick = {
-            id: Math.random().toString(36).substring(7),
-            position: localPoint,
-            isDarkMode,
-            createdAt: Date.now()
-        };
-        
-        setClicks(prev => [...prev, newClick]);
-        
-        // Auto remove marker after 2 seconds
-        setTimeout(() => {
-            setClicks(prev => prev.filter(c => c.id !== newClick.id));
-        }, 2000);
-    };
     
     // Native smooth scroll tracking
     const targetScroll = useRef(0);
@@ -368,27 +292,30 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
             const earthToSunDir = new THREE.Vector3().subVectors(new THREE.Vector3(0,0,0), lookTarget).normalize();
             
             // Camera distances: closer to skim the horizon for both modes
-            const camDistance = isMobile ? 3.0 : 3.5;
+            // Zoom out slightly as requested
+            const camDistance = isMobile ? 3.5 : 3.2;
             
             // Calculate smooth rotational direction for the camera
             const up = new THREE.Vector3(0, 1, 0);
             const currentEarthToCamDir = earthToSunDir.clone().applyAxisAngle(up, smoothThemeAngle.current);
             const baseCamPos = lookTarget.clone().add(currentEarthToCamDir.multiplyScalar(camDistance));
 
-            // Shift camera and look target to the left, so Earth appears on the right
             const forward = lookTarget.clone().sub(baseCamPos).normalize();
             const right = new THREE.Vector3().crossVectors(forward, up).normalize();
-            const left = right.clone().negate();
 
-            // Adjust offset based on screen size (mobile vs desktop) for the closer view
-            const screenOffset = isMobile ? 1.0 : 1.5;
-            const shiftVec = left.clone().multiplyScalar(screenOffset);
+            // Desktop: Earth on RIGHT edge, so Camera moves Left (negative rightShift).
+            // Mobile: Earth on bottom edge, so Camera moves Up.
+            // Adjusted exactly to match the 1.29 delta tested in Theatre.js
+            const rightShiftAmt = isMobile ? 0 : -1.2; 
+            const verticalShiftAmt = isMobile ? 1.5 : 0.0;
+            
+            const rightShift = right.clone().multiplyScalar(rightShiftAmt);
+            const upShift = up.clone().multiplyScalar(verticalShiftAmt);
 
-            // Shift the look target slightly "up" or along the horizon direction to frame the curvature beautifully
-            const verticalShift = up.clone().multiplyScalar(0.8);
+            const shiftVec = rightShift.add(upShift);
 
-            const targetCamPos = baseCamPos.clone().add(shiftVec).add(verticalShift);
-            const finalLookTarget = lookTarget.clone().add(shiftVec).add(verticalShift);
+            const targetCamPos = baseCamPos.clone().add(shiftVec);
+            const finalLookTarget = lookTarget.clone().add(shiftVec);
 
             state.camera.position.copy(targetCamPos);
             state.camera.lookAt(finalLookTarget);
@@ -416,7 +343,8 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
             <e.pointLight 
                 theatreKey="SunLight" 
                 position={[0, 0, 0]} 
-                intensity={isDarkMode ? 3 : 8} 
+                // Simple pulse based on state.time or oscillate
+                intensity={isDarkMode ? 3 : (12 + Math.sin(Date.now() / 2000) * 3)} 
                 distance={100} 
                 color={isDarkMode ? sunGlowColor : "#ffffff"} 
                 decay={2}
@@ -426,7 +354,7 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
             {/* Moved to earthGroup so we can perfectly place it relative to camera */}
             
             {/* EARTH SYSTEM */}
-            <e.group ref={earthGroupRef} theatreKey="EarthSystem" onPointerDown={handleEarthClick}>
+            <e.group ref={earthGroupRef} theatreKey="EarthSystem">
                 
                 {/* Visual Sun for Light Mode background (Left side: +X, Background: +Z) */}
                 <e.mesh theatreKey="SunBody" position={[16, 0, 35]} visible={!isDarkMode}>
@@ -448,9 +376,6 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
                         emissiveMap={lightsMap}
                         emissiveIntensity={isDarkMode ? 1.5 : 0.0} // Turn off city lights during day mode
                     />
-                    {clicks.map(click => (
-                        <InteractiveMarker key={click.id} click={click} />
-                    ))}
                 </e.mesh>
 
                 {/* ATMOSPHERE/CLOUDS LAYER 1 */}
@@ -532,10 +457,24 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
 }
 
 export default function ThreeScene({ isDarkMode = true }: { isDarkMode?: boolean }) {
+    const [canvasHeight, setCanvasHeight] = useState('100dvh');
+
+    useEffect(() => {
+        // Lock the underlying 3D Canvas height to a static, oversized pixel value so
+        // mobile navbar drag-collapses never trigger a WebGL resize or slice the rendering.
+        if (typeof window !== 'undefined') {
+            // Use visualViewport.height when available (most accurate on mobile),
+            // falling back to screen.height. Adding 150px buffer covers address-bar resize.
+            const baseHeight = window.visualViewport?.height ?? window.screen.height;
+            const fixedHeight = Math.max(baseHeight, window.innerHeight) + 150;
+            setCanvasHeight(`${fixedHeight}px`);
+        }
+    }, []);
+
     return (
         <div 
-            className="fixed inset-0 transition-colors duration-1000"
-            style={{ zIndex: 0, backgroundColor: 'transparent' }} // Let main body color show through if needed, or force it here.
+            className="fixed top-0 left-0 w-full pointer-events-none transition-colors duration-1000"
+            style={{ height: canvasHeight, zIndex: 0, backgroundColor: 'var(--bg-base)' }}
         >
             <Canvas
                 camera={{ position: [0, 0, 40], fov: 45 }}

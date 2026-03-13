@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { scrollToProgress, SECTION_Z_PROGRESS } from '../utils/scrollUtils';
+import { scrollToId } from '../utils/scrollUtils';
 import logo from '../assets/bitmap.png';
+import logoLight from '../assets/logo- light-side.png';
 
-export function Navbar() {
+export function Navbar({ isDarkMode }: { isDarkMode: boolean }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
@@ -25,9 +26,8 @@ export function Navbar() {
                 return;
             }
 
-            const progress = SECTION_Z_PROGRESS[link.id as keyof typeof SECTION_Z_PROGRESS];
-            if (progress !== undefined) {
-                scrollToProgress(progress);
+            if (link.id !== undefined) {
+                scrollToId(link.id);
             }
 
             if (mobile) setIsMobileMenuOpen(false);
@@ -56,11 +56,11 @@ export function Navbar() {
                     onClick={(e) => {
                         if (location.pathname === '/') {
                             e.preventDefault();
-                            scrollToProgress(SECTION_Z_PROGRESS.hero);
+                            scrollToId('hero');
                         }
                     }}
                 >
-                    <img src={logo} alt="Talos.design" className="h-8" />
+                    <img src={isDarkMode ? logo : logoLight} alt="Talos.design" className="h-8" />
                 </NavLink>
 
                 {/* Desktop Menu */}
@@ -71,16 +71,8 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <NavLink
-                        to="/admin"
-                        className="hidden md:flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors px-2 py-1 rounded-md hover:bg-[var(--accent-orange-glow)]"
-                        title="Admin Panel"
-                    >
-                        <Shield size={14} />
-                        <span>Admin</span>
-                    </NavLink>
                     <button
-                        onClick={() => scrollToProgress(SECTION_Z_PROGRESS.contact)}
+                        onClick={() => scrollToId('contact')}
                         className="btn btn-primary flex items-center justify-center p-2 sm:px-4"
                         style={{ padding: '0.5rem 1rem' }}
                     >
@@ -114,13 +106,6 @@ export function Navbar() {
                         {navLinks.map((link) => (
                             <NavItem key={link.name} link={link} mobile />
                         ))}
-                        <NavLink
-                            to="/admin"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className={({ isActive }) => `flex items-center gap-2 text-lg font-medium p-2 rounded-md transition-colors ${isActive ? 'bg-[var(--accent-orange-glow)] text-[var(--accent-orange)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]'}`}
-                        >
-                            <Shield size={16} /> Admin
-                        </NavLink>
                     </motion.div>
                 )}
             </AnimatePresence>
