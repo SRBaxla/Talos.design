@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { addInquiry } from '../admin/store/adminStore';
 import { sendAutoResponderEmail } from '../lib/emailService';
 import { scrollToProgress, SECTION_Z_PROGRESS } from '../utils/scrollUtils';
+import { ScrollTracker } from '../components/ScrollTracker';
 
 const SERVICES = [
   {
@@ -82,185 +83,94 @@ const SECTION_RANGES: [number, number][] = [
 ];
 const SNAP_TARGETS = SECTION_RANGES.map(([s, e]) => (s + e) / 2); // center of each section
 
-// ── Auto-scroll snap hook ────────────────────────────────────────────────────
-function useScrollSnap(containerRef: React.RefObject<HTMLDivElement | null>) {
-  const currentSection = useRef(0);
-  const isSnapping = useRef(false);
-  const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastScrollY = useRef(0);
+// ── Debounced idle-snap hook ─────────────────────────────────────────────────
+// After user stops scrolling for IDLE_MS, auto-snap to nearest section center.
+const IDLE_MS = 400;
 
-  const snapToSection = useCallback((targetIndex: number) => {
-    if (!containerRef.current) return;
-    if (targetIndex < 0 || targetIndex >= SNAP_TARGETS.length) return;
+function useIdleSnap() {
+  const isSnapping = useRef(false);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const snapToNearest = useCallback(() => {
     if (isSnapping.current) return;
 
-    isSnapping.current = true;
-    currentSection.current = targetIndex;
-
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const targetScroll = SNAP_TARGETS[targetIndex] * scrollHeight;
+    if (scrollHeight <= 0) return;
+
+    const currentProgress = window.scrollY / scrollHeight;
+
+    // Find nearest snap target
+    let closest = 0;
+    let minDist = Infinity;
+    SNAP_TARGETS.forEach((t, i) => {
+      const dist = Math.abs(currentProgress - t);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+
+    // If already very close, skip
+    const targetScroll = SNAP_TARGETS[closest] * scrollHeight;
+    if (Math.abs(window.scrollY - targetScroll) < 3) return;
+
+    isSnapping.current = true;
+
     const startScroll = window.scrollY;
     const distance = targetScroll - startScroll;
-    const duration = Math.min(2000, Math.max(1000, Math.abs(distance) / 4));
+    const duration = Math.min(800, Math.max(400, Math.abs(distance) * 1.5));
     const startTime = performance.now();
 
-    // Sweep easing: accelerates for 80%, soft deceleration for final 20%
-    const easeSweep = (t: number): number => {
-      if (t < 0.8) {
-        const p = t / 0.8;
-        return p * p * p * 0.92;
-      }
-      const p = (t - 0.8) / 0.2;
-      return 0.92 + (1 - (1 - p) * (1 - p)) * 0.08;
-    };
+    // Smooth cubic ease-out
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
     const animate = (now: number) => {
       const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeSweep(progress);
+      const t = Math.min(elapsed / duration, 1);
+      window.scrollTo(0, startScroll + distance * easeOut(t));
 
-      window.scrollTo(0, startScroll + distance * eased);
-
-      if (progress < 1) {
+      if (t < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Cooldown before allowing next snap
-        cooldownTimer.current = setTimeout(() => {
-          isSnapping.current = false;
-          lastScrollY.current = window.scrollY;
-        }, 150);
+        window.dispatchEvent(new CustomEvent('scroll-snap-sync', {
+          detail: { progress: SNAP_TARGETS[closest] }
+        }));
+        setTimeout(() => { isSnapping.current = false; }, 100);
       }
     };
 
     requestAnimationFrame(animate);
-  }, [containerRef]);
+  }, []);
 
   useEffect(() => {
-    // Disable scroll-jacking on mobile — content overflows viewport
     const isMobile = window.innerWidth < 768;
     if (isMobile) return;
 
-    let ticking = false;
+    const handleScrollEnd = () => {
+      if (isSnapping.current) return;
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(snapToNearest, IDLE_MS);
+    };
 
+    // Block default scroll during snap animation
     const handleWheel = (e: WheelEvent) => {
-      if (isSnapping.current) {
-        e.preventDefault();
-        return;
-      }
-
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight <= 0) return;
-
-      const scrollProgress = window.scrollY / scrollHeight;
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const idx = currentSection.current;
-
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => {
-          const [s, end] = SECTION_RANGES[idx];
-          const span = end - s;
-
-          // Scrolling DOWN: trigger snap when entering exit zone (last 16% of section)
-          if (direction > 0 && idx < SNAP_TARGETS.length - 1) {
-            const exitThreshold = end - span * 0.16;
-            if (scrollProgress >= exitThreshold) {
-              snapToSection(idx + 1);
-            }
-          }
-          // Scrolling UP: trigger snap when entering entrance zone (first 16% of section)
-          else if (direction < 0 && idx > 0) {
-            const enterThreshold = s + span * 0.16;
-            if (scrollProgress <= enterThreshold) {
-              snapToSection(idx - 1);
-            }
-          }
-
-          ticking = false;
-        });
-      }
+      if (isSnapping.current) e.preventDefault();
     };
 
-    // Also handle touch scrolling
-    let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isSnapping.current) {
-        e.preventDefault();
-        return;
-      }
-
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight <= 0) return;
-
-      const scrollProgress = window.scrollY / scrollHeight;
-      const touchDelta = touchStartY - e.touches[0].clientY;
-      const direction = touchDelta > 0 ? 1 : -1;
-      const idx = currentSection.current;
-
-      if (Math.abs(touchDelta) > 30) { // Min touch threshold
-        const [s, end] = SECTION_RANGES[idx];
-        const span = end - s;
-
-        if (direction > 0 && idx < SNAP_TARGETS.length - 1) {
-          const exitThreshold = end - span * 0.16;
-          if (scrollProgress >= exitThreshold) {
-            snapToSection(idx + 1);
-          }
-        } else if (direction < 0 && idx > 0) {
-          const enterThreshold = s + span * 0.16;
-          if (scrollProgress <= enterThreshold) {
-            snapToSection(idx - 1);
-          }
-        }
-      }
-    };
-
+    window.addEventListener('scroll', handleScrollEnd, { passive: true });
     window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-    // Sync currentSection when programmatic scroll (navbar/button) completes
-    const handleSnapSync = (e: Event) => {
-      const { progress } = (e as CustomEvent).detail;
-      let closest = 0;
-      let minDist = Infinity;
-      SNAP_TARGETS.forEach((t, i) => {
-        const dist = Math.abs(progress - t);
-        if (dist < minDist) { minDist = dist; closest = i; }
-      });
-      currentSection.current = closest;
+    // Sync from programmatic scroll (buttons, tracker dots)
+    const handleSnapSync = () => {
       isSnapping.current = false;
-      lastScrollY.current = window.scrollY;
+      if (idleTimer.current) clearTimeout(idleTimer.current);
     };
     window.addEventListener('scroll-snap-sync', handleSnapSync);
 
-    // Init: snap to closest section on mount
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (scrollHeight > 0) {
-      const progress = window.scrollY / scrollHeight;
-      let closest = 0;
-      let minDist = Infinity;
-      SNAP_TARGETS.forEach((t, i) => {
-        const dist = Math.abs(progress - t);
-        if (dist < minDist) { minDist = dist; closest = i; }
-      });
-      currentSection.current = closest;
-    }
-
     return () => {
+      window.removeEventListener('scroll', handleScrollEnd);
       window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('scroll-snap-sync', handleSnapSync);
-      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
     };
-  }, [snapToSection]);
-
-  return { snapToSection };
+  }, [snapToNearest]);
 }
 
 function ZSection({ children, progress, range }: ZSectionProps) {
@@ -269,32 +179,32 @@ function ZSection({ children, progress, range }: ZSectionProps) {
   const isFirst = s === 0;
   const isLast = e === 1;
 
-  // Fast entrance (4% of span) → long hold → dramatic exit (12% of span)
-  const enterEnd = s + span * 0.04;
-  const exitStart = e - span * 0.12;
+  // Near-continuous transitions: 40% enter → 20% hold → 40% exit
+  const enterEnd = s + span * 0.4;
+  const exitStart = e - span * 0.4;
 
-  // Scale: snap in from 0.92, hold at 1, swoop out to 2.5
+  // Scale: ease in from 0.88, hold at 1, swoop out to 2.2
   const scale = useTransform(progress,
     [s, enterEnd, exitStart, e],
-    [isFirst ? 1 : 0.92, 1, 1, isLast ? 1 : 2.5]
+    [isFirst ? 1 : 0.88, 1, 1, isLast ? 1 : 2.2]
   );
 
-  // Opacity: snap in quickly, hold, fade out during exit
+  // Opacity: fade in smoothly, hold, fade out during exit
   const opacity = useTransform(progress,
     [s, enterEnd, exitStart, e],
     [isFirst ? 1 : 0, 1, 1, isLast ? 1 : 0]
   );
 
-  // Y offset: small slide-in from below, dramatic slide-out upward
+  // Y offset: slide in from below, slide out upward
   const y = useTransform(progress,
     [s, enterEnd, exitStart, e],
-    [isFirst ? 0 : 30, 0, 0, isLast ? 0 : -80]
+    [isFirst ? 0 : 50, 0, 0, isLast ? 0 : -60]
   );
 
-  // Blur: very slight on entrance, more on exit for depth
+  // Blur: smooth entrance blur, more on exit for depth
   const blurValue = useTransform(progress,
     [s, enterEnd, exitStart, e],
-    [isFirst ? 0 : 3, 0, 0, isLast ? 0 : 4]
+    [isFirst ? 0 : 5, 0, 0, isLast ? 0 : 6]
   );
   const filter = useTransform(blurValue, (v) => `blur(${v}px)`);
 
@@ -339,8 +249,8 @@ export default function Home() {
     offset: ["start start", "end end"]
   });
 
-  // Auto-scroll snap hook
-  useScrollSnap(containerRef);
+  // Auto-snap: after user stops scrolling, snap to nearest section
+  useIdleSnap();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -368,8 +278,12 @@ export default function Home() {
   };
 
   return (
-    <div ref={containerRef} className="relative h-[1500vh] w-full bg-transparent">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+    <>
+      {/* Scroll Progress Tracker — replaces the old Navbar */}
+      <ScrollTracker scrollProgress={scrollYProgress} />
+
+      <div ref={containerRef} className="relative h-[300vh] w-full bg-transparent">
+        <div className="sticky top-0 h-screen w-full overflow-hidden bg-transparent">
 
         {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
         <ZSection progress={scrollYProgress} range={[0, 0.2]}>
@@ -636,7 +550,8 @@ export default function Home() {
           </section>
         </ZSection>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 }
