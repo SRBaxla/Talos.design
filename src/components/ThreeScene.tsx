@@ -473,7 +473,7 @@ export default function ThreeScene({ isDarkMode = true }: { isDarkMode?: boolean
 
     return (
         <div 
-            className="fixed top-0 left-0 w-full pointer-events-none transition-colors duration-1000"
+            className="fixed top-0 left-0 w-full pointer-events-none md:transition-colors md:duration-1000 will-change-transform"
             style={{ height: canvasHeight, zIndex: 0, backgroundColor: 'var(--bg-base)' }}
         >
             <Canvas

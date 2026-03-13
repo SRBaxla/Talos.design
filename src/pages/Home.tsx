@@ -1,5 +1,5 @@
 import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Clock, Heart, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
 import { useState } from 'react';
 import { addInquiry } from '../admin/store/adminStore';
@@ -85,6 +85,7 @@ export default function Home() {
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
+  const { isDarkMode } = useOutletContext<{ isDarkMode: boolean }>();
   const { scrollYProgress } = useScroll();
 
 
@@ -116,7 +117,7 @@ export default function Home() {
   return (
     <>
       {/* Scroll Progress Tracker — replaces the old Navbar */}
-      <ScrollTracker scrollProgress={scrollYProgress} />
+      <ScrollTracker scrollProgress={scrollYProgress} isDarkMode={isDarkMode} />
 
       <div className="relative w-full z-10 pointer-events-auto">
         <main className="flex flex-col w-full md:w-[90%] lg:w-[85%] md:mr-auto px-4 sm:px-8 xl:pl-16">

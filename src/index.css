@@ -320,6 +320,7 @@ button {
     border-radius: var(--radius-xl);
 }
 
+
 .glass-card {
     background: rgba(15, 34, 51, 0.6);
     backdrop-filter: blur(24px);

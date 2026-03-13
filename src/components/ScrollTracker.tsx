@@ -12,9 +12,10 @@ const SECTIONS = [
 
 interface ScrollTrackerProps {
   scrollProgress: MotionValue<number>;
+  isDarkMode: boolean;
 }
 
-export function ScrollTracker({ scrollProgress }: ScrollTrackerProps) {
+export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps) {
   const [progress, setProgress] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -335,9 +336,13 @@ export function ScrollTracker({ scrollProgress }: ScrollTrackerProps) {
                 style={{
                   background: isMobileOpen
                     ? 'var(--bg-surface-elevated)'
-                    : 'radial-gradient(circle at top, var(--accent-orange-hover), var(--accent-orange))',
+                    : isDarkMode
+                      ? 'var(--glass-bg)'
+                      : 'radial-gradient(circle at top, var(--accent-orange-hover), var(--accent-orange))',
                   border: '1px solid',
-                  borderColor: isMobileOpen ? 'var(--border-color)' : 'rgba(255,255,255,0.4)',
+                  borderColor: isMobileOpen ? 'var(--border-color)' : (isDarkMode ? 'var(--border-color)' : 'rgba(255,255,255,0.4)'),
+                  backdropFilter: (!isMobileOpen && isDarkMode) ? 'blur(16px)' : 'none',
+                  WebkitBackdropFilter: (!isMobileOpen && isDarkMode) ? 'blur(16px)' : 'none',
                 }}
               >
                 <motion.div
