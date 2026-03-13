@@ -21,6 +21,9 @@
     --text-muted: #8ba3b4;
     /* muted teal-grey */
 
+    /* Glass Panel Base */
+    --glass-bg: rgba(15, 34, 51, 0.9);
+
     --accent-orange: #d2c1b6;
     /* palette: warm sand — primary CTA */
     --accent-orange-hover: #e8d9cf;
@@ -71,6 +74,7 @@
     --text-primary: #1b3c53;
     --text-secondary: #456882;
     --text-muted: #8ba3b4;
+    --glass-bg: rgba(255, 255, 255, 0.95);
     --accent-orange: #234c6a;
     --accent-orange-hover: #1b3c53;
     --accent-orange-glow: rgba(35, 76, 106, 0.2);
@@ -270,7 +274,7 @@ button {
 }
 
 .glass-panel {
-    background: rgba(15, 34, 51, 0.9);
+    background: var(--glass-bg);
     /* backdrop-filter: blur(12px); - Removed for performance optimization */
     /* -webkit-backdrop-filter: blur(12px); */
     border: 1px solid var(--border-color);
@@ -424,7 +428,7 @@ button {
 .admin-select,
 .admin-textarea {
     width: 100%;
-    background-color: rgba(15, 34, 51, 0.5);
+    background-color: var(--glass-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: var(--space-3) var(--space-4);
@@ -440,7 +444,7 @@ button {
     outline: none;
     border-color: var(--accent-orange);
     box-shadow: 0 0 0 1px var(--accent-orange);
-    background-color: rgba(15, 34, 51, 0.8);
+    background-color: var(--bg-surface-elevated);
 }
 
 .admin-input::placeholder,
@@ -464,7 +468,7 @@ button {
 }
 
 .admin-tags-input {
-    background-color: rgba(15, 34, 51, 0.5);
+    background-color: var(--glass-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: var(--space-2);
@@ -477,7 +481,7 @@ button {
 .admin-tags-input:focus-within {
     border-color: var(--accent-orange);
     box-shadow: 0 0 0 1px var(--accent-orange);
-    background-color: rgba(15, 34, 51, 0.8);
+    background-color: var(--bg-surface-elevated);
 }
 
 .admin-tags-input .admin-input {

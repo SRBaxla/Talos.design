@@ -146,6 +146,56 @@ function SatelliteSwarm({ count = 200 }: { count?: number }) {
     );
 }
 
+interface EarthClick {
+    id: string;
+    position: THREE.Vector3;
+    isDarkMode: boolean;
+    createdAt: number;
+}
+
+function InteractiveMarker({ click }: { click: EarthClick }) {
+    const meshRef = useRef<THREE.Mesh>(null);
+    const lightRef = useRef<THREE.PointLight>(null);
+    const [cloudMap] = useTexture(['/textures/earth/8k_earth_clouds.jpg']);
+    
+    useFrame(() => {
+        const timeElapsed = (Date.now() - click.createdAt) / 1000;
+        const life = Math.max(0, 1 - (timeElapsed / 2.0)); // Fade out over 2 seconds
+        
+        if (click.isDarkMode && lightRef.current) {
+            // Flicker and die out for lightning
+            lightRef.current.intensity = (Math.random() > 0.5 ? 20 : 5) * life;
+        } else if (!click.isDarkMode && meshRef.current) {
+            // Expand and fade out for clouds
+            const scale = 1 + timeElapsed * 1.5;
+            meshRef.current.scale.setScalar(scale);
+            if (meshRef.current.material instanceof THREE.Material) {
+                meshRef.current.material.opacity = 0.8 * life;
+            }
+        }
+    });
+
+    return (
+        <group position={click.position}>
+            {click.isDarkMode ? (
+                <pointLight ref={lightRef} distance={4} color="#aaccff" decay={2} intensity={20} />
+            ) : (
+                <mesh ref={meshRef}>
+                    <sphereGeometry args={[0.15, 16, 16]} />
+                    <meshBasicMaterial 
+                        map={cloudMap}
+                        color="#ffffff" 
+                        transparent 
+                        opacity={0.8} 
+                        depthWrite={false} 
+                        blending={THREE.AdditiveBlending}
+                    />
+                </mesh>
+            )}
+        </group>
+    );
+}
+
 function LightningStorm({ visible }: { visible: boolean }) {
     const [intensity, setIntensity] = useState(0);
     const [pos, setPos] = useState(new THREE.Vector3());
@@ -195,6 +245,31 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
     const starsRef = useRef<THREE.Group>(null);
     const isInitialized = useRef<boolean>(false);
     const smoothThemeAngle = useRef(0);
+    const targetThemeAngle = useRef(0);
+    const prevIsDarkMode = useRef(isDarkMode);
+    const [clicks, setClicks] = useState<EarthClick[]>([]);
+
+    const handleEarthClick = (e: any) => {
+        e.stopPropagation();
+        if (!earthRef.current) return;
+        
+        // Convert world point to Earth local point to stick to the rotating surface
+        const localPoint = earthRef.current.worldToLocal(e.point.clone());
+        
+        const newClick: EarthClick = {
+            id: Math.random().toString(36).substring(7),
+            position: localPoint,
+            isDarkMode,
+            createdAt: Date.now()
+        };
+        
+        setClicks(prev => [...prev, newClick]);
+        
+        // Auto remove marker after 2 seconds
+        setTimeout(() => {
+            setClicks(prev => prev.filter(c => c.id !== newClick.id));
+        }, 2000);
+    };
     
     // Native smooth scroll tracking
     const targetScroll = useRef(0);
@@ -235,13 +310,20 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
         smoothScroll.current += (targetScroll.current - smoothScroll.current) * 0.05;
         const scrollOffset = smoothScroll.current;
 
-        // Smooth theme transition angle
-        const targetThemeAngle = isDarkMode ? Math.PI : 0;
+        // Base zero puts angle behind Sun looking at Earth (Day side)
+        // Math.PI puts angle behind Earth looking at Sun (Night side)
+        // We accumulate the angle so it rotates continuously (-Math.PI makes it go in the direction user asked)
         if (!isInitialized.current) {
-            smoothThemeAngle.current = targetThemeAngle;
-        } else {
-            smoothThemeAngle.current += (targetThemeAngle - smoothThemeAngle.current) * 0.03;
+            smoothThemeAngle.current = isDarkMode ? Math.PI : 0;
+            targetThemeAngle.current = smoothThemeAngle.current;
+            prevIsDarkMode.current = isDarkMode;
+            isInitialized.current = true;
+        } else if (isDarkMode !== prevIsDarkMode.current) {
+            targetThemeAngle.current -= Math.PI; // Orbit in the opposite direction
+            prevIsDarkMode.current = isDarkMode;
         }
+
+        smoothThemeAngle.current += (targetThemeAngle.current - smoothThemeAngle.current) * 0.03;
 
         // 1. Orbital Revolution (Sync with scroll)
         // Base orbit + scroll advancement (1 full revolution per scroll depth)
@@ -285,8 +367,8 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
             // Direction from sun(0,0,0) to earth
             const earthToSunDir = new THREE.Vector3().subVectors(new THREE.Vector3(0,0,0), lookTarget).normalize();
             
-            // Camera distances (closer to make Earth appear larger)
-            const camDistance = isMobile ? 5 : 6; 
+            // Camera distances: closer to skim the horizon for both modes
+            const camDistance = isMobile ? 3.0 : 3.5;
             
             // Calculate smooth rotational direction for the camera
             const up = new THREE.Vector3(0, 1, 0);
@@ -298,12 +380,15 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
             const right = new THREE.Vector3().crossVectors(forward, up).normalize();
             const left = right.clone().negate();
 
-            // Adjust offset based on screen size (mobile vs desktop)
-            const screenOffset = isMobile ? 1.5 : 2.5; 
+            // Adjust offset based on screen size (mobile vs desktop) for the closer view
+            const screenOffset = isMobile ? 1.0 : 1.5;
             const shiftVec = left.clone().multiplyScalar(screenOffset);
 
-            const targetCamPos = baseCamPos.clone().add(shiftVec);
-            const finalLookTarget = lookTarget.clone().add(shiftVec);
+            // Shift the look target slightly "up" or along the horizon direction to frame the curvature beautifully
+            const verticalShift = up.clone().multiplyScalar(0.8);
+
+            const targetCamPos = baseCamPos.clone().add(shiftVec).add(verticalShift);
+            const finalLookTarget = lookTarget.clone().add(shiftVec).add(verticalShift);
 
             state.camera.position.copy(targetCamPos);
             state.camera.lookAt(finalLookTarget);
@@ -327,17 +412,30 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
 
     return (
         <group>
-            {/* SUN LIGHT (Invisible, just for illumination) */}
-            <e.pointLight theatreKey="SunLight" position={[0, 0, 0]} intensity={3} distance={100} color={sunGlowColor} />
+            {/* SUN LIGHT (Directional/Point light source) */}
+            <e.pointLight 
+                theatreKey="SunLight" 
+                position={[0, 0, 0]} 
+                intensity={isDarkMode ? 3 : 8} 
+                distance={100} 
+                color={isDarkMode ? sunGlowColor : "#ffffff"} 
+                decay={2}
+            />
 
-            {/* DISTANT SUN BODY */}
-            <e.mesh theatreKey="SunBody" position={[0, 0, 0]}>
-                <sphereGeometry args={[4, 64, 64]} />
-                <meshBasicMaterial map={sunMap} color="#ffffff" />
-            </e.mesh>
-
+            {/* DISTANT SUN BODY (Artificial position for Light Mode background) */}
+            {/* Moved to earthGroup so we can perfectly place it relative to camera */}
+            
             {/* EARTH SYSTEM */}
-            <e.group ref={earthGroupRef} theatreKey="EarthSystem">
+            <e.group ref={earthGroupRef} theatreKey="EarthSystem" onPointerDown={handleEarthClick}>
+                
+                {/* Visual Sun for Light Mode background (Left side: +X, Background: +Z) */}
+                <e.mesh theatreKey="SunBody" position={[16, 0, 35]} visible={!isDarkMode}>
+                    <sphereGeometry args={[6, 64, 64]} />
+                    <meshBasicMaterial 
+                        map={sunMap} 
+                        color="#ffeeba" 
+                    />
+                </e.mesh>
                 {/* EARTH BODY */}
                 <e.mesh ref={earthRef} theatreKey="EarthBody">
                     <sphereGeometry args={[2, 64, 64]} />
@@ -350,6 +448,9 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
                         emissiveMap={lightsMap}
                         emissiveIntensity={isDarkMode ? 1.5 : 0.0} // Turn off city lights during day mode
                     />
+                    {clicks.map(click => (
+                        <InteractiveMarker key={click.id} click={click} />
+                    ))}
                 </e.mesh>
 
                 {/* ATMOSPHERE/CLOUDS LAYER 1 */}
@@ -385,9 +486,9 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
                 <e.mesh scale={[1.15, 1.15, 1.15]} theatreKey="AtmosphereGlow">
                     <sphereGeometry args={[2, 64, 64]} />
                     <meshBasicMaterial 
-                        color="#4aa3ff" 
+                        color={isDarkMode ? "#4aa3ff" : "#88ccff"} 
                         transparent={true}
-                        opacity={isDarkMode ? 0.3 : 0.15} 
+                        opacity={isDarkMode ? 0.3 : 0.6} 
                         side={THREE.BackSide} 
                         blending={THREE.AdditiveBlending}
                         depthWrite={false}
@@ -399,9 +500,9 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
 
                 {/* THE MOON */}
                 <e.group ref={moonOrbitRef} theatreKey="MoonOrbit">
-                    {/* Moon positioned 5 units away from Earth center */}
-                    <e.mesh ref={moonRef} position={[5, 0, 0]} theatreKey="MoonBody">
-                        <sphereGeometry args={[0.54, 32, 32]} /> {/* Moon is roughly 27% the size of Earth */}
+                    {/* Visual Moon for Dark Mode background (Left side: +X, Background: -Z) */}
+                    <e.mesh ref={moonRef} position={[7, 0, -12]} theatreKey="MoonBody" visible={isDarkMode}>
+                        <sphereGeometry args={[0.8, 32, 32]} />
                         <meshPhongMaterial map={moonMap} shininess={5} />
                     </e.mesh>
                 </e.group>
@@ -409,7 +510,22 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
 
             {/* BACKGROUND STARS (Locked to camera rotation) */}
             <group ref={starsRef}>
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={0} />
+                <Stars 
+                    radius={100} 
+                    depth={50} 
+                    count={5000} 
+                    factor={4} 
+                    saturation={0} 
+                    fade 
+                    speed={0} 
+                />
+                {/* Overlay to fade out stars in light mode */}
+                {!isDarkMode && (
+                    <mesh>
+                        <sphereGeometry args={[90, 32, 32]} />
+                        <meshBasicMaterial color="#f0f8ff" side={THREE.BackSide} transparent opacity={0.8} />
+                    </mesh>
+                )}
             </group>
         </group>
     );
@@ -418,17 +534,26 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
 export default function ThreeScene({ isDarkMode = true }: { isDarkMode?: boolean }) {
     return (
         <div 
-            className="fixed inset-0 pointer-events-none transition-colors duration-1000"
+            className="fixed inset-0 transition-colors duration-1000"
             style={{ zIndex: 0, backgroundColor: 'transparent' }} // Let main body color show through if needed, or force it here.
         >
             <Canvas
                 camera={{ position: [0, 0, 40], fov: 45 }}
                 gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-                style={{ background: '#010409' }} // Locked to deep space
+                style={{ 
+                    background: isDarkMode ? '#010409' : 'radial-gradient(ellipse at 50% 0%, #ffffff 0%, #fffcea 40%, #ffe9b3 100%)',
+                    transition: 'background 1s ease-in-out'
+                }}
             >
-                <ambientLight intensity={isDarkMode ? 0.1 : 0.8} />
+                {/* High ambient light in light mode to simulate scattered daylight filling shadows */}
+                <ambientLight intensity={isDarkMode ? 0.1 : 2.5} color={isDarkMode ? "#ffffff" : "#fffcea"} />
+                
                 {/* Hemisphere light adds a gentle blueish fill to the dark side of objects, simulating scattered starlight/earthlight */}
-                <hemisphereLight args={['#ffffff', '#001133', isDarkMode ? 0.4 : 0.6]} />
+                <hemisphereLight args={
+                    isDarkMode 
+                        ? ['#ffffff', '#001133', 0.4] 
+                        : ['#ffffff', '#ffeedd', 1.5]
+                } />
                 
                 <Suspense fallback={null}>
                     <SheetProvider sheet={mainSheet}>
@@ -441,6 +566,11 @@ export default function ThreeScene({ isDarkMode = true }: { isDarkMode?: boolean
             <div className={`fixed inset-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'opacity-100' : 'opacity-10'} z-10`}>
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,170,255,0.05)_0%,transparent_90%)]" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#010409] via-transparent to-[#010409] opacity-90" />
+            </div>
+
+            {/* Sun Glare Overlay for Light Mode */}
+            <div className={`fixed inset-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'opacity-0' : 'opacity-100'} z-10 mix-blend-screen`}>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_0%_30%,rgba(255,220,150,0.6)_0%,transparent_70%)]" />
             </div>
         </div>
     );

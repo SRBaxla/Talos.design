@@ -219,7 +219,7 @@ function ZSection({ children, progress, range }: ZSectionProps) {
         opacity,
         y,
         filter,
-        pointerEvents: pointerEvents as any,
+        pointerEvents: 'none', // Wrapper lets clicks pass through empty space
         position: 'absolute',
         inset: 0,
         display: 'flex',
@@ -230,7 +230,9 @@ function ZSection({ children, progress, range }: ZSectionProps) {
         willChange: 'transform, opacity, filter',
       }}
     >
-      {children}
+      <motion.div style={{ pointerEvents: pointerEvents as any, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {children}
+      </motion.div>
     </motion.div>
   );
 }
@@ -425,10 +427,10 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col gap-4">
                   {STUDIO_VALUES.map(val => (
-                    <div key={val.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[rgba(255,255,255,0.02)] border border-[var(--border-color)]">
+                    <div key={val.title} className="flex gap-4 items-start p-4 rounded-2xl bg-[var(--bg-surface-elevated)] bg-opacity-30 border border-[var(--border-color)]">
                       <val.icon className="shrink-0 mt-1" size={18} style={{ color: val.color }} />
                       <div>
-                        <h4 className="font-bold text-sm mb-1">{val.title}</h4>
+                        <h4 className="font-bold text-sm mb-1 text-[var(--text-primary)]">{val.title}</h4>
                         <p className="text-xs text-[var(--text-muted)]">{val.description}</p>
                       </div>
                     </div>
@@ -446,7 +448,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
                 <div className="relative z-10 text-center">
                   <div className="text-5xl md:text-6xl mb-4">🇮🇳</div>
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)]">Engineered in India</div>
+                  <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-primary)] font-bold">Engineered in India</div>
                 </div>
               </div>
             </div>
@@ -475,7 +477,7 @@ export default function Home() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Your Name"
-                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-white"
+                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
                       />
                       <input
                         type="email"
@@ -483,7 +485,7 @@ export default function Home() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email Address"
-                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-white"
+                        className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
                       />
                     </div>
                     <input
@@ -492,7 +494,7 @@ export default function Home() {
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="Company / Business Name"
-                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-white"
+                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)]"
                     />
                     <textarea
                       required
@@ -500,7 +502,7 @@ export default function Home() {
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Tell us about your project..."
                       rows={3}
-                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-white resize-none"
+                      className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-2 text-sm focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] resize-none"
                     />
                     <button
                       type="submit"
@@ -526,7 +528,7 @@ export default function Home() {
                       {CONTACT_STEPS.map((step, i) => (
                         <div key={step.label} className="flex gap-3">
                           <span className="text-[10px] font-mono text-[var(--text-muted)]">0{i + 1}</span>
-                          <div className="text-[10px] font-bold text-white">{step.label}</div>
+                          <div className="text-[10px] font-bold text-[var(--text-primary)]">{step.label}</div>
                         </div>
                       ))}
                     </div>
@@ -534,16 +536,16 @@ export default function Home() {
                 </div>
               </div>
 
-              <footer className="mt-8 pt-6 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] opacity-40">
-                <div className="text-[10px] font-mono uppercase tracking-[0.2em] mb-4 md:mb-0">© 2026 TALOS DESIGN</div>
+              <footer className="mt-8 pt-6 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)]">
+                <div className="text-[10px] font-mono uppercase tracking-[0.2em] mb-4 md:mb-0 text-[var(--text-muted)]">© 2026 TALOS DESIGN</div>
                 <div className="flex gap-8">
                   <button
                     onClick={() => scrollToProgress(SECTION_Z_PROGRESS.hero)}
-                    className="text-[10px] font-mono uppercase hover:text-[var(--accent-orange)]"
+                    className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)]"
                   >
                     Back to Top
                   </button>
-                  <Link to="/admin" className="text-[10px] font-mono uppercase hover:text-[var(--accent-orange)]">Admin</Link>
+                  <Link to="/admin" className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)]">Admin</Link>
                 </div>
               </footer>
             </div>
