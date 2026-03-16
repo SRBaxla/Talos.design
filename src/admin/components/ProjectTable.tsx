@@ -75,7 +75,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
         <div className="flex flex-col gap-6">
             {/* Toolbar */}
             <div className="flex flex-wrap items-center justify-between gap-4 bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4">
-                <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] rounded-lg px-3 py-2 w-full max-w-sm focus-within:border-[var(--accent-orange)] transition-colors">
+                <div className="flex items-center gap-2 bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-3 py-2 w-full max-w-sm focus-within:border-[var(--accent-orange)] transition-colors">
                     <Search size={16} className="text-[var(--text-muted)]" />
                     <input
                         className="bg-transparent border-none text-sm w-full focus:outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)]"
@@ -88,7 +88,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                 <div className="flex items-center gap-3">
                     <span className="text-xs text-[var(--text-muted)] font-mono uppercase tracking-wider hidden sm:block">Filter by Status:</span>
                     <select
-                        className="bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] appearance-none cursor-pointer pr-8 relative"
+                        className="bg-[var(--bg-base)] border border-[var(--border-color)] text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] appearance-none cursor-pointer pr-8 relative"
                         style={{
                             backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")`,
                             backgroundRepeat: 'no-repeat',
@@ -112,7 +112,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
             <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl overflow-hidden overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[800px]">
                     <thead>
-                        <tr className="border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)]">
+                        <tr className="border-b border-[var(--border-color)] bg-[var(--bg-base)]">
                             <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider cursor-pointer hover:text-[var(--text-primary)] transition-colors select-none" onClick={() => toggleSort('title')}>
                                 <div className="flex items-center gap-2">Project <ArrowUpDown size={12} className="opacity-50" /></div>
                             </th>
@@ -140,7 +140,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                                 <tr
                                     key={p.id}
                                     onClick={() => onRowClick ? onRowClick(p) : onEdit(p)}
-                                    className="group hover:bg-[rgba(255,255,255,0.02)] transition-colors cursor-pointer"
+                                    className="group hover:bg-[var(--bg-surface-elevated)] transition-colors cursor-pointer"
                                 >
                                     <td className="px-6 py-4">
                                         <div className="font-bold text-[var(--text-primary)] group-hover:text-[var(--accent-orange)] transition-colors">{p.title || (p as any).name}</div>

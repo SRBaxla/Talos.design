@@ -41,19 +41,19 @@ export default function AdminCaseStudies() {
         <div className="w-full h-full flex flex-col">
             <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="font-display font-bold text-xl">Case Studies</h1>
+                    <h1 className="font-display font-bold text-xl text-[var(--text-primary)]">Case Studies</h1>
                     <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Track company case study progress and publishing</p>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
-                    <div className="flex bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] rounded-lg p-1">
+                    <div className="flex bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg p-1">
                         <button
-                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'table' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-white'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'table' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                             onClick={() => setView('table')}
                         >
                             <Table size={14} /> Table
                         </button>
                         <button
-                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'kanban' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-white'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'kanban' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                             onClick={() => setView('kanban')}
                         >
                             <Columns3 size={14} /> Kanban

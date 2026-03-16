@@ -567,7 +567,7 @@ Best,
     if (roleLoading) {
         return (
             <div className="flex items-center justify-center p-8">
-                <div className="w-8 h-8 border-2 border-white/10 border-t-[var(--accent-orange)] rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-[var(--border-color)] border-t-[var(--accent-orange)] rounded-full animate-spin" />
             </div>
         );
     }
@@ -586,17 +586,17 @@ Best,
         <div className="p-8 max-w-7xl mx-auto w-full">
             <div className="flex justify-between items-center mb-8 relative">
                 <div>
-                    <h1 className="text-3xl font-display font-bold text-white mb-2 tracking-tight">Leads & Outreach</h1>
+                    <h1 className="text-3xl font-display font-bold text-[var(--text-primary)] mb-2 tracking-tight">Leads & Outreach</h1>
                     <p className="text-[var(--text-secondary)] font-medium">Manage potential clients and send cold emails.</p>
                 </div>
 
                 <div className="flex gap-4">
-                    <div className="flex bg-[rgba(255,255,255,0.02)] p-1 rounded-xl border border-[rgba(255,255,255,0.05)]">
+                    <div className="flex bg-[var(--bg-surface)] p-1 rounded-xl border border-[var(--border-color)]">
                         <button
                             onClick={() => setActiveTab('table')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'table'
                                 ? 'bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] shadow-sm'
-                                : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
+                                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'
                                 } `}
                         >
                             <LayoutList size={16} />
@@ -606,7 +606,7 @@ Best,
                             onClick={() => setActiveTab('maps')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'maps'
                                 ? 'bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] shadow-sm'
-                                : 'text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)]'
+                                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'
                                 } `}
                         >
                             <MapPin size={16} />
@@ -618,7 +618,7 @@ Best,
                         <>
                             <button
                                 onClick={fetchLeads}
-                                className="p-2.5 rounded-lg border border-[rgba(255,255,255,0.1)] bg-[var(--bg-card)] hover:bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)] hover:text-white transition-all shadow-sm group"
+                                className="p-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all shadow-sm group"
                                 title="Refresh Leads"
                                 disabled={loading}
                             >
@@ -634,7 +634,7 @@ Best,
                                     disabled={importLoading}
                                 />
                                 <button
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-[var(--accent-orange)] to-[var(--accent-orange-hover)] text-white hover:opacity-90 font-medium tracking-wide transition-all shadow-lg hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] border border-[rgba(255,255,255,0.1)]"
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-[var(--accent-orange)] to-[var(--accent-orange-hover)] text-[var(--text-primary)] hover:opacity-90 font-medium tracking-wide transition-all shadow-lg hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] border border-[var(--border-color)]"
                                     disabled={importLoading}
                                 >
                                     {importLoading ? <RefreshCw size={18} className="animate-spin" /> : <UploadCloud size={18} />}
@@ -650,7 +650,7 @@ Best,
                 <div className="space-y-6">
                     <div className="bg-[var(--bg-card)] rounded-xl border border-[rgba(255,255,255,0.08)] p-6 shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-orange)] opacity-5 rounded-full blur-[80px] pointer-events-none" />
-                        <h2 className="text-xl font-display font-semibold text-white mb-4">Find Businesses via Google Maps</h2>
+                        <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-4">Find Businesses via Google Maps</h2>
                         <form onSubmit={handleMapSearch} className="flex flex-col sm:flex-row gap-4 relative z-10">
                             <div className="flex-1">
                                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Search Query</label>
@@ -660,7 +660,7 @@ Best,
                                     placeholder="e.g. Restaurants, Plumbers, Tech Companies"
                                     value={mapQuery}
                                     onChange={(e) => setMapQuery(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2.5 text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] transition-all"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] transition-all"
                                 />
                             </div>
                             <div className="flex-1">
@@ -671,14 +671,14 @@ Best,
                                     placeholder="e.g. Dallas, TX or 75001"
                                     value={mapLocation}
                                     onChange={(e) => setMapLocation(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2.5 text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] transition-all"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] transition-all"
                                 />
                             </div>
                             <div className="flex items-end">
                                 <button
                                     type="submit"
                                     disabled={isSearchingMaps}
-                                    className="h-[46px] w-full sm:w-auto px-6 rounded-lg bg-[var(--accent-orange)] text-white font-medium hover:opacity-90 flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+                                    className="h-[46px] w-full sm:w-auto px-6 rounded-lg bg-[var(--accent-orange)] text-[var(--text-primary)] font-medium hover:opacity-90 flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
                                 >
                                     {isSearchingMaps ? <RefreshCw size={18} className="animate-spin" /> : <Search size={18} />}
                                     Search Maps
@@ -689,14 +689,14 @@ Best,
 
                     {mapResults.length > 0 && (
                         <div className="bg-[var(--bg-card)] rounded-xl border border-[rgba(255,255,255,0.08)] overflow-hidden shadow-xl">
-                            <div className="p-4 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)] flex justify-between items-center">
-                                <h3 className="font-display text-white font-medium">Search Results ({mapResults.length})</h3>
+                            <div className="p-4 border-b border-[var(--border-color)] bg-[var(--bg-surface)] flex justify-between items-center">
+                                <h3 className="font-display text-[var(--text-primary)] font-medium">Search Results ({mapResults.length})</h3>
                                 <div className="text-xs text-[var(--text-muted)]">Powered by Google Places</div>
                             </div>
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-[rgba(255,255,255,0.05)] text-xs uppercase tracking-wider text-[var(--text-muted)] font-display font-medium">
+                                        <tr className="border-b border-[var(--border-color)] text-xs uppercase tracking-wider text-[var(--text-muted)] font-display font-medium">
                                             <th className="p-4 pl-6">Business Name</th>
                                             <th className="p-4">Address</th>
                                             <th className="p-4 text-center">Tags</th>
@@ -707,18 +707,18 @@ Best,
                                     </thead>
                                     <tbody>
                                         {mapResults.map((result) => (
-                                            <tr key={result.place_id} className="border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
-                                                <td className="p-4 pl-6 font-medium text-white">{result.name}</td>
+                                            <tr key={result.place_id} className="border-b border-[var(--border-color)] hover:bg-[var(--bg-surface)] transition-colors">
+                                                <td className="p-4 pl-6 font-medium text-[var(--text-primary)]">{result.name}</td>
                                                 <td className="p-4 text-sm text-[var(--text-secondary)]">{result.address}</td>
                                                 <td className="p-4 text-center">
                                                     <div className="flex flex-wrap gap-1.5 justify-center">
                                                         {result.website && (
-                                                            <a href={result.website} target="_blank" rel="noreferrer" className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors" title="Visit Website">
+                                                            <a href={result.website} target="_blank" rel="noreferrer" className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-[var(--accent-cyan)] border border-blue-500/20 hover:bg-blue-500/20 transition-colors" title="Visit Website">
                                                                 Website
                                                             </a>
                                                         )}
                                                         {result.phoneNumber && (
-                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20" title={result.phoneNumber}>
+                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-green-500/10 text-[#10b981] border border-green-500/20" title={result.phoneNumber}>
                                                                 Phone / WA
                                                             </span>
                                                         )}
@@ -742,13 +742,13 @@ Best,
                                                         placeholder="Add email (optional)"
                                                         value={mapResultEmails[result.place_id] || ''}
                                                         onChange={(e) => setMapResultEmails(prev => ({ ...prev, [result.place_id]: e.target.value }))}
-                                                        className="w-full min-w-[140px] bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] rounded px-2 py-1 text-xs text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-cyan)] transition-colors"
+                                                        className="w-full min-w-[140px] bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-2 py-1 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-cyan)] transition-colors"
                                                     />
                                                 </td>
                                                 <td className="p-4 pr-6 text-right">
                                                     <button
                                                         onClick={() => addMapLead(result)}
-                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-cyan)]/20 text-[var(--text-secondary)] hover:text-[var(--accent-cyan)] transition-all text-sm font-medium border border-[rgba(255,255,255,0.1)] hover:border-[var(--accent-cyan)]/30"
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--bg-surface-elevated)] hover:bg-[var(--accent-cyan)]/20 text-[var(--text-secondary)] hover:text-[var(--accent-cyan)] transition-all text-sm font-medium border border-[var(--border-color)] hover:border-[var(--accent-cyan)]/30"
                                                     >
                                                         <Plus size={14} /> Add Lead
                                                     </button>
@@ -760,11 +760,11 @@ Best,
                             </div>
 
                             {mapSearchNextPageToken && (
-                                <div className="p-4 border-t border-[rgba(255,255,255,0.05)] flex justify-center">
+                                <div className="p-4 border-t border-[var(--border-color)] flex justify-center">
                                     <button
                                         onClick={loadMoreMapResults}
                                         disabled={isSearchingMaps}
-                                        className="px-6 py-2 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] rounded-full text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="px-6 py-2 bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] border border-[var(--border-color)] rounded-full text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
                                         {isSearchingMaps ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
                                         Load More Results
@@ -784,24 +784,24 @@ Best,
                             placeholder="Search leads by name, email, or company..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-[var(--bg-card)] border border-[rgba(255,255,255,0.1)] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all shadow-inner"
+                            className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg pl-10 pr-4 py-2.5 text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all shadow-inner"
                         />
                     </div>
 
                     {/* Table */}
                     <div className="bg-[var(--bg-card)] rounded-xl border border-[rgba(255,255,255,0.08)] overflow-hidden shadow-2xl relative">
-                        <div className="p-4 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)] flex justify-between items-center">
-                            <h3 className="font-display text-white font-medium">Saved Leads ({filteredLeads.length})</h3>
+                        <div className="p-4 border-b border-[var(--border-color)] bg-[var(--bg-surface)] flex justify-between items-center">
+                            <h3 className="font-display text-[var(--text-primary)] font-medium">Saved Leads ({filteredLeads.length})</h3>
                         </div>
 
                         <div className="overflow-x-auto custom-scrollbar">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.01)] text-xs uppercase tracking-wider text-[var(--text-muted)] font-display font-medium">
+                                    <tr className="border-b border-[var(--border-color)] bg-[var(--bg-surface)] text-xs uppercase tracking-wider text-[var(--text-muted)] font-display font-medium">
                                         <th className="p-4 pl-6 w-12">
                                             <input
                                                 type="checkbox"
-                                                className="w-4 h-4 rounded border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.05)] text-[var(--accent-orange)] focus:ring-[var(--accent-orange)] focus:ring-offset-0 focus:ring-1"
+                                                className="w-4 h-4 rounded border-[var(--border-color)] bg-[var(--bg-surface-elevated)] text-[var(--accent-orange)] focus:ring-[var(--accent-orange)] focus:ring-offset-0 focus:ring-1"
                                                 checked={selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0}
                                                 onChange={toggleSelectAll}
                                             />
@@ -819,7 +819,7 @@ Best,
                                         <tr>
                                             <td colSpan={7} className="p-8 text-center text-[var(--text-muted)]">
                                                 <div className="flex justify-center mb-2">
-                                                    <div className="w-6 h-6 border-2 border-[rgba(255,255,255,0.1)] border-t-[var(--accent-orange)] rounded-full animate-spin" />
+                                                    <div className="w-6 h-6 border-2 border-[var(--border-color)] border-t-[var(--accent-orange)] rounded-full animate-spin" />
                                                 </div>
                                                 Loading leads...
                                             </td>
@@ -832,37 +832,37 @@ Best,
                                         </tr>
                                     ) : (
                                         filteredLeads.map((lead) => (
-                                            <tr key={lead.id} className={`border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)] transition-colors group ${selectedLeadIds.includes(lead.id as string) ? 'bg-[var(--accent-orange)]/5' : ''} `}>
+                                            <tr key={lead.id} className={`border-b border-[var(--border-color)] hover:bg-[var(--bg-surface)] transition-colors group ${selectedLeadIds.includes(lead.id as string) ? 'bg-[var(--accent-orange)]/5' : ''} `}>
                                                 <td className="p-4 pl-6 w-12" onClick={(e) => e.stopPropagation()}>
                                                     <input
                                                         type="checkbox"
-                                                        className="w-4 h-4 rounded border-[rgba(255,255,255,0.2)] bg-[rgba(255,255,255,0.05)] text-[var(--accent-orange)] focus:ring-[var(--accent-orange)] focus:ring-offset-0 focus:ring-1 cursor-pointer"
+                                                        className="w-4 h-4 rounded border-[var(--border-color)] bg-[var(--bg-surface-elevated)] text-[var(--accent-orange)] focus:ring-[var(--accent-orange)] focus:ring-offset-0 focus:ring-1 cursor-pointer"
                                                         checked={selectedLeadIds.includes(lead.id as string)}
                                                         onChange={() => toggleSelectLead(lead.id as string)}
                                                     />
                                                 </td>
                                                 <td className="p-4 cursor-pointer" onClick={() => openDetailsModal(lead)}>
-                                                    <div className="font-medium text-white hover:text-[var(--accent-cyan)] transition-colors">{lead.name}</div>
+                                                    <div className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-cyan)] transition-colors">{lead.name}</div>
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex flex-wrap gap-1.5 justify-start">
                                                         {lead.email && (
-                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20" title={lead.email}>
+                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-[var(--accent-cyan)] border border-blue-500/20" title={lead.email}>
                                                                 Email
                                                             </span>
                                                         )}
                                                         {lead.phone && (
-                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20" title={lead.phone}>
+                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-green-500/10 text-[#10b981] border border-green-500/20" title={lead.phone}>
                                                                 Phone / WA
                                                             </span>
                                                         )}
                                                         {!lead.email && (
-                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)] border border-[rgba(255,255,255,0.05)]">
+                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border border-[var(--border-color)]">
                                                                 No Email
                                                             </span>
                                                         )}
                                                         {!lead.phone && (
-                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)] border border-[rgba(255,255,255,0.05)]">
+                                                            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border border-[var(--border-color)]">
                                                                 No Phone
                                                             </span>
                                                         )}
@@ -877,19 +877,19 @@ Best,
                                                             href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-blue-400 hover:text-blue-300 hover:underline max-w-[150px] truncate block text-sm"
+                                                            className="text-[var(--accent-cyan)] hover:text-blue-300 hover:underline max-w-[150px] truncate block text-sm"
                                                             title={lead.website}
                                                         >
                                                             {new URL(lead.website.startsWith('http') ? lead.website : `https://${lead.website}`).hostname.replace('www.', '')}
                                                         </a>
                                                     ) : (
-                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)]">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--bg-surface-elevated)] text-[var(--text-muted)]">
                                                             No Website
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="p-4">
-                                                    <span className="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] border border-[rgba(255,255,255,0.1)]">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] border border-[var(--border-color)]">
                                                         {lead.status}
                                                     </span>
                                                 </td>
@@ -897,10 +897,10 @@ Best,
                                                     <div className="flex items-center justify-end gap-2">
                                                         {lead.phone ? (
                                                             <>
-                                                                <a href={`tel:${lead.phone} `} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-slate-700 text-[var(--text-secondary)] hover:text-white transition-all text-xs font-medium border border-[rgba(255,255,255,0.1)]" title="Call">
+                                                                <a href={`tel:${lead.phone} `} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[var(--bg-surface-elevated)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all text-xs font-medium border border-[var(--border-color)]" title="Call">
                                                                     <Phone size={12} /> Call
                                                                 </a>
-                                                                <a href={`sms:${lead.phone} `} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-green-500/20 text-[var(--text-secondary)] hover:text-green-400 transition-all text-xs font-medium border border-[rgba(255,255,255,0.1)] hover:border-green-500/30" title="SMS">
+                                                                <a href={`sms:${lead.phone} `} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[var(--bg-surface-elevated)] hover:bg-green-500/20 text-[var(--text-secondary)] hover:text-[#10b981] transition-all text-xs font-medium border border-[var(--border-color)] hover:border-green-500/30" title="SMS">
                                                                     <MessageCircle size={12} /> SMS
                                                                 </a>
                                                             </>
@@ -913,7 +913,7 @@ Best,
                                                         {lead.email ? (
                                                             <button
                                                                 onClick={() => openEmailModal(lead)}
-                                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[rgba(255,255,255,0.05)] hover:bg-[var(--accent-orange)]/20 text-[var(--text-secondary)] hover:text-[var(--accent-orange)] transition-all text-xs font-medium border border-[rgba(255,255,255,0.1)] hover:border-[var(--accent-orange)]/30" title="Email"
+                                                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[var(--bg-surface-elevated)] hover:bg-[var(--accent-orange)]/20 text-[var(--text-secondary)] hover:text-[var(--accent-orange)] transition-all text-xs font-medium border border-[var(--border-color)] hover:border-[var(--accent-orange)]/30" title="Email"
                                                             >
                                                                 <Mail size={12} /> Email
                                                             </button>
@@ -937,8 +937,8 @@ Best,
             {/* Sticky Bulk Actions Bar */}
             {activeTab === 'table' && selectedLeadIds.length > 0 && (
                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--bg-surface-elevated)] border border-[rgba(255,255,255,0.15)] rounded-full px-6 py-3 shadow-2xl flex items-center gap-6 z-50 animate-in slide-in-from-bottom-8 duration-300">
-                    <div className="text-sm font-medium text-white flex items-center gap-2">
-                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--accent-orange)] text-white text-xs">
+                    <div className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--accent-orange)] text-[var(--text-primary)] text-xs">
                             {selectedLeadIds.length}
                         </span>
                         Selected
@@ -951,20 +951,20 @@ Best,
                                 setEmailBody('Hi there,\n\nWe would love to help you build an amazing digital presence.\n\nBest,\nTalos Design Team');
                                 setIsBulkEmailModalOpen(true);
                             }}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white transition-colors text-sm font-medium border border-transparent hover:border-[rgba(255,255,255,0.1)]"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors text-sm font-medium border border-transparent hover:border-[var(--border-color)]"
                         >
                             <Mail size={16} /> Bulk Email
                         </button>
                         <button
                             onClick={() => setIsBulkWhatsAppModalOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-green-400 transition-colors text-sm font-medium border border-transparent hover:border-[rgba(255,255,255,0.1)]"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[#10b981] transition-colors text-sm font-medium border border-transparent hover:border-[var(--border-color)]"
                         >
                             <MessageCircle size={16} /> Bulk WhatsApp
                         </button>
                         <div className="w-px h-6 bg-[rgba(255,255,255,0.1)] mx-1" />
                         <button
                             onClick={deleteSelectedLeads}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-rose-500/10 text-[var(--text-secondary)] hover:text-rose-400 transition-colors text-sm font-medium border border-transparent hover:border-rose-500/30"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-rose-500/10 text-[var(--text-secondary)] hover:text-[#f43f5e] transition-colors text-sm font-medium border border-transparent hover:border-rose-500/30"
                         >
                             <Trash2 size={16} /> Delete
                         </button>
@@ -984,20 +984,20 @@ Best,
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !sendingEmail && setIsEmailModalOpen(false)} />
 
-                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="absolute top-0 right-0 p-4 z-10">
                             <button
                                 onClick={() => !sendingEmail && setIsEmailModalOpen(false)}
-                                className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
+                                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
                                 disabled={sendingEmail}
                             >
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-6 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
-                            <h2 className="text-xl font-display font-medium text-white mb-1">Compose Email</h2>
-                            <p className="text-sm text-[var(--text-secondary)]">To: <span className="text-white font-medium">{selectedLead.name}</span> ({selectedLead.email})</p>
+                        <div className="p-6 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
+                            <h2 className="text-xl font-display font-medium text-[var(--text-primary)] mb-1">Compose Email</h2>
+                            <p className="text-sm text-[var(--text-secondary)]">To: <span className="text-[var(--text-primary)] font-medium">{selectedLead.name}</span> ({selectedLead.email})</p>
                         </div>
 
                         <form onSubmit={sendEmail} className="p-6 space-y-4">
@@ -1008,7 +1008,7 @@ Best,
                                     required
                                     value={emailSubject}
                                     onChange={(e) => setEmailSubject(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all"
                                     disabled={sendingEmail}
                                 />
                             </div>
@@ -1020,12 +1020,12 @@ Best,
                                     rows={8}
                                     value={emailBody}
                                     onChange={(e) => setEmailBody(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all resize-y min-h-[150px]"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all resize-y min-h-[150px]"
                                     disabled={sendingEmail}
                                 />
                             </div>
 
-                            <div className="pt-4 flex justify-end gap-3 border-t border-[rgba(255,255,255,0.05)]">
+                            <div className="pt-4 flex justify-end gap-3 border-t border-[var(--border-color)]">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -1034,7 +1034,7 @@ Best,
                                         }
                                         setIsEmailModalOpen(false);
                                     }}
-                                    className="px-5 py-2.5 rounded-lg text-white font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent"
+                                    className="px-5 py-2.5 rounded-lg text-[var(--text-primary)] font-medium hover:bg-[var(--bg-surface-elevated)] transition-colors border border-transparent"
                                     disabled={sendingEmail}
                                 >
                                     Cancel
@@ -1042,7 +1042,7 @@ Best,
                                 <button
                                     type="submit"
                                     disabled={sendingEmail}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[var(--accent-orange)] text-white font-medium tracking-wide hover:opacity-90 transition-all shadow-lg hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)]"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[var(--accent-orange)] text-[var(--text-primary)] font-medium tracking-wide hover:opacity-90 transition-all shadow-lg hover:shadow-[0_0_15px_rgba(249,115,22,0.3)] disabled:opacity-50 disabled:cursor-not-allowed border border-[var(--border-color)]"
                                 >
                                     {sendingEmail ? <RefreshCw size={18} className="animate-spin" /> : <Send size={18} />}
                                     {sendingEmail ? 'Sending...' : 'Send via EmailJS'}
@@ -1058,21 +1058,21 @@ Best,
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !sendingEmail && setIsBulkEmailModalOpen(false)} />
 
-                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="absolute top-0 right-0 p-4 z-10">
                             <button
                                 onClick={() => !sendingEmail && setIsBulkEmailModalOpen(false)}
-                                className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
+                                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
                                 disabled={sendingEmail}
                             >
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-6 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
-                            <h2 className="text-xl font-display font-medium text-white mb-1">Bulk Email Recipients</h2>
+                        <div className="p-6 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
+                            <h2 className="text-xl font-display font-medium text-[var(--text-primary)] mb-1">Bulk Email Recipients</h2>
                             <p className="text-sm text-[var(--text-secondary)]">
-                                You are about to email <span className="text-white font-medium">{selectedLeadIds.length}</span> selected leads.
+                                You are about to email <span className="text-[var(--text-primary)] font-medium">{selectedLeadIds.length}</span> selected leads.
                             </p>
                         </div>
 
@@ -1084,7 +1084,7 @@ Best,
                                     required
                                     value={emailSubject}
                                     onChange={(e) => setEmailSubject(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all"
                                     disabled={sendingEmail}
                                 />
                             </div>
@@ -1096,16 +1096,16 @@ Best,
                                     rows={8}
                                     value={emailBody}
                                     onChange={(e) => setEmailBody(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all resize-y min-h-[150px]"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] focus:ring-1 focus:ring-[var(--accent-cyan)] transition-all resize-y min-h-[150px]"
                                     disabled={sendingEmail}
                                 />
                             </div>
 
-                            <div className="pt-4 flex justify-end gap-3 border-t border-[rgba(255,255,255,0.05)]">
+                            <div className="pt-4 flex justify-end gap-3 border-t border-[var(--border-color)]">
                                 <button
                                     type="button"
                                     onClick={() => setIsBulkEmailModalOpen(false)}
-                                    className="px-5 py-2.5 rounded-lg text-white font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors border border-transparent"
+                                    className="px-5 py-2.5 rounded-lg text-[var(--text-primary)] font-medium hover:bg-[var(--bg-surface-elevated)] transition-colors border border-transparent"
                                     disabled={sendingEmail}
                                 >
                                     Cancel
@@ -1113,7 +1113,7 @@ Best,
                                 <button
                                     type="submit"
                                     disabled={sendingEmail}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[var(--accent-cyan)] text-slate-900 font-medium tracking-wide hover:opacity-90 transition-all shadow-lg hover:shadow-[0_0_15px_rgba(0,229,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.1)]"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[var(--accent-cyan)] text-slate-900 font-medium tracking-wide hover:opacity-90 transition-all shadow-lg hover:shadow-[0_0_15px_rgba(0,229,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed border border-[var(--border-color)]"
                                 >
                                     {sendingEmail ? <RefreshCw size={18} className="animate-spin" /> : <Send size={18} />}
                                     {sendingEmail ? 'Sending Array...' : `Send ${selectedLeadIds.length} Emails`}
@@ -1129,20 +1129,20 @@ Best,
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsBulkWhatsAppModalOpen(false)} />
 
-                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="relative w-full max-w-2xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="absolute top-0 right-0 p-4 z-10">
                             <button
                                 onClick={() => setIsBulkWhatsAppModalOpen(false)}
-                                className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
+                                className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-md"
                             >
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-6 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
-                            <h2 className="text-xl font-display font-medium text-white mb-1">Bulk WhatsApp</h2>
+                        <div className="p-6 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
+                            <h2 className="text-xl font-display font-medium text-[var(--text-primary)] mb-1">Bulk WhatsApp</h2>
                             <p className="text-sm text-[var(--text-secondary)]">
-                                Preparing WhatsApp web tabs for <span className="text-white font-medium">{selectedLeadIds.length}</span> selected leads.
+                                Preparing WhatsApp web tabs for <span className="text-[var(--text-primary)] font-medium">{selectedLeadIds.length}</span> selected leads.
                             </p>
                         </div>
 
@@ -1154,11 +1154,11 @@ Best,
                                     rows={5}
                                     value={whatsAppMessage}
                                     onChange={(e) => setWhatsAppMessage(e.target.value)}
-                                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all resize-y min-h-[100px]"
+                                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all resize-y min-h-[100px]"
                                 />
                             </div>
 
-                            <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-lg p-4">
+                            <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg p-4">
                                 <p className="text-sm text-[var(--text-muted)] mb-3">
                                     <strong>Note:</strong> Browsers block mass popup tabs. You will need to click each generated link below to send the message via WhatsApp Web or Desktop.
                                 </p>
@@ -1170,13 +1170,13 @@ Best,
                                             const formattedPhone = lead.phone?.replace(/[^0-9]/g, '');
                                             const waLink = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsAppMessage)}`;
                                             return (
-                                                <div key={lead.id} className="flex items-center justify-between p-2 rounded bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)]">
-                                                    <div className="text-sm text-white font-medium">{lead.name}</div>
+                                                <div key={lead.id} className="flex items-center justify-between p-2 rounded bg-[var(--bg-surface)] border border-[var(--border-color)]">
+                                                    <div className="text-sm text-[var(--text-primary)] font-medium">{lead.name}</div>
                                                     <a
                                                         href={waLink}
                                                         target="_blank"
                                                         rel="noreferrer"
-                                                        className="text-xs font-medium px-3 py-1.5 rounded bg-green-500 hover:bg-green-600 text-white transition-colors"
+                                                        className="text-xs font-medium px-3 py-1.5 rounded bg-green-500 hover:bg-green-600 text-[var(--text-primary)] transition-colors"
                                                     >
                                                         Open WA
                                                     </a>
@@ -1191,7 +1191,7 @@ Best,
                                 <button
                                     type="button"
                                     onClick={() => setIsBulkWhatsAppModalOpen(false)}
-                                    className="px-5 py-2.5 rounded-lg bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] text-white font-medium transition-colors border border-transparent"
+                                    className="px-5 py-2.5 rounded-lg bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] text-[var(--text-primary)] font-medium transition-colors border border-transparent"
                                 >
                                     Close
                                 </button>
@@ -1207,12 +1207,12 @@ Best,
                     <div className="fixed inset-0 z-[100] flex items-center justify-end p-0 sm:p-4">
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsLeadDetailsModalOpen(false)} />
 
-                        <div className="relative w-full h-full sm:h-auto sm:max-w-md bg-[var(--bg-surface-elevated)] border-l sm:border border-[rgba(255,255,255,0.1)] sm:rounded-2xl shadow-2xl overflow-y-auto animate-in slide-in-from-right-1/2 duration-300">
-                            <div className="sticky top-0 bg-[var(--bg-card)]/80 backdrop-blur-md p-4 flex items-center justify-between border-b border-[rgba(255,255,255,0.05)] z-10">
-                                <h2 className="text-xl font-display font-medium text-white">Lead Details</h2>
+                        <div className="relative w-full h-full sm:h-auto sm:max-w-md bg-[var(--bg-surface-elevated)] border-l sm:border border-[var(--border-color)] sm:rounded-2xl shadow-2xl overflow-y-auto animate-in slide-in-from-right-1/2 duration-300">
+                            <div className="sticky top-0 bg-[var(--bg-card)]/80 backdrop-blur-md p-4 flex items-center justify-between border-b border-[var(--border-color)] z-10">
+                                <h2 className="text-xl font-display font-medium text-[var(--text-primary)]">Lead Details</h2>
                                 <button
                                     onClick={() => setIsLeadDetailsModalOpen(false)}
-                                    className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-full"
+                                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors bg-[var(--bg-surface-elevated)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-full"
                                 >
                                     <X size={20} />
                                 </button>
@@ -1221,20 +1221,20 @@ Best,
                             <div className="p-6 space-y-6">
                                 {/* Profile Header */}
                                 <div className="flex items-center gap-4">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-orange)] to-rose-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg">
+                                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--accent-orange)] to-rose-500 flex items-center justify-center text-2xl font-bold text-[var(--text-primary)] shadow-lg">
                                         {viewingLead.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-white">{viewingLead.name}</h3>
+                                        <h3 className="text-xl font-bold text-[var(--text-primary)]">{viewingLead.name}</h3>
                                         <p className="text-[var(--text-secondary)]">{viewingLead.company || 'Unknown Company'}</p>
                                     </div>
                                 </div>
 
                                 {/* Info Blocks */}
                                 <div className="space-y-4">
-                                    <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-xl p-4">
+                                    <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4">
                                         <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1">Email</div>
-                                        <div className="text-white break-all">{viewingLead.email || 'No email provided'}</div>
+                                        <div className="text-[var(--text-primary)] break-all">{viewingLead.email || 'No email provided'}</div>
                                         {viewingLead.email && (
                                             <button
                                                 onClick={() => { setIsLeadDetailsModalOpen(false); openEmailModal(viewingLead); }}
@@ -1245,25 +1245,25 @@ Best,
                                         )}
                                     </div>
 
-                                    <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-xl p-4">
+                                    <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4">
                                         <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1">Phone</div>
-                                        <div className="text-white">{viewingLead.phone || 'No phone provided'}</div>
+                                        <div className="text-[var(--text-primary)]">{viewingLead.phone || 'No phone provided'}</div>
                                         {viewingLead.phone && (
                                             <div className="mt-2 flex gap-3 text-xs">
-                                                <a href={`tel:${viewingLead.phone}`} className="text-[var(--text-secondary)] hover:text-white flex items-center gap-1 transition-colors">
+                                                <a href={`tel:${viewingLead.phone}`} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1 transition-colors">
                                                     <Phone size={12} /> Call
                                                 </a>
-                                                <a href={`sms:${viewingLead.phone}`} className="text-green-400 hover:text-green-300 flex items-center gap-1 transition-colors">
+                                                <a href={`sms:${viewingLead.phone}`} className="text-[#10b981] hover:text-green-300 flex items-center gap-1 transition-colors">
                                                     <MessageCircle size={12} /> WhatsApp/SMS
                                                 </a>
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-xl p-4 flex justify-between items-center">
+                                    <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4 flex justify-between items-center">
                                         <div>
                                             <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider font-semibold mb-1">Status</div>
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] border border-[rgba(255,255,255,0.1)]">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] border border-[var(--border-color)]">
                                                 {viewingLead.status.toUpperCase()}
                                             </span>
                                         </div>

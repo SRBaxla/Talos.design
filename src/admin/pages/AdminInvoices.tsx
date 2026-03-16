@@ -312,7 +312,7 @@ export default function AdminInvoices() {
         <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] w-full flex flex-col">
             <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="font-display font-bold text-xl">Invoices</h1>
+                    <h1 className="font-display font-bold text-xl text-[var(--text-primary)]">Invoices</h1>
                     <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Manage client billing and generated invoices</p>
                 </div>
                 <button
@@ -327,7 +327,7 @@ export default function AdminInvoices() {
                 <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl overflow-hidden overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
-                            <tr className="border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)]">
+                            <tr className="border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.01)]">
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Invoice</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Client</th>
                                 <th className="px-6 py-4 text-xs font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wider">Project</th>
@@ -346,7 +346,7 @@ export default function AdminInvoices() {
                                 </tr>
                             ) : (
                                 invoices.map((invoice) => (
-                                    <tr key={invoice.id} className="group hover:bg-[rgba(255,255,255,0.02)] transition-colors">
+                                    <tr key={invoice.id} className="group hover:bg-[var(--bg-surface)] transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-[rgba(245,158,11,0.1)] flex items-center justify-center shrink-0">
@@ -378,12 +378,12 @@ export default function AdminInvoices() {
                                                 value={invoice.status}
                                                 onChange={(e) => updateInvoice(invoice.id, { status: e.target.value as 'draft' | 'sent' | 'paid' | 'overdue' })}
                                                 className="bg-transparent text-[11px] font-mono font-bold tracking-wide uppercase focus:outline-none appearance-none cursor-pointer pr-4 hover:opacity-80 transition-opacity border-b border-transparent hover:border-current"
-                                                style={{ color: STATUS_COLORS[invoice.status] || '#fff' }}
+                                                style={{ color: STATUS_COLORS[invoice.status] || 'var(--text-primary)' }}
                                             >
-                                                <option className="bg-[#111] text-white" value="draft">Draft</option>
-                                                <option className="bg-[#111] text-white" value="sent">Sent</option>
-                                                <option className="bg-[#111] text-white" value="paid">Paid</option>
-                                                <option className="bg-[#111] text-white" value="overdue">Overdue</option>
+                                                <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="draft">Draft</option>
+                                                <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="sent">Sent</option>
+                                                <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="paid">Paid</option>
+                                                <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="overdue">Overdue</option>
                                             </select>
                                         </td>
                                         <td className="px-6 py-4 text-right">
@@ -428,7 +428,7 @@ export default function AdminInvoices() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                     <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl custom-scrollbar">
                         <div className="flex justify-between items-center mb-8 pb-4 border-b border-[var(--border-color)]">
-                            <h2 className="font-display font-bold text-2xl">{editingInvoice ? 'Edit Invoice' : 'Create Invoice'}</h2>
+                            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)]">{editingInvoice ? 'Edit Invoice' : 'Create Invoice'}</h2>
                             <button
                                 onClick={() => setIsAddOpen(false)}
                                 className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors"

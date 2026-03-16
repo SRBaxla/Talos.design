@@ -109,12 +109,12 @@ export default function AdminSettings() {
     return (
         <div className="min-h-[calc(100vh-64px)] p-6 md:p-10 w-full max-w-screen-2xl mx-auto space-y-8">
             <div className="flex flex-col gap-2">
-                <h1 className="font-display font-bold text-3xl md:text-4xl text-white tracking-tight">System Settings</h1>
+                <h1 className="font-display font-bold text-3xl md:text-4xl text-[var(--text-primary)] tracking-tight">System Settings</h1>
                 <p className="text-[var(--text-secondary)] font-medium">Manage administrative data, backups, and global configurations</p>
             </div>
 
             {message && (
-                <div className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white px-4 py-3 rounded-lg font-mono text-sm shadow-sm animate-in fade-in slide-in-from-top-2">
+                <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] px-4 py-3 rounded-lg font-mono text-sm shadow-sm animate-in fade-in slide-in-from-top-2">
                     {message}
                 </div>
             )}
@@ -129,7 +129,7 @@ export default function AdminSettings() {
                         <div className="p-5 border-b border-[var(--border-color)] flex justify-between items-center bg-[rgba(255,255,255,0.02)] relative z-10">
                             <div className="flex items-center gap-2">
                                 <Shield size={18} className="text-emerald-400" />
-                                <h3 className="font-display font-bold text-white text-base">Data Operations</h3>
+                                <h3 className="font-display font-bold text-[var(--text-primary)] text-base">Data Operations</h3>
                             </div>
                         </div>
 
@@ -137,14 +137,14 @@ export default function AdminSettings() {
                             {/* Export */}
                             <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[rgba(255,255,255,0.01)] transition-colors">
                                 <div>
-                                    <h4 className="font-bold text-white text-base">Export Dataset</h4>
+                                    <h4 className="font-bold text-[var(--text-primary)] text-base">Export Dataset</h4>
                                     <p className="text-sm text-[var(--text-secondary)] mt-1">
                                         Download all current project payloads and case study records as a JSON backup archive.
                                     </p>
                                 </div>
                                 <button
                                     onClick={handleExport}
-                                    className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[rgba(255,255,255,0.05)] text-white font-medium hover:bg-[rgba(255,255,255,0.1)] transition-colors border border-[rgba(255,255,255,0.1)] shadow-sm"
+                                    className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-primary)] font-medium hover:bg-[var(--bg-surface-elevated)] transition-colors border border-[var(--border-color)] shadow-sm"
                                 >
                                     <Download size={16} className="text-emerald-400" />
                                     <span>Export JSON</span>
@@ -154,15 +154,15 @@ export default function AdminSettings() {
                             {/* Import */}
                             <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[rgba(255,255,255,0.01)] transition-colors">
                                 <div>
-                                    <h4 className="font-bold text-white text-base">Import Dataset</h4>
+                                    <h4 className="font-bold text-[var(--text-primary)] text-base">Import Dataset</h4>
                                     <p className="text-sm text-[var(--text-secondary)] mt-1">
                                         Restore projects and case studies from a JSON archive. Operations are additive and will not overwrite existing records.
                                     </p>
                                 </div>
                                 <label className={`shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-colors border shadow-sm cursor-pointer
                                     ${importing
-                                        ? 'bg-[rgba(255,255,255,0.02)] text-[var(--text-muted)] border-[rgba(255,255,255,0.05)] cursor-wait'
-                                        : 'bg-[rgba(255,255,255,0.05)] text-white hover:bg-[rgba(255,255,255,0.1)] border-[rgba(255,255,255,0.1)]'
+                                        ? 'bg-[var(--bg-base)] text-[var(--text-muted)] border-[var(--border-color)] cursor-wait'
+                                        : 'bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] border-[var(--border-color)]'
                                     }
                                 `}>
                                     <Upload size={16} className={importing ? 'text-[var(--text-muted)] animate-bounce' : 'text-blue-400'} />
@@ -204,21 +204,21 @@ export default function AdminSettings() {
                         <div className="absolute bottom-0 left-0 w-full h-32 bg-purple-500/5 blur-3xl pointer-events-none" />
 
                         <div className="p-5 border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)] relative z-10">
-                            <h3 className="font-display font-bold text-white text-base">System Integrity</h3>
+                            <h3 className="font-display font-bold text-[var(--text-primary)] text-base">System Integrity</h3>
                         </div>
 
                         <div className="p-6 flex flex-col gap-4 relative z-10">
-                            <div className="flex justify-between items-center py-2 border-b border-[rgba(255,255,255,0.05)]">
+                            <div className="flex justify-between items-center py-2 border-b border-[var(--border-color)]">
                                 <span className="text-sm text-[var(--text-secondary)]">Module</span>
-                                <span className="text-sm font-bold text-white">Talos Control Center</span>
+                                <span className="text-sm font-bold text-[var(--text-primary)]">Talos Control Center</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-[rgba(255,255,255,0.05)]">
                                 <span className="text-sm text-[var(--text-secondary)]">Build Version</span>
                                 <span className="text-sm font-mono text-[var(--accent-orange)]">v2.4.0</span>
                             </div>
-                            <div className="flex justify-between items-center py-2 border-b border-[rgba(255,255,255,0.05)]">
+                            <div className="flex justify-between items-center py-2 border-b border-[var(--border-color)]">
                                 <span className="text-sm text-[var(--text-secondary)]">Data Core</span>
-                                <span className="text-sm font-bold text-white">Firestore DB</span>
+                                <span className="text-sm font-bold text-[var(--text-primary)]">Firestore DB</span>
                             </div>
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-sm text-[var(--text-secondary)]">Security Protocol</span>

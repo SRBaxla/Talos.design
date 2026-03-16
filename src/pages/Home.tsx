@@ -123,7 +123,7 @@ export default function Home() {
         <main className="flex flex-col w-full md:w-[90%] lg:w-[85%] md:mr-auto px-4 sm:px-8 xl:pl-16">
 
           {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
-          <section id="hero" className="relative w-full flex flex-col items-center md:items-start justify-center min-vh-100 pt-28 md:pt-[10vh]">
+          <section id="hero" className="relative w-full flex flex-col items-center md:items-start justify-center min-h-[100dvh] pt-40 pb-4">
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -195,7 +195,7 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
-          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -265,7 +265,7 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
-          <section id="packages" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+          <section id="packages" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -345,7 +345,7 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
-          <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-screen justify-center py-32">
+          <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(2rem,6vw,6rem)] items-center w-full">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -424,7 +424,7 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 5: CONTACT + FOOTER ─────────────────────────────────────── */}
-          <section id="contact" className="container flex flex-col items-center md:items-start w-full justify-start py-32">
+          <section id="contact" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -551,7 +551,7 @@ export default function Home() {
             </motion.div>
 
             {/* ── Inline Footer ─────────────────────────────────────────── */}
-            <div className="w-full mt-20 pt-8 pb-20 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] gap-4">
+            <div className="w-full mt-12 pt-6 pb-12 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] gap-4">
               <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-secondary)] font-bold">© 2026 TALOS DESIGN — FUTURE PROOF SYSTEMS</div>
               <div className="flex gap-8">
                 <button

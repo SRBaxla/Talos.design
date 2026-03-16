@@ -123,16 +123,14 @@ function SatelliteSwarm({ count = 200 }: { count?: number }) {
             {/* SATELLITES */}
             <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
                 <boxGeometry args={[0.012, 0.008, 0.025]} />
-                <meshStandardMaterial color="#cccccc" emissive="#333333" metalness={0.8} roughness={0.2} />
+                <meshLambertMaterial color="#cccccc" emissive="#333333" />
             </instancedMesh>
 
             {/* LASER BEAMS */}
             <instancedMesh ref={laserRef} args={[undefined, undefined, MAX_LINKS]}>
                 <cylinderGeometry args={[0.003, 0.003, 1, 6]} />
-                <meshStandardMaterial 
+                <meshBasicMaterial 
                     color="#00ccff" 
-                    emissive="#00ccff"
-                    emissiveIntensity={2}
                     transparent={true} 
                     opacity={0.4} 
                     blending={THREE.AdditiveBlending}
@@ -218,14 +216,23 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
     const sunGlowColor = "#ffcc00";
 
     // Load Textures
-    const [colorMap, specularMap, cloudMap, lightsMap, moonMap, sunMap] = useTexture([
-        '/textures/earth/2k_earth_daymap.jpg',      // 2K high-res daymap
-        '/textures/earth/earthspec1k.jpg',            // Specular (kept at 1K - no higher JPG available)
-        '/textures/earth/8k_earth_clouds.jpg',        // 8K ultra-high-res clouds
-        '/textures/earth/4k_earth_nightmap.jpg',      // NASA 4K night lights (3600x1800)
+    const texturePaths = isMobile ? [
+        '/textures/earth/2k_earth_daymap.jpg',
+        '/textures/earth/earthspec1k.jpg',
+        '/textures/earth/earthcloudmap.jpg',        // Optimized 260KB clouds for mobile
+        '/textures/earth/2k_earth_nightmap.jpg',    // Optimized 255KB night lights for mobile
         '/textures/earth/moon_1024.jpg',
         '/textures/earth/sunmap.jpg'
-    ]);
+    ] : [
+        '/textures/earth/2k_earth_daymap.jpg',
+        '/textures/earth/earthspec1k.jpg',
+        '/textures/earth/8k_earth_clouds.jpg',        // High-res clouds for desktop
+        '/textures/earth/4k_earth_nightmap.jpg',      // High-res night lights for desktop
+        '/textures/earth/moon_1024.jpg',
+        '/textures/earth/sunmap.jpg'
+    ];
+
+    const [colorMap, specularMap, cloudMap, lightsMap, moonMap, sunMap] = useTexture(texturePaths);
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
@@ -367,21 +374,30 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
                 {/* EARTH BODY */}
                 <e.mesh ref={earthRef} theatreKey="EarthBody">
                     <sphereGeometry args={[2, 64, 64]} />
-                    <meshPhongMaterial 
-                        map={colorMap}
-                        specularMap={specularMap}
-                        specular={new THREE.Color('#1a1a1a')} // Much darker, subtler specular
-                        shininess={8} // Spread it out so it's not a sharp plastic dot
-                        emissive={new THREE.Color('#ffffff')}
-                        emissiveMap={lightsMap}
-                        emissiveIntensity={isDarkMode ? 1.5 : 0.0} // Turn off city lights during day mode
-                    />
+                    {isMobile ? (
+                        <meshLambertMaterial 
+                            map={colorMap}
+                            emissive={new THREE.Color('#ffffff')}
+                            emissiveMap={lightsMap}
+                            emissiveIntensity={isDarkMode ? 1.5 : 0.0}
+                        />
+                    ) : (
+                        <meshPhongMaterial 
+                            map={colorMap}
+                            specularMap={specularMap}
+                            specular={new THREE.Color('#1a1a1a')}
+                            shininess={8}
+                            emissive={new THREE.Color('#ffffff')}
+                            emissiveMap={lightsMap}
+                            emissiveIntensity={isDarkMode ? 1.5 : 0.0}
+                        />
+                    )}
                 </e.mesh>
 
                 {/* ATMOSPHERE/CLOUDS LAYER 1 */}
                 <e.mesh ref={cloudRef} scale={[1.025, 1.025, 1.025]} theatreKey="AtmosphereClouds">
                     <sphereGeometry args={[2, 64, 64]} />
-                    <meshPhongMaterial 
+                    <meshBasicMaterial 
                         map={cloudMap}
                         transparent={true}
                         opacity={0.4} 
@@ -394,7 +410,7 @@ function SolarSystem({ isDarkMode }: { isDarkMode: boolean }) {
                 {/* ATMOSPHERE/CLOUDS LAYER 2 (Weather evolution) */}
                 <e.mesh ref={cloud2Ref} scale={[1.04, 1.04, 1.04]} theatreKey="AtmosphereClouds2">
                     <sphereGeometry args={[2, 64, 64]} />
-                    <meshPhongMaterial 
+                    <meshBasicMaterial 
                         map={cloudMap}
                         transparent={true}
                         opacity={0.25} 

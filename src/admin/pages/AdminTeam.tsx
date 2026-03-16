@@ -27,7 +27,7 @@ export default function AdminTeam() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-white/10 border-t-accent-orange rounded-full animate-spin" /></div>;
+        return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-[var(--border-color)] border-t-[var(--accent-orange)] rounded-full animate-spin" /></div>;
     }
 
     return (
@@ -39,7 +39,7 @@ export default function AdminTeam() {
                 </div>
                 <div className="flex items-center gap-4">
                     <button
-                        className="bg-white text-black hover:bg-gray-200 transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold"
+                        className="bg-[var(--accent-orange)] text-[var(--bg-base)] hover:bg-[var(--accent-orange-hover)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold shadow-sm"
                         onClick={handleNew}
                     >
                         <Plus size={14} /> Add Worker
@@ -53,12 +53,12 @@ export default function AdminTeam() {
                         <div key={worker.id} className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-5 relative overflow-hidden group">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 className="font-bold text-lg text-white">{worker.name}</h3>
+                                    <h3 className="font-bold text-lg text-[var(--text-primary)]">{worker.name}</h3>
                                     <p className="text-xs text-[var(--text-muted)] font-mono">{worker.department}</p>
                                 </div>
                                 <button
                                     onClick={() => handleEdit(worker)}
-                                    className="p-2 text-[var(--text-muted)] hover:text-white bg-black/20 hover:bg-black/40 rounded-lg transition-colors"
+                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] bg-[var(--bg-base)] hover:bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-lg transition-colors"
                                 >
                                     <Settings size={16} />
                                 </button>
@@ -75,17 +75,17 @@ export default function AdminTeam() {
                             )}
 
                             <div className="space-y-2 mb-6">
-                                <div className="flex items-center justify-between text-xs border-b border-white/5 pb-2">
+                                <div className="flex items-center justify-between text-xs border-b border-[var(--border-color)] pb-2">
                                     <span className="text-[var(--text-muted)]">Email</span>
-                                    <span className="text-white truncate max-w-[150px]" title={worker.email}>{worker.email}</span>
+                                    <span className="text-[var(--text-primary)] truncate max-w-[150px]" title={worker.email}>{worker.email}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-xs pb-2">
                                     <span className="text-[var(--text-muted)]">Auth UID</span>
-                                    <span className="text-white font-mono truncate max-w-[150px]" title={worker.uid}>{worker.uid.substring(0, 8)}...</span>
+                                    <span className="text-[var(--text-primary)] font-mono truncate max-w-[150px]" title={worker.uid}>{worker.uid.substring(0, 8)}...</span>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-white/5 flex gap-2">
+                            <div className="pt-4 border-t border-[var(--border-color)] flex gap-2">
                                 <button
                                     onClick={() => setLogWorker(worker)}
                                     className="flex-1 py-2 rounded-lg text-xs font-bold text-[var(--accent-orange)] bg-[var(--accent-orange)]/10 hover:bg-[var(--accent-orange)]/20 transition-colors flex items-center justify-center gap-2"

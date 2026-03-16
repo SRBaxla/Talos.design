@@ -57,7 +57,7 @@ export default function StatsCards({ projects, caseStudies }: StatsCardsProps) {
                         <s.icon size={24} strokeWidth={2.5} />
                     </div>
                     <div>
-                        <div className="font-display font-bold text-3xl text-white tracking-tight">{s.value}</div>
+                        <div className="font-display font-bold text-3xl text-[var(--text-primary)] tracking-tight">{s.value}</div>
                         <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">{s.label}</div>
                     </div>
                 </div>

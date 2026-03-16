@@ -17,6 +17,8 @@ import {
     FileText,
     Users,
     Target,
+    Sun,
+    Moon,
 } from 'lucide-react';
 import AdminAuth from './AdminAuth';
 import { useCurrentWorkerRole } from '../store/adminStore';
@@ -38,6 +40,7 @@ export default function AdminLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const navigate = useNavigate();
     const { role, isAdmin, isManager, loading: roleLoading } = useCurrentWorkerRole();
+    const [isDarkMode, setIsDarkMode] = useState(true);
 
     // No role set = original admin (show all), or admin/manager = show all
     const canSeeAdminPages = !role || isAdmin || isManager;
@@ -48,8 +51,34 @@ export default function AdminLayout() {
             setUser(u);
             setAuthLoading(false);
         });
+
+        // Theme initialization
+        const savedTheme = localStorage.getItem('theme');
+        const isDark = savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setIsDarkMode(isDark);
+        document.documentElement.classList.toggle('light-theme', !isDark);
+        updateMetaThemeColor(isDark);
+
         return unsub;
     }, []);
+
+    const updateMetaThemeColor = (isDark: boolean) => {
+        let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (!metaThemeColor) {
+            metaThemeColor = document.createElement('meta');
+            metaThemeColor.setAttribute('name', 'theme-color');
+            document.head.appendChild(metaThemeColor);
+        }
+        metaThemeColor.setAttribute('content', isDark ? '#0a0f19' : '#ffffff');
+    };
+
+    const toggleTheme = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        localStorage.setItem('theme', newMode ? 'dark' : 'light');
+        document.documentElement.classList.toggle('light-theme', !newMode);
+        updateMetaThemeColor(newMode);
+    };
 
     const handleLogout = async () => {
         await signOut(auth);
@@ -58,8 +87,8 @@ export default function AdminLayout() {
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#030303]">
-                <div className="w-8 h-8 border-2 border-white/10 border-t-accent-orange rounded-full animate-spin" />
+            <div className="min-h-screen flex items-center justify-center bg-[var(--bg-base)]">
+                <div className="w-8 h-8 border-2 border-[var(--border-color)] border-t-[var(--accent-orange)] rounded-full animate-spin" />
             </div>
         );
     }
@@ -73,7 +102,7 @@ export default function AdminLayout() {
     }
 
     return (
-        <div className="flex h-screen w-full bg-[var(--bg-base)] text-[var(--text-primary)] overflow-hidden selection:bg-[var(--accent-cyan)] selection:text-white font-sans">
+        <div className="flex h-screen w-full bg-[var(--bg-base)] text-[var(--text-primary)] overflow-hidden selection:bg-[var(--accent-cyan)] selection:text-[var(--text-primary)] font-sans">
             {/* Sidebar */}
             <aside
                 className={`
@@ -83,19 +112,19 @@ export default function AdminLayout() {
                 `}
             >
                 {/* Decorative glow */}
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[rgba(255,255,255,0.03)] to-transparent pointer-events-none" />
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[var(--bg-surface)]/10 to-transparent pointer-events-none" />
 
-                <div className="flex items-center justify-between p-5 border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.01)] relative z-10 shrink-0 h-16">
+                <div className="flex items-center justify-between p-5 border-b border-[var(--border-color)] bg-[var(--bg-base)] relative z-10 shrink-0 h-16">
                     {sidebarOpen && (
                         <div className="flex items-center gap-2.5 overflow-hidden">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--bg-card)] to-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center shadow-inner shrink-0 group">
+                            <div className="w-8 h-8 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-color)] flex items-center justify-center shadow-inner shrink-0 group">
                                 <Hexagon className="text-[var(--accent-orange)] group-hover:scale-110 transition-transform duration-300" size={18} strokeWidth={2.5} />
                             </div>
-                            <span className="font-display font-bold text-base tracking-wide text-white whitespace-nowrap">Talos Admin</span>
+                            <span className="font-display font-bold text-base tracking-wide text-[var(--text-primary)] whitespace-nowrap">Talos Admin</span>
                         </div>
                     )}
                     <button
-                        className={`text-[var(--text-muted)] hover:text-white transition-colors p-1.5 rounded-md hover:bg-[rgba(255,255,255,0.05)] ${!sidebarOpen && 'mx-auto'}`}
+                        className={`text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-1.5 rounded-md hover:bg-[var(--bg-surface-elevated)] ${!sidebarOpen && 'mx-auto'}`}
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                     >
@@ -112,8 +141,8 @@ export default function AdminLayout() {
                             className={({ isActive }) =>
                                 `flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-3 w-full rounded-xl transition-all duration-200 group relative
                                 ${isActive
-                                    ? 'bg-[rgba(255,255,255,0.06)] text-white shadow-sm ring-1 ring-inset ring-[rgba(255,255,255,0.1)] font-medium'
-                                    : 'text-[var(--text-secondary)] font-medium hover:bg-[rgba(255,255,255,0.03)] hover:text-white'
+                                    ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm ring-1 ring-inset ring-[var(--border-color-light)] font-medium'
+                                    : 'text-[var(--text-secondary)] font-medium hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'
                                 }`
                             }
                             title={!sidebarOpen ? link.name : undefined}
@@ -126,7 +155,7 @@ export default function AdminLayout() {
                                     <link.icon
                                         size={20}
                                         strokeWidth={isActive ? 2.5 : 2}
-                                        className={`shrink-0 ${isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)] group-hover:text-white transition-colors'}`}
+                                        className={`shrink-0 ${isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors'}`}
                                     />
                                     {sidebarOpen && (
                                         <span className="whitespace-nowrap tracking-wide text-sm">{link.name}</span>
@@ -137,25 +166,25 @@ export default function AdminLayout() {
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-[var(--border-color)] bg-[rgba(255,255,255,0.01)] relative z-10 shrink-0 space-y-2">
+                <div className="p-4 border-t border-[var(--border-color)] bg-[var(--bg-base)] relative z-10 shrink-0 space-y-2">
                     {sidebarOpen && user && (
                         <NavLink
                             to="/admin/profile"
                             className={({ isActive }) =>
                                 `flex items-center gap-3 px-3 py-3 w-full rounded-xl border shadow-sm mb-4 transition-all duration-200
                                 ${isActive
-                                    ? 'bg-[rgba(255,255,255,0.06)] border-[var(--accent-orange)]/30 ring-1 ring-inset ring-[var(--accent-orange)]/20'
-                                    : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.1)]'
+                                    ? 'bg-[var(--bg-surface)] border-[var(--accent-orange)]/30 ring-1 ring-inset ring-[var(--accent-orange)]/20 text-[var(--text-primary)]'
+                                    : 'bg-[var(--bg-surface)] border-[var(--border-color)] hover:bg-[var(--bg-surface-elevated)] hover:border-[var(--border-color-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                                 }`
                             }
                             title="My Profile"
                         >
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--bg-card)] to-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center shrink-0">
-                                <span className="font-mono font-bold text-white text-xs">{user.email?.charAt(0).toUpperCase()}</span>
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-surface-elevated)] border border-[var(--border-color)] flex items-center justify-center shrink-0">
+                                <span className="font-mono font-bold text-[var(--text-primary)] text-xs">{user.email?.charAt(0).toUpperCase()}</span>
                             </div>
                             <div className="overflow-hidden">
                                 <p className="text-xs text-[var(--text-muted)] uppercase tracking-widest font-mono font-bold mb-0.5">My Profile</p>
-                                <span className="text-[13px] text-white font-medium truncate block">{user.email}</span>
+                                <span className="text-[13px] text-[var(--text-primary)] font-medium truncate block">{user.email}</span>
                             </div>
                         </NavLink>
                     )}
@@ -163,20 +192,33 @@ export default function AdminLayout() {
                     <div className="flex flex-col gap-1">
                         <NavLink
                             to="/"
-                            className={`flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-2.5 w-full rounded-xl text-[var(--text-secondary)] font-medium hover:bg-[rgba(255,255,255,0.03)] hover:text-white transition-all duration-200 group`}
+                            className={`flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-2.5 w-full rounded-xl text-[var(--text-secondary)] font-medium hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] transition-all duration-200 group`}
                             title={!sidebarOpen ? "Back to Website" : undefined}
                         >
-                            <Home size={18} className="shrink-0 text-[var(--text-muted)] group-hover:text-white transition-colors" />
+                            <Home size={18} className="shrink-0 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
                             {sidebarOpen && <span className="whitespace-nowrap tracking-wide text-sm">Back to Website</span>}
                         </NavLink>
 
                         <button
-                            className={`flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-2.5 w-full rounded-xl text-[var(--text-secondary)] font-medium hover:bg-[rgba(239,68,68,0.1)] hover:text-red-400 transition-all duration-200 group`}
+                            className={`flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-2.5 w-full rounded-xl text-[var(--text-secondary)] font-medium hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 group`}
                             onClick={handleLogout}
                             title={!sidebarOpen ? "Logout" : undefined}
                         >
                             <LogOut size={18} className="shrink-0 text-[var(--text-muted)] group-hover:text-red-400 transition-colors" />
                             {sidebarOpen && <span className="whitespace-nowrap tracking-wide text-sm">Logout</span>}
+                        </button>
+
+                        <button
+                            onClick={toggleTheme}
+                            className={`flex items-center ${sidebarOpen ? 'gap-3 px-4' : 'justify-center'} py-2.5 w-full rounded-xl text-[var(--text-secondary)] font-medium hover:bg-[var(--bg-surface-elevated)] hover:text-[var(--accent-orange)] transition-all duration-200 group mt-1`}
+                            title={!sidebarOpen ? "Toggle Theme" : undefined}
+                        >
+                            {isDarkMode ? (
+                                <Sun size={18} className="shrink-0 text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors" />
+                            ) : (
+                                <Moon size={18} className="shrink-0 text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors" />
+                            )}
+                            {sidebarOpen && <span className="whitespace-nowrap tracking-wide text-sm">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>}
                         </button>
                     </div>
                 </div>
@@ -188,7 +230,7 @@ export default function AdminLayout() {
                 <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--text-muted) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
                 {/* Header Gradient */}
-                <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[rgba(255,255,255,0.02)] to-transparent pointer-events-none z-0" />
+                <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[var(--bg-surface)]/20 to-transparent pointer-events-none z-0" />
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar relative z-10 w-full h-full">
                     <Outlet />

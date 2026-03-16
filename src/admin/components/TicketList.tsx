@@ -117,15 +117,15 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
 
     return (
         <div className="flex flex-col h-full bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)] gap-4">
+            <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--border-color)] bg-[var(--bg-base)] gap-4">
                 <div className="flex items-center gap-3">
-                    <h3 className="font-display font-bold text-white text-base tracking-wide flex items-center gap-2">
+                    <h3 className="font-display font-bold text-[var(--text-primary)] text-base tracking-wide flex items-center gap-2">
                         Project Tickets
-                        <span className="bg-[rgba(255,255,255,0.1)] text-white text-[10px] px-2 py-0.5 rounded-full font-mono">{tickets.length}</span>
+                        <span className="bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] text-[10px] px-2 py-0.5 rounded-full font-mono border border-[var(--border-color)]">{tickets.length}</span>
                     </h3>
                 </div>
                 <button
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-[rgba(245,158,11,0.9)] transition-colors shadow-sm"
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all shadow-sm"
                     onClick={() => { resetForm(); setShowForm(true); }}
                 >
                     <Plus size={14} strokeWidth={2.5} /> Add Ticket
@@ -134,60 +134,60 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
 
             {/* Filter pills */}
             <div className="px-5 py-4 flex flex-wrap gap-2 border-b border-[var(--border-color)]">
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'all' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('all')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'all' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)] hover:border-[var(--accent-cyan)]'}`} onClick={() => setFilter('all')}>
                     All ({tickets.length})
                 </button>
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'todo' ? 'bg-[rgba(113,113,122,0.8)] text-white' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('todo')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'todo' ? 'bg-[#71717a] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('todo')}>
                     To Do ({todoCount})
                 </button>
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'in-progress' ? 'bg-[rgba(0,229,255,0.8)] text-black' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('in-progress')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'in-progress' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('in-progress')}>
                     In Progress ({inProgressCount})
                 </button>
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'done' ? 'bg-[rgba(34,197,94,0.8)] text-white' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:text-white hover:bg-[rgba(255,255,255,0.1)]'}`} onClick={() => setFilter('done')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'done' ? 'bg-[#22c55e] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('done')}>
                     Done ({doneCount})
                 </button>
             </div>
 
             {/* Inline add/edit form */}
             {showForm && (
-                <div className="p-5 bg-[rgba(255,255,255,0.02)] border-b border-[var(--border-color)] flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
+                <div className="p-5 bg-[var(--bg-base)] border-b border-[var(--border-color)] flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
                     <input
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium"
+                        className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium"
                         placeholder="Ticket title *"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         autoFocus
                     />
                     <textarea
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-secondary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all min-h-[80px]"
+                        className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-secondary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all min-h-[80px]"
                         rows={2}
                         placeholder="Description (optional)"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={status} onChange={(e) => setStatus(e.target.value as TicketStatus)}>
-                            <option value="todo">To Do</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="done">Done</option>
+                        <select className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={status} onChange={(e) => setStatus(e.target.value as TicketStatus)}>
+                            <option className="bg-[var(--bg-surface)]" value="todo">To Do</option>
+                            <option className="bg-[var(--bg-surface)]" value="in-progress">In Progress</option>
+                            <option className="bg-[var(--bg-surface)]" value="done">Done</option>
                         </select>
-                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={priority} onChange={(e) => setPriority(e.target.value as TicketPriority)}>
-                            <option value="low">Low Priority</option>
-                            <option value="medium">Medium Priority</option>
-                            <option value="high">High Priority</option>
-                            <option value="urgent">Urgent</option>
+                        <select className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={priority} onChange={(e) => setPriority(e.target.value as TicketPriority)}>
+                            <option className="bg-[var(--bg-surface)]" value="low">Low Priority</option>
+                            <option className="bg-[var(--bg-surface)]" value="medium">Medium Priority</option>
+                            <option className="bg-[var(--bg-surface)]" value="high">High Priority</option>
+                            <option className="bg-[var(--bg-surface)]" value="urgent">Urgent</option>
                         </select>
-                        <select className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={assignee} onChange={(e) => setAssignee(e.target.value)}>
-                            <option value="">Unassigned</option>
+                        <select className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={assignee} onChange={(e) => setAssignee(e.target.value)}>
+                            <option className="bg-[var(--bg-surface)]" value="">Unassigned</option>
                             {workers.map(w => (
-                                <option key={w.uid} value={w.uid}>{w.name}</option>
+                                <option className="bg-[var(--bg-surface)]" key={w.uid} value={w.uid}>{w.name}</option>
                             ))}
                         </select>
-                        <input type="date" className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] color-scheme-dark" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={{ colorScheme: 'dark' }} />
+                        <input type="date" className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl px-3 py-2 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-orange)]" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
                     </div>
                     <div className="flex justify-end gap-3 mt-2">
-                        <button className="px-4 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm font-bold transition-colors" onClick={resetForm}>Cancel</button>
-                        <button className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:bg-[rgba(0,229,255,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors" onClick={handleSave}>
+                        <button className="px-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] rounded-lg text-sm font-bold transition-colors" onClick={resetForm}>Cancel</button>
+                        <button className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:brightness-110 rounded-lg text-sm font-bold shadow-sm transition-all" onClick={handleSave}>
                             {editTicket ? 'Update Ticket' : 'Create Ticket'}
                         </button>
                     </div>
@@ -197,7 +197,7 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
             {/* Ticket list */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-5 flex flex-col gap-3 h-[400px]">
                 {filtered.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[rgba(255,255,255,0.01)] rounded-xl border border-dashed border-[var(--border-color)] min-h-[200px]">
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[var(--bg-base)] rounded-xl border border-dashed border-[var(--border-color)] min-h-[200px]">
                         <Clock className="text-[var(--text-muted)] mb-3" size={32} />
                         <p className="text-[var(--text-secondary)] font-medium text-sm">No tickets found.</p>
                         <p className="text-xs text-[var(--text-muted)] mt-1">Add a ticket to start tracking work.</p>
@@ -206,7 +206,7 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                     filtered.map((t) => {
                         const StatusIcon = STATUS_ICONS[t.status];
                         return (
-                            <div key={t.id} className="group flex items-start sm:items-center gap-4 p-4 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all">
+                            <div key={t.id} className="group flex items-start sm:items-center gap-4 p-4 rounded-xl bg-[var(--bg-base)] border border-[var(--border-color)] hover:border-[var(--accent-orange)] hover:bg-[var(--bg-surface)] transition-all">
                                 <button
                                     className="pt-0.5 sm:pt-0 shrink-0 hover:scale-110 transition-transform"
                                     onClick={() => handleToggleStatus(t)}
@@ -223,7 +223,7 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                                             style={{ background: PRIORITY_COLORS[t.priority] }}
                                             title={`Priority: ${t.priority}`}
                                         />
-                                        <h4 className={`text-sm font-bold truncate transition-colors ${t.status === 'done' ? 'text-[var(--text-muted)] line-through' : 'text-white group-hover:text-[var(--accent-cyan)]'}`}>
+                                        <h4 className={`text-sm font-bold truncate transition-colors ${t.status === 'done' ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-primary)] group-hover:text-[var(--accent-cyan)]'}`}>
                                             {t.title}
                                         </h4>
                                     </div>
@@ -238,17 +238,17 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                                         {t.assignee && (() => {
                                             const worker = workers.find(w => w.uid === t.assignee);
                                             const dispName = worker ? worker.name : t.assignee;
-                                            return <span className="flex items-center gap-1.5"><div className="w-4 h-4 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center text-[8px] text-white">{dispName.charAt(0).toUpperCase()}</div> <span className="truncate max-w-[100px]">{dispName}</span></span>;
+                                            return <span className="flex items-center gap-1.5"><div className="w-4 h-4 rounded-full bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] flex items-center justify-center text-[8px] text-[var(--text-primary)]">{dispName.charAt(0).toUpperCase()}</div> <span className="truncate max-w-[100px]">{dispName}</span></span>;
                                         })()}
                                         {t.dueDate && <span className="flex items-center gap-1"><Clock size={10} /> {t.dueDate}</span>}
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                    <button onClick={() => handleEdit(t)} className="p-2 text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)] rounded-lg transition-colors" title="Edit">
+                                    <button onClick={() => handleEdit(t)} className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] rounded-lg transition-colors" title="Edit">
                                         <Edit2 size={14} />
                                     </button>
-                                    <button onClick={() => handleDelete(t.id)} className="p-2 text-[var(--text-muted)] hover:text-red-400 hover:bg-[rgba(239,68,68,0.1)] rounded-lg transition-colors" title="Delete">
+                                    <button onClick={() => handleDelete(t.id)} className="p-2 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
                                         <Trash2 size={14} />
                                     </button>
                                 </div>

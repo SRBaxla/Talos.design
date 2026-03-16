@@ -14,21 +14,21 @@ export default function ActivityLogModal({ open, onClose, worker }: ActivityLogM
     if (!open || !worker) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95">
-                <div className="flex items-center justify-between p-5 border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm animate-in fade-in">
+            <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95">
+                <div className="flex items-center justify-between p-5 border-b border-[var(--border-color)] bg-[var(--bg-base)]">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] flex items-center justify-center font-bold uppercase shrink-0">
                             {worker.name.charAt(0)}
                         </div>
                         <div>
-                            <h2 className="font-display font-bold text-lg text-white">{worker.name}'s Activity</h2>
+                            <h2 className="font-display font-bold text-lg text-[var(--text-primary)]">{worker.name}'s Activity</h2>
                             <p className="text-xs text-[var(--text-muted)] font-mono">{worker.department}</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1.5 hover:bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-white rounded-lg transition-colors border border-transparent hover:border-[var(--border-color)]"
+                        className="p-1.5 hover:bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded-lg transition-colors border border-transparent hover:border-[var(--border-color)]"
                     >
                         <X size={20} />
                     </button>
@@ -50,19 +50,19 @@ export default function ActivityLogModal({ open, onClose, worker }: ActivityLogM
                                 const date = log.timestamp?.toDate() || new Date();
                                 const isRecent = (Date.now() - date.getTime()) < 24 * 60 * 60 * 1000;
                                 return (
-                                    <div key={log.id} className="p-5 border-b border-[var(--border-color)] hover:bg-[rgba(255,255,255,0.02)] transition-colors flex gap-4">
+                                    <div key={log.id} className="p-5 border-b border-[var(--border-color)] hover:bg-[var(--bg-surface-elevated)] transition-colors flex gap-4">
                                         <div className="mt-1">
                                             <div className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange)]"></div>
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start gap-4 mb-1">
-                                                <h4 className="font-bold text-sm text-white">{log.description}</h4>
+                                                <h4 className="font-bold text-sm text-[var(--text-primary)]">{log.description}</h4>
                                                 <span className={`text-[10px] font-mono whitespace-nowrap ${isRecent ? 'text-[var(--accent-orange)]' : 'text-[var(--text-muted)]'}`}>
                                                     {isRecent ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : date.toLocaleDateString()}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2 mt-2">
-                                                <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] bg-[rgba(255,255,255,0.05)] px-2 py-0.5 rounded border border-[var(--border-color)]">
+                                                <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] bg-[var(--bg-surface-elevated)] px-2 py-0.5 rounded border border-[var(--border-color)]">
                                                     {log.action.replace(/_/g, ' ')}
                                                 </span>
                                                 {log.referenceType && (
@@ -79,10 +79,10 @@ export default function ActivityLogModal({ open, onClose, worker }: ActivityLogM
                     )}
                 </div>
 
-                <div className="p-4 border-t border-[var(--border-color)] flex justify-end gap-3 bg-[var(--bg-surface)] rounded-b-xl">
+                <div className="p-4 border-t border-[var(--border-color)] flex justify-end gap-3 bg-[var(--bg-base)] rounded-b-xl">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2.5 text-sm bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg font-bold transition-colors"
+                        className="px-6 py-2 text-xs font-bold uppercase tracking-widest bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] rounded-lg transition-all"
                     >
                         Close
                     </button>

@@ -65,19 +65,19 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm">
+            <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
                 <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)]">
-                    <h2 className="font-display font-bold text-lg">{worker ? 'Edit Worker' : 'New Worker'}</h2>
+                    <h2 className="font-display font-bold text-lg text-[var(--text-primary)]">{worker ? 'Edit Worker' : 'New Worker'}</h2>
                     <button
                         onClick={onClose}
-                        className="p-1 hover:bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-white rounded transition-colors"
+                        className="p-1 hover:bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] rounded transition-colors"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
-                <div className="p-4 overflow-y-auto">
+                <div className="p-4 overflow-y-auto custom-scrollbar">
                     {error && (
                         <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded flex items-start gap-2 text-red-400 text-sm">
                             <AlertCircle size={16} className="shrink-0 mt-0.5" />
@@ -87,50 +87,50 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
 
                     <form id="worker-form" onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Name</label>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase tracking-wider">Name</label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={e => setName(e.target.value)}
-                                className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--border-color)]"
+                                className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--text-muted)]"
                                 placeholder="Jane Doe"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Email</label>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase tracking-wider">Email</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
-                                className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--border-color)]"
+                                className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--text-muted)]"
                                 placeholder="jane@talos.design"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Role</label>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase tracking-wider">Role</label>
                             <select
                                 value={role}
                                 onChange={e => setRole(e.target.value as WorkerRole)}
-                                className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all appearance-none cursor-pointer"
+                                className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all appearance-none cursor-pointer"
                             >
-                                <option value="admin">Admin</option>
-                                <option value="manager">Manager</option>
-                                <option value="developer">Developer</option>
-                                <option value="designer">Designer</option>
+                                <option className="bg-[var(--bg-surface)]" value="admin">Admin</option>
+                                <option className="bg-[var(--bg-surface)]" value="manager">Manager</option>
+                                <option className="bg-[var(--bg-surface)]" value="developer">Developer</option>
+                                <option className="bg-[var(--bg-surface)]" value="designer">Designer</option>
                             </select>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Department</label>
+                            <label className="block text-xs font-mono text-[var(--text-muted)] mb-1 uppercase tracking-wider">Department</label>
                             <input
                                 type="text"
                                 value={department}
                                 onChange={e => setDepartment(e.target.value)}
-                                className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded px-3 py-2 text-sm focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--border-color)]"
+                                className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] outline-none transition-all placeholder:text-[var(--text-muted)]"
                                 placeholder="E.g. Engineering, Design, Management"
                                 required
                             />
@@ -138,10 +138,10 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
                     </form>
                 </div>
 
-                <div className="p-4 border-t border-[var(--border-color)] flex justify-end gap-3 bg-[var(--bg-surface)] rounded-b-xl">
+                <div className="p-4 border-t border-[var(--border-color)] flex justify-end gap-3 bg-[var(--bg-base)] rounded-b-xl">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors"
+                        className="px-4 py-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-bold uppercase tracking-wider"
                         disabled={loading}
                     >
                         Cancel
@@ -150,7 +150,7 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
                         type="submit"
                         form="worker-form"
                         disabled={loading}
-                        className="px-4 py-2 text-sm bg-white text-black font-bold rounded hover:bg-gray-200 transition-colors flex items-center gap-2 disabled:opacity-50"
+                        className="px-6 py-2 text-sm bg-[var(--accent-cyan)] text-black font-bold rounded-lg hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50 shadow-sm uppercase tracking-wider"
                     >
                         {loading ? 'Saving...' : (
                             <>

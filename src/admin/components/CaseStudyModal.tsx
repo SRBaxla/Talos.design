@@ -161,7 +161,7 @@ export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalP
                             />
                         </div>
                         <div className="admin-field flex items-center pt-8">
-                            <label className="admin-label !mb-0 flex items-center gap-2 cursor-pointer select-none text-[var(--text-primary)] hover:text-white transition-colors">
+                            <label className="admin-label !mb-0 flex items-center gap-2 cursor-pointer select-none text-[var(--text-primary)] hover:text-[var(--accent-orange)] transition-colors">
                                 <input
                                     type="checkbox"
                                     className="w-4 h-4 rounded border-[var(--border-color)] bg-[var(--bg-surface)] accent-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] cursor-pointer"
@@ -171,6 +171,7 @@ export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalP
                                 Show on Website
                             </label>
                         </div>
+ admissions.tsx
                     </div>
 
                     <div className="admin-field">

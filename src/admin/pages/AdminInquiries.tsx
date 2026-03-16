@@ -129,12 +129,12 @@ export default function AdminInquiries() {
             {/* Header */}
             <header className="flex-none border-b border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-4 flex justify-between items-center">
                 <div>
-                    <h1 className="font-display font-bold text-xl">Deals & Inquiries</h1>
+                    <h1 className="font-display font-bold text-xl text-[var(--text-primary)]">Deals & Inquiries</h1>
                     <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Manage neural link transmissions</p>
                 </div>
-                <button
+                 <button
                     onClick={() => setShowArchived(!showArchived)}
-                    className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] text-[var(--text-secondary)] hover:text-white border border-[var(--border-color)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-mono"
+                    className="bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-color)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-mono"
                 >
                     {showArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
                     {showArchived ? 'Hide Archived' : 'Show Archived'}
@@ -182,19 +182,19 @@ export default function AdminInquiries() {
                                                     <span className="truncate">{inquiry.email}</span>
                                                 </div>
 
-                                                <div className="bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.05)] rounded-lg p-3 mb-4 text-[12px] text-[var(--text-secondary)] line-clamp-3">
+                                                <div className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg p-3 mb-4 text-[12px] text-[var(--text-secondary)] line-clamp-3">
                                                     {inquiry.message}
                                                 </div>
 
-                                                <div className="flex items-center justify-between mt-auto pt-2 border-t border-[rgba(255,255,255,0.05)]">
-                                                    <div className="flex items-center gap-1.5 bg-[var(--bg-base)] border border-[var(--border-color)] rounded px-2 py-1 focus-within:border-[var(--accent-orange)] transition-colors">
+                                                <div className="flex items-center justify-between mt-auto pt-2 border-t border-[var(--border-color)]">
+                                                     <div className="flex items-center gap-1.5 bg-[var(--bg-base)] border border-[var(--border-color)] rounded px-2 py-1 focus-within:border-[var(--accent-orange)] transition-colors">
                                                         <DollarSign size={12} className="text-[var(--text-muted)]" />
                                                         <input
                                                             type="text"
                                                             placeholder="Value"
                                                             defaultValue={inquiry.value || ''}
                                                             onBlur={(e) => handleValueChange(inquiry.id, e.target.value)}
-                                                            className="bg-transparent border-none text-[11px] font-mono w-16 focus:outline-none text-white placeholder-[rgba(255,255,255,0.2)]"
+                                                            className="bg-transparent border-none text-[11px] font-mono w-16 focus:outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)]"
                                                         />
                                                     </div>
 
@@ -204,13 +204,13 @@ export default function AdminInquiries() {
                                                         className="bg-transparent text-[11px] font-mono font-medium focus:outline-none appearance-none cursor-pointer pr-4 hover:opacity-80 transition-opacity text-right"
                                                         style={{ color: STATUS_COLORS[inquiry.status] }}
                                                     >
-                                                        <option className="bg-[#111] text-white" value="unread">Unread</option>
-                                                        <option className="bg-[#111] text-white" value="read">Read</option>
-                                                        <option className="bg-[#111] text-white" value="contacted">Contacted</option>
-                                                        <option className="bg-[#111] text-white" value="negotiating">Negotiating</option>
-                                                        <option className="bg-[#111] text-white" value="won">Won</option>
-                                                        <option className="bg-[#111] text-white" value="lost">Lost</option>
-                                                        <option className="bg-[#111] text-white" value="archived">Archived</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="unread">Unread</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="read">Read</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="contacted">Contacted</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="negotiating">Negotiating</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="won">Won</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="lost">Lost</option>
+                                                        <option className="bg-[var(--bg-surface)] text-[var(--text-primary)]" value="archived">Archived</option>
                                                     </select>
                                                 </div>
 
