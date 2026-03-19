@@ -48,12 +48,22 @@ service cloud.firestore {
         allow read, write: if isInternal() ||
           (isClient() && get(/databases/$(database)/documents/projects/$(projectId)).data.clientEmail == request.auth.token.email);
       }
+
+      // Tickets subcollection
+      match /tickets/{ticketId} {
+        allow read, write: if isInternal();
+      }
     }
 
     // ── Case Studies ──────────────────────────────────
     match /caseStudies/{studyId} {
       allow read: if true;
       allow create, update, delete: if isAdminOrManager();
+
+      // Tickets subcollection
+      match /tickets/{ticketId} {
+        allow read, write: if isInternal();
+      }
     }
 
     // ── Workers ───────────────────────────────────────

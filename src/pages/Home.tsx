@@ -94,11 +94,14 @@ export default function Home() {
     setIsTransmitting(true);
     try {
       await addInquiry({ name, email, company, message });
+
+      // Send the auto-responder email to the user
       try {
         await sendAutoResponderEmail({ clientName: name, clientEmail: email });
       } catch (emailErr) {
-        console.error("Failed to send auto-responder email.", emailErr);
+        console.error("Failed to send auto-responder email. Inquiry was still saved.", emailErr);
       }
+
       setStatus('success');
       setTimeout(() => {
         setStatus('idle');
@@ -494,37 +497,48 @@ export default function Home() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Full Name</label>
+                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Your Name</label>
                         <input
                           type="text"
                           required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
-                          placeholder="Commander Shepard"
+                          placeholder="John Smith"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Work Email</label>
+                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Email Address</label>
                         <input
                           type="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
-                          placeholder="shepard@n7.earth"
+                          placeholder="name@company.com"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Project Brief</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Company / Business Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                        placeholder="Your business name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Tell us about your project</label>
                       <textarea
                         required
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         rows={5}
                         className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none resize-none"
-                        placeholder="Tell us about the frontier you're exploring..."
+                        placeholder="What do you need built? What problem are you trying to solve?"
                       />
                     </div>
                     <button

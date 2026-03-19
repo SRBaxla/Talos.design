@@ -22,7 +22,7 @@ export default function CaseStudyDetail() {
     const [study, setStudy] = useState<CaseStudy | null>(null);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const { tickets, loading: ticketsLoading } = useTickets('caseStudies', id || '');
+    const { tickets, loading: ticketsLoading, refresh: refreshTickets } = useTickets('caseStudies', id || '');
     const { workers } = useWorkers();
 
     const [promptModal, setPromptModal] = useState<{
@@ -135,15 +135,15 @@ export default function CaseStudyDetail() {
         <div className="p-6 md:p-10 w-full max-w-screen-2xl mx-auto space-y-8 animate-fade-in">
             {/* Back + Actions */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                <Link to="/admin/case-studies" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors font-medium tracking-wide">
+                <Link to="/admin/case-studies" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors font-medium tracking-wide">
                     <ArrowLeft size={16} /> Back to Case Studies
                 </Link>
                 <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-base)] border border-[var(--border-color)] text-white font-bold text-xs uppercase tracking-widest rounded-lg hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all" onClick={() => setModalOpen(true)}>
+                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all" onClick={() => setModalOpen(true)}>
                         <Edit2 size={14} /> Edit
                     </button>
                     {study.liveUrl && (
-                        <a href={study.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-base)] border border-[var(--border-color)] text-white font-bold text-xs uppercase tracking-widest rounded-lg hover:border-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.02)] transition-all">
+                        <a href={study.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all">
                             <ExternalLink size={14} /> View Live
                         </a>
                     )}
@@ -162,9 +162,9 @@ export default function CaseStudyDetail() {
                         </span>
                         {study.industry && <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">{study.industry}</span>}
                     </div>
-                    <h1 className="font-display text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 mb-2">{study.title}</h1>
+                    <h1 className="font-display text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-primary)]/70 mb-2">{study.title}</h1>
                     {study.client && (
-                        <p className="text-[var(--text-secondary)] font-medium text-lg">Client: <span className="text-white">{study.client}</span></p>
+                        <p className="text-[var(--text-secondary)] font-medium text-lg">Client: <span className="text-[var(--text-primary)]">{study.client}</span></p>
                     )}
                 </div>
             </div>
@@ -174,19 +174,19 @@ export default function CaseStudyDetail() {
                     {/* Content Sections */}
                     {study.summary && (
                         <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
-                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]" /> Summary</h3>
+                            <h3 className="font-display text-lg font-bold mb-4 text-[var(--text-primary)] flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-orange)]" /> Summary</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.summary}</p>
                         </div>
                     )}
                     {study.challenge && (
                         <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
-                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-400" /> Challenge</h3>
+                            <h3 className="font-display text-lg font-bold mb-4 text-[var(--text-primary)] flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-400" /> Challenge</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.challenge}</p>
                         </div>
                     )}
                     {study.solution && (
                         <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
-                            <h3 className="font-display text-lg font-bold mb-4 text-white flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]" /> Solution</h3>
+                            <h3 className="font-display text-lg font-bold mb-4 text-[var(--text-primary)] flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)]" /> Solution</h3>
                             <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{study.solution}</p>
                         </div>
                     )}
@@ -199,7 +199,7 @@ export default function CaseStudyDetail() {
 
                     {/* Tickets */}
                     <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8">
-                        <TicketList tickets={tickets} parentCollection="caseStudies" parentId={study.id} />
+                        <TicketList tickets={tickets} parentCollection="caseStudies" parentId={study.id} onRefresh={refreshTickets} />
                     </div>
                 </div>
 
@@ -209,10 +209,10 @@ export default function CaseStudyDetail() {
                         <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl flex flex-col shadow-sm overflow-hidden">
                             <div className="p-5 border-b border-[var(--border-color)] bg-[rgba(255,255,255,0.02)] flex items-center gap-2">
                                 <Tag size={16} className="text-[var(--accent-orange)]" />
-                                <h3 className="font-display font-bold text-white text-sm uppercase tracking-wider">Tags</h3>
+                                <h3 className="font-display font-bold text-[var(--text-primary)] text-sm uppercase tracking-wider">Tags</h3>
                             </div>
                             <div className="p-5 flex flex-wrap gap-2">
-                                {study.tags.map(t => <span key={t} className="px-3 py-1 bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg text-xs font-bold tracking-wide text-[var(--text-secondary)] hover:text-white transition-colors">{t}</span>)}
+                                {study.tags.map(t => <span key={t} className="px-3 py-1 bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg text-xs font-bold tracking-wide text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">{t}</span>)}
                             </div>
                         </div>
                     )}
@@ -220,7 +220,7 @@ export default function CaseStudyDetail() {
                     {/* Team Allocation */}
                     <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl flex flex-col shadow-sm overflow-hidden">
                         <div className="p-5 border-b border-[var(--border-color)] flex justify-between items-center bg-[rgba(255,255,255,0.02)]">
-                            <h3 className="font-display font-bold text-white flex items-center gap-2 text-sm uppercase tracking-wider">
+                            <h3 className="font-display font-bold text-[var(--text-primary)] flex items-center gap-2 text-sm uppercase tracking-wider">
                                 <Users size={16} className="text-[var(--accent-orange)]" /> Team Allocation
                             </h3>
                             <button onClick={addTeamMember} className="text-[10px] font-bold uppercase tracking-widest bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] px-3 py-1.5 rounded transition-colors text-[var(--text-secondary)]">Assign</button>
@@ -237,7 +237,7 @@ export default function CaseStudyDetail() {
                                             <div key={idx} className="flex items-center gap-3 bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.2)] pl-4 pr-2 py-3 rounded-xl w-full justify-between group transition-colors hover:border-[rgba(245,158,11,0.4)]">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-6 h-6 rounded-full bg-[rgba(245,158,11,0.2)] text-[var(--accent-orange)] flex items-center justify-center text-[10px] font-bold uppercase">{dispName.charAt(0)}</div>
-                                                    <span className="text-sm text-white font-medium tracking-wide">{dispName}</span>
+                                                    <span className="text-sm text-[var(--text-primary)] font-medium tracking-wide">{dispName}</span>
                                                 </div>
                                                 <button onClick={() => removeTeamMember(idx)} className="p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[rgba(245,158,11,0.2)] text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-all">
                                                     <Trash2 size={16} />
@@ -261,8 +261,8 @@ export default function CaseStudyDetail() {
                     <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-6 w-full max-w-md shadow-2xl flex flex-col gap-6 animate-in zoom-in-95 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-5 rounded-bl-full pointer-events-none"></div>
                         <div className="flex justify-between items-center relative z-10">
-                            <h2 className="font-display font-bold text-xl text-white">{promptModal.title}</h2>
-                            <button onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="text-[var(--text-muted)] hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-lg">
+                            <h2 className="font-display font-bold text-xl text-[var(--text-primary)]">{promptModal.title}</h2>
+                            <button onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] p-1.5 rounded-lg">
                                 <X size={20} />
                             </button>
                         </div>
@@ -285,7 +285,7 @@ export default function CaseStudyDetail() {
                                     {field.type === 'select' ? (
                                         <select
                                             name={field.name}
-                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm appearance-none"
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm appearance-none"
                                             required
                                         >
                                             <option value="" disabled selected>Select an option</option>
@@ -298,7 +298,7 @@ export default function CaseStudyDetail() {
                                             name={field.name}
                                             type={field.type || "text"}
                                             placeholder={field.placeholder}
-                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
                                             required
                                             autoFocus={field.name === promptModal.fields[0].name}
                                         />
@@ -306,7 +306,7 @@ export default function CaseStudyDetail() {
                                 </div>
                             ))}
                             <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">
-                                <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm font-bold transition-colors">Cancel</button>
+                                <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-primary)] hover:brightness-110 rounded-lg text-sm font-bold transition-colors">Cancel</button>
                                 <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-black hover:bg-[rgba(245,158,11,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
                             </div>
                         </form>

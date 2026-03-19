@@ -33,6 +33,7 @@
     /* palette: slate-blue — secondary accent */
     --accent-cyan-hover: #5a80a0;
     --accent-cyan-glow: rgba(69, 104, 130, 0.4);
+    --btn-text-primary: #0f2233; /* Dark text for dark background is WRONG? Wait. */
 
     --border-color: rgba(69, 104, 130, 0.3);
     --border-color-light: rgba(69, 104, 130, 0.55);
@@ -81,6 +82,7 @@
     --accent-cyan: #0ea5e9;
     --accent-cyan-hover: #0284c7;
     --accent-cyan-glow: rgba(14, 165, 233, 0.15);
+    --btn-text-primary: #0f172a; /* Dark text for light background */
     --border-color: rgba(0, 0, 0, 0.1);
     --border-color-light: rgba(0, 0, 0, 0.05);
 }
@@ -293,7 +295,7 @@ button {
 
 .btn-primary {
     background-color: var(--accent-orange);
-    color: var(--bg-base);
+    color: var(--btn-text-primary);
 }
 
 .btn-primary:hover {

@@ -32,7 +32,7 @@ export default function ProjectDetail() {
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
-    const { tickets, loading: ticketsLoading } = useTickets('projects', id || '');
+    const { tickets, loading: ticketsLoading, refresh: refreshTickets } = useTickets('projects', id || '');
     const { messages, loading: mLoading } = useMessages(id || '');
     const { workers } = useWorkers(); // Get workers for assigning
     const [newMessage, setNewMessage] = useState('');
@@ -250,7 +250,7 @@ export default function ProjectDetail() {
             <div className="flex-none bg-[var(--bg-surface-elevated)] border-b border-[var(--border-color)] pb-0 relative z-10 w-full">
                 <div className="px-6 md:px-10 py-8 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 w-full max-w-none">
                     <div className="flex flex-col gap-5 w-full">
-                        <Link to="/admin/projects" className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-white transition-colors w-fit bg-[rgba(255,255,255,0.02)] px-3 py-1.5 rounded-full border border-[var(--border-color)]">
+                        <Link to="/admin/projects" className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors w-fit bg-[rgba(255,255,255,0.02)] px-3 py-1.5 rounded-full border border-[var(--border-color)]">
                             <ArrowLeft size={14} /> Back to Projects
                         </Link>
 
@@ -263,7 +263,7 @@ export default function ProjectDetail() {
                                     {TYPE_LABELS[project.type] || project.type}
                                 </span>
                             </div>
-                            <h1 className="font-display font-bold text-4xl md:text-5xl text-white tracking-tight">{project.title || (project as any).name}</h1>
+                            <h1 className="font-display font-bold text-4xl md:text-5xl text-[var(--text-primary)] tracking-tight">{project.title || (project as any).name}</h1>
                             {project.client && (
                                 <p className="text-[var(--text-secondary)] text-sm flex items-center gap-2 font-medium">
                                     <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-[var(--accent-cyan)] to-[#3b82f6] text-black flex items-center justify-center text-[10px] font-bold shadow-lg">{project.client.charAt(0).toUpperCase()}</span>
@@ -274,7 +274,7 @@ export default function ProjectDetail() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto shrink-0 border-t lg:border-t-0 border-[var(--border-color)] pt-6 lg:pt-0">
-                        <button className="flex-1 lg:flex-none justify-center flex items-center gap-2 px-5 py-2.5 bg-[#1e1e1e] border border-[var(--border-color)] rounded-lg text-sm hover:bg-[rgba(255,255,255,0.05)] transition-all font-medium" onClick={() => setModalOpen(true)}>
+                        <button className="flex-1 lg:flex-none justify-center flex items-center gap-2 px-5 py-2.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-lg text-sm hover:brightness-110 transition-all font-medium text-[var(--text-primary)]" onClick={() => setModalOpen(true)}>
                             <Edit2 size={16} /> Edit Info
                         </button>
                         {project.liveUrl && (
@@ -292,19 +292,19 @@ export default function ProjectDetail() {
                 <div className="px-6 md:px-10 flex gap-8 overflow-x-auto custom-scrollbar pt-2 w-full max-w-none">
                     <button
                         onClick={() => setActiveTab('overview')}
-                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'overview' ? 'border-[var(--accent-orange)] text-[var(--accent-orange)]' : 'border-transparent text-[var(--text-muted)] hover:text-white'}`}
+                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'overview' ? 'border-[var(--accent-orange)] text-[var(--accent-orange)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                     >
                         <List size={14} /> Overview
                     </button>
                     <button
                         onClick={() => setActiveTab('crm')}
-                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'crm' ? 'border-[var(--accent-cyan)] text-[var(--accent-cyan)]' : 'border-transparent text-[var(--text-muted)] hover:text-white'}`}
+                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'crm' ? 'border-[var(--accent-cyan)] text-[var(--accent-cyan)]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                     >
                         <Users size={14} /> CRM & Planning
                     </button>
                     <button
                         onClick={() => setActiveTab('tickets')}
-                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'tickets' ? 'border-[#a855f7] text-[#a855f7]' : 'border-transparent text-[var(--text-muted)] hover:text-white'}`}
+                        className={`pb-4 text-xs font-bold font-mono uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'tickets' ? 'border-[#a855f7] text-[#a855f7]' : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                     >
                         <MessageSquare size={14} /> Tickets
                         <span className={`px-1.5 py-0.5 rounded text-[9px] ${activeTab === 'tickets' ? 'bg-[#a855f7]/20 text-[#a855f7]' : 'bg-[rgba(255,255,255,0.05)] text-[var(--text-muted)]'}`}>{tickets.length}</span>
@@ -682,7 +682,7 @@ export default function ProjectDetail() {
                             </div>
                         </div>
                         <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-6 shadow-sm min-h-[500px]">
-                            <TicketList tickets={tickets} parentCollection="projects" parentId={project.id} />
+                            <TicketList tickets={tickets} parentCollection="projects" parentId={project.id} onRefresh={refreshTickets} />
                         </div>
                     </div>
                 )}

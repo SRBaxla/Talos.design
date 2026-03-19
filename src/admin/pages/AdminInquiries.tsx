@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInquiries, updateInquiry, addProject, addActivityLog } from '../store/adminStore';
+import { useInquiries, updateInquiry, deleteInquiry, addProject, addActivityLog } from '../store/adminStore';
 import type { InquiryStatus } from '../store/adminStore';
 import { getAuth } from 'firebase/auth';
-import { DollarSign, CheckCircle, Archive, ArchiveRestore } from 'lucide-react';
+import { DollarSign, CheckCircle, Archive, ArchiveRestore, Trash2, CheckSquare, Square } from 'lucide-react';
 
 const STATUS_COLORS: Record<InquiryStatus, string> = {
     unread: '#f59e0b',
@@ -19,6 +19,8 @@ export default function AdminInquiries() {
     const { inquiries, loading } = useInquiries();
     const [convertingId, setConvertingId] = useState<string | null>(null);
     const [showArchived, setShowArchived] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isDeleting, setIsDeleting] = useState(false);
     const navigate = useNavigate();
 
     if (loading) {
@@ -113,6 +115,38 @@ export default function AdminInquiries() {
         }
     };
 
+    const toggleSelect = (id: string) => {
+        const next = new Set(selectedIds);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        setSelectedIds(next);
+    };
+
+    const toggleSelectAll = (ids: string[]) => {
+        if (selectedIds.size >= ids.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(ids));
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        const count = selectedIds.size;
+        if (!window.confirm(`Are you sure you want to PERMANENTLY delete ${count} selected archived inquiries? This cannot be undone.`)) return;
+
+        setIsDeleting(true);
+        try {
+            const promises = Array.from(selectedIds).map(id => deleteInquiry(id));
+            await Promise.all(promises);
+            setSelectedIds(new Set());
+        } catch (err) {
+            console.error('Bulk delete failed:', err);
+            alert('Failed to delete some inquiries.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     // Group inquiries for Kanban
     let columns: { title: string; keys: InquiryStatus[] }[] = [
         { title: 'New Leads', keys: ['unread', 'read'] },
@@ -132,13 +166,39 @@ export default function AdminInquiries() {
                     <h1 className="font-display font-bold text-xl text-[var(--text-primary)]">Deals & Inquiries</h1>
                     <p className="text-xs text-[var(--text-muted)] font-mono mt-1">Manage neural link transmissions</p>
                 </div>
-                 <button
-                    onClick={() => setShowArchived(!showArchived)}
-                    className="bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-color)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-mono"
-                >
-                    {showArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
-                    {showArchived ? 'Hide Archived' : 'Show Archived'}
-                </button>
+                <div className="flex items-center gap-3">
+                    {showArchived && inquiries.filter(i => i.status === 'archived').length > 0 && (
+                        <div className="flex items-center gap-2 bg-[var(--bg-surface)] border border-[var(--border-color)] p-1 rounded-lg">
+                            <button
+                                onClick={() => toggleSelectAll(inquiries.filter(i => i.status === 'archived').map(i => i.id))}
+                                className="px-3 py-1.5 rounded hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+                            >
+                                {selectedIds.size > 0 ? <CheckSquare size={14} /> : <Square size={14} />}
+                                {selectedIds.size > 0 ? 'Deselect All' : 'Select All'}
+                            </button>
+                            {selectedIds.size > 0 && (
+                                <button
+                                    onClick={handleBulkDelete}
+                                    disabled={isDeleting}
+                                    className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    <Trash2 size={14} />
+                                    {isDeleting ? 'Deleting...' : `Delete (${selectedIds.size})`}
+                                </button>
+                            )}
+                        </div>
+                    )}
+                    <button
+                        onClick={() => {
+                            setShowArchived(!showArchived);
+                            setSelectedIds(new Set());
+                        }}
+                        className="bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-color)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-mono"
+                    >
+                        {showArchived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
+                        {showArchived ? 'Hide Archived' : 'Show Archived'}
+                    </button>
+                </div>
             </header>
 
             {/* Kanban Board */}
@@ -167,23 +227,35 @@ export default function AdminInquiries() {
                                         colInquiries.map(inquiry => (
                                             <div
                                                 key={inquiry.id}
-                                                className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4 hover:border-[var(--accent-orange)] transition-colors group relative"
+                                                className={`bg-[var(--bg-surface)] border rounded-xl p-4 transition-all group relative ${selectedIds.has(inquiry.id) ? 'border-[var(--accent-orange)] shadow-[0_0_15px_rgba(249,115,22,0.1)]' : 'border-[var(--border-color)] hover:border-[var(--accent-orange)]'}`}
                                             >
-                                                {/* Status dot */}
-                                                <div
-                                                    className="absolute top-4 right-4 w-2 h-2 rounded-full"
-                                                    style={{ backgroundColor: STATUS_COLORS[inquiry.status] || '#71717a' }}
-                                                />
+                                                {/* Selection Checkbox */}
+                                                {showArchived && (
+                                                    <button
+                                                        onClick={() => toggleSelect(inquiry.id)}
+                                                        className={`absolute top-4 left-4 z-10 p-1 rounded-md transition-all ${selectedIds.has(inquiry.id) ? 'bg-[var(--accent-orange)] text-black shadow-lg scale-110' : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 border border-[var(--border-color)] hover:border-[var(--accent-orange)]'}`}
+                                                    >
+                                                        {selectedIds.has(inquiry.id) ? <CheckSquare size={14} /> : <Square size={14} />}
+                                                    </button>
+                                                )}
 
-                                                <h4 className="font-bold text-[15px] mb-1 pr-6 truncate">{inquiry.company || inquiry.name}</h4>
-                                                <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] mb-4 font-mono">
-                                                    <span>{inquiry.name}</span>
-                                                    <span>•</span>
-                                                    <span className="truncate">{inquiry.email}</span>
-                                                </div>
+                                                <div className={showArchived ? 'pl-8' : ''}>
+                                                    {/* Status dot */}
+                                                    <div
+                                                        className="absolute top-4 right-4 w-2 h-2 rounded-full"
+                                                        style={{ backgroundColor: STATUS_COLORS[inquiry.status] || '#71717a' }}
+                                                    />
 
-                                                <div className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg p-3 mb-4 text-[12px] text-[var(--text-secondary)] line-clamp-3">
-                                                    {inquiry.message}
+                                                    <h4 className="font-bold text-[15px] mb-1 pr-6 truncate">{inquiry.company || inquiry.name}</h4>
+                                                    <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] mb-4 font-mono">
+                                                        <span>{inquiry.name}</span>
+                                                        <span>•</span>
+                                                        <span className="truncate">{inquiry.email}</span>
+                                                    </div>
+
+                                                    <div className="bg-[var(--bg-base)] border border-[var(--border-color)] rounded-lg p-3 mb-4 text-[12px] text-[var(--text-secondary)] line-clamp-3">
+                                                        {inquiry.message}
+                                                    </div>
                                                 </div>
 
                                                 <div className="flex items-center justify-between mt-auto pt-2 border-t border-[var(--border-color)]">

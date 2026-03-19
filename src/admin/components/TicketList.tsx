@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, CheckCircle2, Circle, Clock, Trash2, Edit2 } from 'lucide-react';
+import { Plus, CheckCircle2, Circle, Clock, Trash2, Edit2, RefreshCw } from 'lucide-react';
 import type { Ticket, TicketStatus, TicketPriority } from '../store/adminStore';
 import { addTicket, updateTicket, deleteTicket, useWorkers, addActivityLog } from '../store/adminStore';
 import { Timestamp } from 'firebase/firestore';
@@ -8,6 +8,7 @@ interface TicketListProps {
     tickets: Ticket[];
     parentCollection: string;
     parentId: string;
+    onRefresh?: () => void;
 }
 
 const STATUS_ICONS: Record<TicketStatus, typeof Circle> = {
@@ -29,7 +30,7 @@ const PRIORITY_COLORS: Record<TicketPriority, string> = {
     'urgent': '#ef4444',
 };
 
-export default function TicketList({ tickets, parentCollection, parentId }: TicketListProps) {
+export default function TicketList({ tickets, parentCollection, parentId, onRefresh }: TicketListProps) {
     const [showForm, setShowForm] = useState(false);
     const [editTicket, setEditTicket] = useState<Ticket | null>(null);
     const [title, setTitle] = useState('');
@@ -39,6 +40,7 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
     const [assignee, setAssignee] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [filter, setFilter] = useState<'all' | TicketStatus>('all');
+    const [isSaving, setIsSaving] = useState(false);
 
     const { workers } = useWorkers();
 
@@ -66,33 +68,40 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
 
     const handleSave = async () => {
         if (!title.trim()) return;
-        let createdTicketId = '';
-        if (editTicket) {
-            await updateTicket(parentCollection, parentId, editTicket.id, {
-                title, description, status, priority, assignee, dueDate,
-            });
-            createdTicketId = editTicket.id;
-        } else {
-            const newTicket = await addTicket(parentCollection, parentId, {
-                title, description, status, priority, assignee, dueDate,
-                createdAt: Timestamp.now(),
-                updatedAt: Timestamp.now(),
-            } as unknown as Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>);
-            createdTicketId = newTicket.id;
-        }
+        setIsSaving(true);
+        try {
+            let createdTicketId = '';
+            if (editTicket) {
+                await updateTicket(parentCollection, parentId, editTicket.id, {
+                    title, description, status, priority, assignee, dueDate,
+                });
+                createdTicketId = editTicket.id;
+            } else {
+                const newTicket = await addTicket(parentCollection, parentId, {
+                    title, description, status, priority, assignee, dueDate,
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now(),
+                } as unknown as Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>);
+                createdTicketId = newTicket.id;
+            }
 
-        // Log if assignee exists and was changed/set
-        if (assignee && (!editTicket || editTicket.assignee !== assignee)) {
-            await addActivityLog({
-                workerUid: assignee,
-                action: 'assigned_ticket',
-                description: `Assigned to ticket: ${title}`,
-                referenceId: createdTicketId,
-                referenceType: 'ticket'
-            });
+            // Log if assignee exists and was changed/set
+            if (assignee && (!editTicket || editTicket.assignee !== assignee)) {
+                await addActivityLog({
+                    workerUid: assignee,
+                    action: 'assigned_ticket',
+                    description: `Assigned to ticket: ${title}`,
+                    referenceId: createdTicketId,
+                    referenceType: 'ticket'
+                });
+            }
+            resetForm();
+        } catch (err) {
+            console.error('Failed to save ticket:', err);
+            alert('Failed to save ticket. Please try again.');
+        } finally {
+            setIsSaving(false);
         }
-
-        resetForm();
     };
 
     const handleDelete = async (ticketId: string) => {
@@ -124,12 +133,23 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                         <span className="bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] text-[10px] px-2 py-0.5 rounded-full font-mono border border-[var(--border-color)]">{tickets.length}</span>
                     </h3>
                 </div>
-                <button
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all shadow-sm"
-                    onClick={() => { resetForm(); setShowForm(true); }}
-                >
-                    <Plus size={14} strokeWidth={2.5} /> Add Ticket
-                </button>
+                <div className="flex items-center gap-2">
+                    {onRefresh && (
+                        <button
+                            onClick={onRefresh}
+                            className="p-2 text-[var(--text-muted)] hover:text-white hover:bg-[rgba(255,255,255,0.05)] rounded-lg transition-all"
+                            title="Refresh Tickets"
+                        >
+                            <RefreshCw size={14} className="hover:rotate-180 transition-transform duration-500" />
+                        </button>
+                    )}
+                    <button
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all shadow-sm"
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                    >
+                        <Plus size={14} strokeWidth={2.5} /> Add Ticket
+                    </button>
+                </div>
             </div>
 
             {/* Filter pills */}
@@ -187,8 +207,16 @@ export default function TicketList({ tickets, parentCollection, parentId }: Tick
                     </div>
                     <div className="flex justify-end gap-3 mt-2">
                         <button className="px-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] rounded-lg text-sm font-bold transition-colors" onClick={resetForm}>Cancel</button>
-                        <button className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:brightness-110 rounded-lg text-sm font-bold shadow-sm transition-all" onClick={handleSave}>
-                            {editTicket ? 'Update Ticket' : 'Create Ticket'}
+                        <button 
+                            className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:brightness-110 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50" 
+                            onClick={handleSave}
+                            disabled={isSaving}
+                        >
+                            {isSaving ? (
+                                <><RefreshCw size={14} className="animate-spin" /> Saving...</>
+                            ) : (
+                                editTicket ? 'Update Ticket' : 'Create Ticket'
+                            )}
                         </button>
                     </div>
                 </div>

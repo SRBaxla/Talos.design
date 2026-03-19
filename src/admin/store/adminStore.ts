@@ -210,26 +210,35 @@ export function useCaseStudies() {
 export function useTickets(parentCollection: string, parentId: string) {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [loading, setLoading] = useState(true);
+    const [tick, setTick] = useState(0); // For manual refresh
 
     useEffect(() => {
         if (!parentId) { setLoading(false); return; }
+        setLoading(true);
+        
+        console.log(`[useTickets] Subscribing to ${parentCollection}/${parentId}/tickets`);
+        
         const q = query(
             collection(db, parentCollection, parentId, 'tickets'),
             orderBy('createdAt', 'desc')
         );
-        const unsub = onSnapshot(q, (snap) => {
+
+        const unsub = onSnapshot(q, { includeMetadataChanges: true }, (snap) => {
             const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Ticket));
             setTickets(data);
             setLoading(false);
         }, (err) => {
-            console.error('Tickets subscription error:', err);
+            console.error(`[useTickets] Error for ${parentId}:`, err);
             setTickets([]);
             setLoading(false);
         });
+        
         return unsub;
-    }, [parentCollection, parentId]);
+    }, [parentCollection, parentId, tick]);
 
-    return { tickets, loading };
+    const refresh = () => setTick(t => t + 1);
+
+    return { tickets, loading, refresh };
 }
 
 export function useWorkers() {
@@ -456,6 +465,10 @@ export async function updateInquiry(id: string, data: Partial<Inquiry>) {
         ...data,
         updatedAt: Timestamp.now(),
     });
+}
+
+export async function deleteInquiry(id: string) {
+    return deleteDoc(doc(db, 'inquiries', id));
 }
 
 export function useInquiries() {
