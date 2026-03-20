@@ -1,49 +1,40 @@
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search, Command } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { scrollToId } from '../utils/scrollUtils';
 import logo from '../assets/bitmap.png';
 import logoLight from '../assets/logo- light-side.png';
 
-export function Navbar({ isDarkMode }: { isDarkMode: boolean }) {
+export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onSearchClick?: () => void }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
     const navLinks = [
-        { name: 'Solutions', id: 'solutions' },
-        { name: 'Packages', id: 'packages' },
-        { name: 'Studio', id: 'studio' },
-        { name: 'Contact', id: 'contact' },
+        { name: 'AI Agents', path: '/ai-agents' },
+        { name: 'Systems', path: '/systems' },
+        { name: 'Designs', path: '/designs' },
+        { name: 'Impact', path: '/impact' },
+        { name: 'Insights', path: '/insights' },
     ];
 
     const NavItem = ({ link, mobile = false }: { link: typeof navLinks[0], mobile?: boolean }) => {
-        const handleClick = (e: React.MouseEvent) => {
-            e.preventDefault();
-            if (location.pathname !== '/') {
-                navigate(`/#${link.id}`);
-                return;
-            }
-
-            if (link.id !== undefined) {
-                scrollToId(link.id);
-            }
-
-            if (mobile) setIsMobileMenuOpen(false);
-        };
-
         return (
-            <a
-                href={`#${link.id}`}
-                onClick={handleClick}
-                className={mobile
-                    ? "text-lg font-medium p-2 rounded-md transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.04)]"
-                    : "hover:text-[var(--text-primary)] transition-colors text-[var(--text-secondary)]"
+            <NavLink
+                to={link.path}
+                onClick={() => mobile && setIsMobileMenuOpen(false)}
+                className={({ isActive }) => 
+                    (mobile
+                        ? "text-lg font-medium p-2 rounded-md transition-colors "
+                        : "text-sm font-medium transition-colors ") +
+                    (isActive 
+                        ? "text-[var(--accent-orange)]" 
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")
                 }
             >
                 {link.name}
-            </a>
+            </NavLink>
         );
     };
 
@@ -64,19 +55,32 @@ export function Navbar({ isDarkMode }: { isDarkMode: boolean }) {
                 </NavLink>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-8 font-medium text-sm">
+                <div className="hidden md:flex items-center gap-8">
                     {navLinks.map((link) => (
                         <NavItem key={link.name} link={link} />
                     ))}
+                    
+                    {/* Search Trigger */}
+                    <button 
+                        onClick={onSearchClick}
+                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[rgba(255,255,255,0.05)] border border-transparent hover:border-[var(--border-color)] transition-all"
+                        title="Search (CMD+K)"
+                    >
+                        <Search size={18} className="text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors" />
+                        <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 rounded bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)]">
+                            <Command size={10} className="text-[var(--text-muted)]" />
+                            <span className="text-[9px] font-mono text-[var(--text-muted)]">K</span>
+                        </div>
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
                     <button
-                        onClick={() => scrollToId('contact')}
+                        onClick={() => navigate('/contact')}
                         className="btn btn-primary flex items-center justify-center p-2 sm:px-4"
                         style={{ padding: '0.5rem 1rem' }}
                     >
-                        <span className="hidden sm:inline mr-2">Get Started</span>
+                        <span className="hidden sm:inline mr-2">Contact</span>
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>

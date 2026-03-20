@@ -17,21 +17,20 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="font-semibold mb-6">Services</h3>
+                        <h3 className="font-semibold mb-6">Expertise</h3>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
-                            <li><Link to="/services/web-design" className="hover:text-white transition-colors">Web Design</Link></li>
-                            <li><Link to="/services/chatbots" className="hover:text-white transition-colors">AI Chatbots</Link></li>
-                            <li><Link to="/services/automation" className="hover:text-white transition-colors">Automation</Link></li>
-                            <li><Link to="/projects" className="hover:text-white transition-colors">Packages</Link></li>
+                            <li><Link to="/ai-agents" className="hover:text-[var(--accent-orange)] transition-colors">AI Agents</Link></li>
+                            <li><Link to="/systems" className="hover:text-[var(--accent-orange)] transition-colors">Systems</Link></li>
+                            <li><Link to="/designs" className="hover:text-[var(--accent-orange)] transition-colors">Designs</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="font-semibold mb-6">Company</h3>
+                        <h3 className="font-semibold mb-6">Experience</h3>
                         <ul className="flex flex-col gap-4 text-sm text-[var(--text-muted)]">
-                            <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                            <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
-                            <li><Link to="/legal" className="hover:text-white transition-colors">Legal</Link></li>
+                            <li><Link to="/impact" className="hover:text-[var(--accent-orange)] transition-colors">Impact</Link></li>
+                            <li><Link to="/insights" className="hover:text-[var(--accent-orange)] transition-colors">Insights</Link></li>
+                            <li><Link to="/about" className="hover:text-[var(--accent-orange)] transition-colors">About Us</Link></li>
                         </ul>
                     </div>
 

@@ -21,8 +21,9 @@ const LINK_DISTANCE = 0.8; // Proximity threshold to trigger a data link beam
 
 interface SatOrbit {
     radius: number;
-    inclinationX: number;
-    inclinationZ: number;
+    u: THREE.Vector3; // Normal to orbital plane
+    v: THREE.Vector3; // Basis vector 1
+    w: THREE.Vector3; // Basis vector 2
     phase: number;
     speed: number;
 }
@@ -36,21 +37,35 @@ function SatelliteSwarm({ count = 200 }: { count?: number }) {
     // Pre-allocate position storage
     const positions = useMemo(() => new Array(count).fill(null).map(() => new THREE.Vector3()), [count]);
     
-    // Generate procedural orbital parameters
+    // Generate procedural orbital parameters with uniform spherical distribution
     const satellites = useMemo(() => {
         const sats: SatOrbit[] = [];
         for (let i = 0; i < count; i++) {
             const radius = 2.15 + (Math.random() * 0.65);
-            const inclinationX = (Math.random() - 0.5) * Math.PI;
-            const inclinationZ = (Math.random() - 0.5) * Math.PI;
+            
+            // Generate a random normal vector (u) for the orbital plane
+            const u = new THREE.Vector3(
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1
+            ).normalize();
+
+            // Find two basis vectors (v and w) orthogonal to u
+            const v = new THREE.Vector3();
+            const w = new THREE.Vector3();
+            
+            // Pick a non-parallel helper vector
+            const helper = Math.abs(u.y) < 0.9 ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
+            v.crossVectors(u, helper).normalize();
+            w.crossVectors(u, v).normalize();
+
             const phase = Math.random() * Math.PI * 2;
             const speed = (0.05 + Math.random() * 0.1) * (Math.random() > 0.5 ? 1 : -1);
-            sats.push({ radius, inclinationX, inclinationZ, phase, speed });
+            sats.push({ radius, u, v, w, phase, speed });
         }
         return sats;
     }, [count]);
 
-    const _euler = useMemo(() => new THREE.Euler(), []);
     const _v1 = useMemo(() => new THREE.Vector3(), []);
     const _v2 = useMemo(() => new THREE.Vector3(), []);
     const _up = useMemo(() => new THREE.Vector3(0, 1, 0), []);
@@ -63,8 +78,10 @@ function SatelliteSwarm({ count = 200 }: { count?: number }) {
         for (let i = 0; i < count; i++) {
             const sat = satellites[i];
             const currentAngle = sat.phase + time * sat.speed;
-            _euler.set(sat.inclinationX, 0, sat.inclinationZ);
-            positions[i].set(Math.cos(currentAngle) * sat.radius, 0, Math.sin(currentAngle) * sat.radius).applyEuler(_euler);
+            
+            // Calculate position using basis vectors: r * (cos(theta)*v + sin(theta)*w)
+            positions[i].copy(sat.v).multiplyScalar(Math.cos(currentAngle) * sat.radius)
+                .addScaledVector(sat.w, Math.sin(currentAngle) * sat.radius);
 
             dummy.position.copy(positions[i]);
             dummy.rotation.set(time * 0.5, time * 0.2, 0);

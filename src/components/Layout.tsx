@@ -4,11 +4,13 @@ import ThreeScene from './ThreeScene';
 import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { Navbar } from './Navbar';
+import { SearchOverlay } from './SearchOverlay';
 
 export function Layout() {
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     // Initial theme detection and scroll-snap management
     useEffect(() => {
@@ -29,6 +31,18 @@ export function Layout() {
             document.documentElement.classList.remove('home-snap-active');
         };
     }, [isHome]);
+
+    // Global CMD+K shortcut
+    useEffect(() => {
+        const handleCmdK = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                setIsSearchOpen(prev => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleCmdK);
+        return () => window.removeEventListener('keydown', handleCmdK);
+    }, []);
 
     const updateMetaThemeColor = (isDark: boolean) => {
         let metaThemeColor = document.querySelector('meta[name="theme-color"]');
@@ -54,12 +68,17 @@ export function Layout() {
 
             <div className="flex flex-col min-h-dvh w-full relative z-10 bg-transparent">
                 {/* Navbar is rendered on all pages now */}
-                <Navbar isDarkMode={isDarkMode} />
+                <Navbar isDarkMode={isDarkMode} onSearchClick={() => setIsSearchOpen(true)} />
                 <main className={`flex-grow flex flex-col bg-transparent ${isHome ? '' : 'pt-24'}`}>
                     <Outlet context={{ isDarkMode }} />
                 </main>
                 {!isHome && <Footer />}
             </div>
+
+            <SearchOverlay 
+                isOpen={isSearchOpen} 
+                onClose={() => setIsSearchOpen(false)} 
+            />
 
             {/* Theme Toggle Button */}
             <button

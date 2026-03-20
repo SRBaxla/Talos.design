@@ -12,6 +12,14 @@ const Studio = lazy(() => import('./pages/Studio'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Careers = lazy(() => import('./pages/Careers'));
 const Projects = lazy(() => import('./pages/Projects'));
+
+// ── New Portfolio Pages ───────────────────────────────────────────
+const AIAgents = lazy(() => import('./pages/AIAgents'));
+const Systems = lazy(() => import('./pages/Systems'));
+const Designs = lazy(() => import('./pages/Designs'));
+const Impact = lazy(() => import('./pages/Impact'));
+const Insights = lazy(() => import('./pages/Insights'));
+
 const ProjectPresence = lazy(() => import('./pages/ProjectPresence'));
 const ProjectAutomation = lazy(() => import('./pages/ProjectAutomation'));
 const ProjectCustom = lazy(() => import('./pages/ProjectCustom'));
@@ -55,6 +63,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="ai-agents" element={<AIAgents />} />
+            <Route path="systems" element={<Systems />} />
+            <Route path="designs" element={<Designs />} />
+            <Route path="impact" element={<Impact />} />
+            <Route path="insights" element={<Insights />} />
             <Route path="services" element={<Services />} />
             <Route path="about" element={<Studio />} />
             <Route path="contact" element={<Contact />} />

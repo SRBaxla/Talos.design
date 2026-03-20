@@ -255,7 +255,7 @@ export default function Home() {
                       ))}
                     </ul>
                     <Link
-                      to={`/services/${svc.id}`}
+                      to={svc.id === 'chatbots' ? '/ai-agents' : svc.id === 'automation' ? '/systems' : '/designs'}
                       className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:gap-3"
                       style={{ color: svc.accentColor }}
                     >
