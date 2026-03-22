@@ -5,7 +5,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../admin/firebase/firebaseConfig';
 import type { CaseStudy } from '../admin/store/adminStore';
 
-export function FeaturedCaseStudies() {
+export default function FeaturedCaseStudies() {
     const [studies, setStudies] = useState<CaseStudy[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -71,7 +71,7 @@ export function FeaturedCaseStudies() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.1 }}
-                        className="glass-panel p-8 flex flex-col relative overflow-hidden group hover:border-[rgba(245,158,11,0.4)] transition-all duration-300"
+                        className="glass-panel p-8 flex flex-col relative overflow-hidden group hover:border-[rgba(245,158,11,0.4)] transition-colors duration-300"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-cyan)] opacity-[0.03] group-hover:opacity-[0.08] blur-[50px] rounded-full pointer-events-none transition-opacity" />
 

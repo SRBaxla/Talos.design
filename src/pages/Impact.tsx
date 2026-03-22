@@ -1,7 +1,7 @@
 import { Quote, Star, TrendingUp, Users, Target, ShieldCheck, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const CASE_STUDIES = [
+export const CASE_STUDIES = [
     {
         client: 'Global E-commerce Hub',
         title: 'Inventory Automation & ERP Sync',

@@ -289,7 +289,7 @@ button {
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
     font-weight: 600;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
     font-size: 0.9375rem;
 }
 
@@ -321,6 +321,15 @@ button {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 
@@ -495,7 +504,7 @@ button {
     color: var(--text-primary);
     font-family: inherit;
     font-size: 0.9375rem;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .admin-input:focus,
@@ -582,7 +591,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .admin-tag button:hover {
@@ -607,7 +616,7 @@ button {
     border-radius: var(--radius-md);
     font-weight: 600;
     font-size: 0.9375rem;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .admin-btn-primary:hover:not(:disabled) {
@@ -628,7 +637,7 @@ button {
     border-radius: var(--radius-md);
     font-weight: 500;
     font-size: 0.9375rem;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .admin-btn-secondary:hover:not(:disabled) {
@@ -672,6 +681,31 @@ button {
 
 .animate-float {
     animation: float 6s ease-in-out infinite;
+}
+
+@keyframes slow-spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes slow-spin-reverse {
+    0% { transform: rotate(360deg) scale(1.1); }
+    50% { transform: rotate(180deg) scale(1); }
+    100% { transform: rotate(0deg) scale(1.1); }
+}
+@keyframes loading-bar {
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+}
+
+.animate-slow-spin {
+    animation: slow-spin linear infinite;
+}
+.animate-slow-spin-reverse {
+    animation: slow-spin-reverse linear infinite;
+}
+.animate-loading-bar {
+    animation: loading-bar 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* PATTERNS */

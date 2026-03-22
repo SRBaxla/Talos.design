@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Command, ArrowRight, BookOpen, Cpu, Globe, Rocket, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { ARTICLES } from '../pages/Insights';
+import { CASE_STUDIES } from '../pages/Impact';
+
 interface SearchResult {
   id: string;
   title: string;
@@ -13,15 +16,39 @@ interface SearchResult {
   color: string;
 }
 
-const SEARCH_DATA: SearchResult[] = [
-  { id: 'ai-agents', title: 'AI Agents', description: 'Autonomous agents for business automation and support.', category: 'Service', path: '/ai-agents', icon: Rocket, color: 'var(--accent-orange)' },
-  { id: 'systems', title: 'Systems', description: 'Deep infrastructure and workflow automation.', category: 'Service', path: '/systems', icon: Zap, color: 'var(--accent-cyan)' },
-  { id: 'designs', title: 'Designs', description: 'Premium web design and brand identity.', category: 'Service', path: '/designs', icon: Globe, color: 'var(--accent-magenta)' },
-  { id: 'impact', title: 'Impact', description: 'Case studies and client testimonials.', category: 'Project', path: '/impact', icon: BookOpen, color: 'var(--accent-orange)' },
-  { id: 'insights', title: 'Insights', description: 'Technical blogs and engineering updates.', category: 'Insight', path: '/insights', icon: Cpu, color: 'var(--accent-cyan)' },
-  { id: 'crm-agents', title: 'LLM-Driven CRM Agents', description: 'How we build intelligent sales pipelines.', category: 'Insight', path: '/insights', icon: Cpu, color: 'var(--accent-cyan)' },
-  { id: 'logic-pipelines', title: 'Advanced Logic Pipelines', description: 'Scaling business logic with modern tools.', category: 'Insight', path: '/insights', icon: Zap, color: 'var(--accent-orange)' },
+// Base static pages 
+const STATIC_DATA: SearchResult[] = [
+  { id: 'ai-agents', title: 'AI Agents', description: 'Autonomous agents for business automation and support.', category: 'Service', path: '/expertise#ai', icon: Rocket, color: 'var(--accent-orange)' },
+  { id: 'systems', title: 'Systems', description: 'Deep infrastructure and workflow automation.', category: 'Service', path: '/expertise#systems', icon: Zap, color: 'var(--accent-cyan)' },
+  { id: 'designs', title: 'Designs', description: 'Premium web design and brand identity.', category: 'Service', path: '/expertise#designs', icon: Globe, color: '#f06292' },
 ];
+
+// Dynamically generate the full index on load
+const getDynamicSearchData = (): SearchResult[] => {
+  const dynamicInsights: SearchResult[] = ARTICLES.map((article: any) => ({
+    id: `insight-${article.id}`,
+    title: article.title,
+    description: article.excerpt,
+    category: 'Insight',
+    path: '/insights',
+    icon: article.icon || Cpu,
+    color: article.color || 'var(--accent-cyan)'
+  }));
+
+  const dynamicImpact: SearchResult[] = CASE_STUDIES.map((study: any, idx: number) => ({
+    id: `impact-${idx}`,
+    title: study.title,
+    description: study.challenge,
+    category: 'Project',
+    path: '/impact',
+    icon: BookOpen,
+    color: study.color || 'var(--accent-orange)'
+  }));
+
+  return [...STATIC_DATA, ...dynamicImpact, ...dynamicInsights];
+};
+
+const SEARCH_DATA = getDynamicSearchData();
 
 export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState('');

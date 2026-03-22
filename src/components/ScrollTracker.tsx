@@ -21,23 +21,37 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [dragHoveredIndex, setDragHoveredIndex] = useState<number | null>(null);
 
-  // Track scroll progress and determine active section
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0% -60% 0%', // Equivalent to checking if top is <= 40% of viewport
+      threshold: 0
+    };
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = SECTIONS.findIndex(s => s.id === entry.target.id);
+          if (index !== -1) {
+            setActiveIndex(index);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    
+    SECTIONS.forEach(section => {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Track scroll progress for the percentage indicator only
   useMotionValueEvent(scrollProgress, 'change', (v) => {
     setProgress(v);
-
-    // Find active section based on actual DOM position
-    let active = 0;
-    for (let i = 0; i < SECTIONS.length; i++) {
-      const el = document.getElementById(SECTIONS[i].id);
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        // If the element is near the top or middle of the screen, it's active
-        if (rect.top <= window.innerHeight * 0.4) {
-          active = i;
-        }
-      }
-    }
-    setActiveIndex(active);
   });
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);

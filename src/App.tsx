@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { Layout } from './components/Layout';
+import { LoadingScreen } from './components/LoadingScreen';
 
 // ── Eagerly loaded (above-the-fold, critical path) ──────────────────────────
 import Home from './pages/Home';
@@ -14,9 +15,7 @@ const Careers = lazy(() => import('./pages/Careers'));
 const Projects = lazy(() => import('./pages/Projects'));
 
 // ── New Portfolio Pages ───────────────────────────────────────────
-const AIAgents = lazy(() => import('./pages/AIAgents'));
-const Systems = lazy(() => import('./pages/Systems'));
-const Designs = lazy(() => import('./pages/Designs'));
+const Expertise = lazy(() => import('./pages/Expertise'));
 const Impact = lazy(() => import('./pages/Impact'));
 const Insights = lazy(() => import('./pages/Insights'));
 
@@ -56,16 +55,17 @@ const PageFallback = () => (
 );
 
 function App() {
+  const [isInitializing, setIsInitializing] = useState(true);
+
   return (
     <BrowserRouter>
+      {isInitializing && <LoadingScreen onComplete={() => setIsInitializing(false)} />}
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="ai-agents" element={<AIAgents />} />
-            <Route path="systems" element={<Systems />} />
-            <Route path="designs" element={<Designs />} />
+            <Route path="expertise" element={<Expertise />} />
             <Route path="impact" element={<Impact />} />
             <Route path="insights" element={<Insights />} />
             <Route path="services" element={<Services />} />

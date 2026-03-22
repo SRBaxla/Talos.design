@@ -1,11 +1,12 @@
 import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Clock, Heart, Zap } from 'lucide-react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
-import { useState } from 'react';
-import { addInquiry } from '../admin/store/adminStore';
-import { sendAutoResponderEmail } from '../lib/emailService';
+import { useState, lazy, Suspense } from 'react';
 import { scrollToId } from '../utils/scrollUtils';
 import { ScrollTracker } from '../components/ScrollTracker';
+
+const FeaturedCaseStudies = lazy(() => import('../components/FeaturedCaseStudies'));
+
 
 const SERVICES = [
   {
@@ -93,6 +94,12 @@ export default function Home() {
     e.preventDefault();
     setIsTransmitting(true);
     try {
+      // Dynamic imports to prevent Firebase/EmailJS from bloating the initial bundle
+      const [{ addInquiry }, { sendAutoResponderEmail }] = await Promise.all([
+        import('../admin/store/adminStore'),
+        import('../lib/emailService')
+      ]);
+
       await addInquiry({ name, email, company, message });
 
       // Send the auto-responder email to the user
@@ -135,7 +142,7 @@ export default function Home() {
                 hidden: { opacity: 0 },
                 visible: {
                   opacity: 1,
-                  transition: { staggerChildren: 0.15, delayChildren: 0.2 }
+                  transition: { staggerChildren: 0.1, delayChildren: 0 }
                 }
               }}
               className="container relative z-10 flex flex-col items-center md:items-start text-center md:text-left py-10 md:py-0"
@@ -155,7 +162,7 @@ export default function Home() {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0 }
                 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="text-[clamp(2.5rem,8vw,5.5rem)] text-center md:text-left mb-[clamp(0.5rem,2vh,1.5rem)] max-w-5xl tracking-tighter leading-[0.95]"
               >
                 Engineering the <br />
@@ -167,7 +174,7 @@ export default function Home() {
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 }
                 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
                 className="text-[clamp(1rem,3vw,1.35rem)] text-[var(--text-secondary)] text-center md:text-left max-w-2xl leading-relaxed mb-[clamp(1.5rem,4vh,3rem)] opacity-90"
               >
                 We deploy intelligent agents and automate your critical workflows.
@@ -346,6 +353,11 @@ export default function Home() {
               })}
             </motion.div>
           </section>
+          
+          <Suspense fallback={<div className="min-h-[200px]" />}>
+            <FeaturedCaseStudies />
+          </Suspense>
+
 
           {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
           <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">

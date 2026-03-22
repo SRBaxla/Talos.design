@@ -2,7 +2,7 @@ import { Zap, Calendar, Clock, ArrowRight, Brain, Cpu, Globe, Rocket, ChevronLef
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
 
-const ARTICLES = [
+export const ARTICLES = [
     {
         id: 'autonomous-crm',
         title: 'The Future of Autonomous CRM Agents',

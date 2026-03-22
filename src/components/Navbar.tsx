@@ -12,9 +12,7 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
     const navigate = useNavigate();
 
     const navLinks = [
-        { name: 'AI Agents', path: '/ai-agents' },
-        { name: 'Systems', path: '/systems' },
-        { name: 'Designs', path: '/designs' },
+        { name: 'Expertise', path: '/expertise' },
         { name: 'Impact', path: '/impact' },
         { name: 'Insights', path: '/insights' },
     ];
@@ -51,7 +49,7 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
                         }
                     }}
                 >
-                    <img src={isDarkMode ? logo : logoLight} alt="Talos.design" className="h-8" />
+                    <img src={isDarkMode ? logo : logoLight} alt="Talos.design" width="120" height="32" className="h-8 w-auto" />
                 </NavLink>
 
                 {/* Desktop Menu */}
@@ -63,7 +61,8 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
                     {/* Search Trigger */}
                     <button 
                         onClick={onSearchClick}
-                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[rgba(255,255,255,0.05)] border border-transparent hover:border-[var(--border-color)] transition-all"
+                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[rgba(255,255,255,0.05)] border border-transparent hover:border-[var(--border-color)] transition-colors"
+                        aria-label="Search"
                         title="Search (CMD+K)"
                     >
                         <Search size={18} className="text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors" />
@@ -79,6 +78,7 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
                         onClick={() => navigate('/contact')}
                         className="btn btn-primary flex items-center justify-center p-2 sm:px-4"
                         style={{ padding: '0.5rem 1rem' }}
+                        aria-label="Contact Us"
                     >
                         <span className="hidden sm:inline mr-2">Contact</span>
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

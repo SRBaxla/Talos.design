@@ -33,6 +33,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
+          // Three.js and ecosystem — very large, separate for caching
+          if (id.includes('three')) return 'three-vendor';
+
           // Firebase — large SDK, split into its own chunk
           if (id.includes('firebase')) return 'firebase';
 
