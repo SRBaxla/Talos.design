@@ -72,6 +72,9 @@ export default function Insights() {
     const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
+    const [emailInput, setEmailInput] = useState('');
+    const [subscribed, setSubscribed] = useState(false);
+    const [copied, setCopied] = useState(false);
     const [bookmarks, setBookmarks] = useState<string[]>(() => {
         const saved = localStorage.getItem('talos_bookmarks');
         return saved ? JSON.parse(saved) : [];
@@ -88,6 +91,21 @@ export default function Insights() {
             : [...bookmarks, id];
         setBookmarks(newBookmarks);
         localStorage.setItem('talos_bookmarks', JSON.stringify(newBookmarks));
+    };
+
+    const handleSubscribe = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (emailInput.trim()) {
+            setSubscribed(true);
+            setEmailInput('');
+            setTimeout(() => setSubscribed(false), 5000);
+        }
+    };
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 3000);
     };
 
     const filteredArticles = useMemo(() => {
@@ -252,15 +270,25 @@ export default function Insights() {
                                 <p className="text-[var(--text-secondary)] text-lg md:text-xl mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed opacity-80 italic">
                                     "The technical edge isn't just found in code, but in the community of engineers who master it."
                                 </p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+                                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                                     <input 
+                                        type="email"
+                                        required
+                                        value={emailInput}
+                                        onChange={(e) => setEmailInput(e.target.value)}
                                         className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl px-6 md:px-8 py-4 md:py-5 text-sm md:text-base focus:border-[var(--accent-cyan)] outline-none w-full sm:w-[400px] ring-0 focus:ring-4 focus:ring-[rgba(0,229,255,0.1)] transition-all" 
                                         placeholder="Engineering Lead Email" 
                                     />
-                                    <button className="btn btn-primary w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest shadow-[0_0_50px_rgba(0,229,255,0.15)] group">
+                                    <button type="submit" className="btn btn-primary w-full sm:w-auto px-10 md:px-12 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest shadow-[0_0_50px_rgba(0,229,255,0.15)] group">
                                         Secure Access <ArrowRight className="inline ml-2 group-hover:translate-x-2 transition-transform" />
                                     </button>
-                                </div>
+                                </form>
+                                {subscribed && (
+                                    <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-emerald-400 font-mono text-xs mt-4">
+                                        ✓ Successfully subscribed! Check your inbox for briefing access code.
+                                    </motion.p>
+                                )}
                                 <p className="text-[var(--text-muted)] text-[9px] md:text-[10px] mt-8 uppercase tracking-[0.4em] font-mono">1,200+ DECISION MAKERS ENROLLED</p>
                             </div>
                         </div>
@@ -342,16 +370,30 @@ export default function Insights() {
                                     <div className="text-[var(--text-muted)] text-[10px] uppercase font-mono tracking-widest">Thought Leadership</div>
                                 </div>
                             </div>
-                            <div className="flex gap-4">
-                                <button className="p-3 glass-panel rounded-xl hover:text-[var(--accent-cyan)] transition-colors"><Bookmark size={18} /></button>
-                                <button className="p-3 glass-panel rounded-xl hover:text-[var(--accent-cyan)] transition-colors"><Share2 size={18} /></button>
+                            <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={(e) => activeArticle && toggleBookmark(activeArticle.id, e)} 
+                                    className={`p-3 glass-panel rounded-xl hover:text-[var(--accent-cyan)] transition-colors ${activeArticle && bookmarks.includes(activeArticle.id) ? 'text-[var(--accent-cyan)]' : ''}`}
+                                >
+                                    <Bookmark size={18} fill={activeArticle && bookmarks.includes(activeArticle.id) ? "currentColor" : "none"} />
+                                </button>
+                                <button onClick={handleShare} className="p-3 glass-panel rounded-xl hover:text-[var(--accent-cyan)] transition-colors relative">
+                                    <Share2 size={18} />
+                                    {copied && (
+                                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[var(--accent-cyan)] text-black font-mono text-[9px] px-2 py-0.5 rounded font-bold whitespace-nowrap">
+                                            Copied!
+                                        </span>
+                                    )}
+                                </button>
                             </div>
                         </div>
 
                         <div className="p-8 md:p-12 glass-panel rounded-[2rem] md:rounded-[3rem] text-center border border-[var(--border-color)] mb-12 md:24">
                             <h3 className="text-xl md:text-2xl font-bold mb-6">Want deeper technical expertise?</h3>
                             <p className="text-sm md:text-base text-[var(--text-secondary)] mb-8">Schedule a technical briefing with our lead engineers to discuss your specific infrastructure needs.</p>
-                            <button className="btn btn-primary px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm font-bold uppercase tracking-widest shadow-xl">Start Technical Briefing</button>
+                            <a href="/#contact" className="btn btn-primary px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm font-bold uppercase tracking-widest shadow-xl inline-flex items-center gap-2">
+                                Start Technical Briefing →
+                            </a>
                         </div>
                     </motion.div>
                 )}

@@ -60,7 +60,7 @@ export function Layout() {
                 <main className={`flex-grow flex flex-col bg-transparent ${isHome || isExpertise ? '' : 'pt-24'}`}>
                     <Outlet context={{ isDarkMode: true }} />
                 </main>
-                <Footer />
+                {!isHome && <Footer />}
             </div>
 
             <SearchOverlay

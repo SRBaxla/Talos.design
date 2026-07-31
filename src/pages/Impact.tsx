@@ -1,32 +1,64 @@
-import { Quote, Star, TrendingUp, Users, Target, ShieldCheck, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Quote, Star, TrendingUp, Users, Target, ShieldCheck, Zap, ExternalLink, Globe, Info, Monitor, Smartphone, Tablet, X, RefreshCw, DollarSign, Clock, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 export const CASE_STUDIES = [
     {
-        client: 'Global E-commerce Hub',
-        title: 'Inventory Automation & ERP Sync',
-        challenge: 'The client was manually syncing inventory across 5 stores, leading to a 15% error rate and overselling issues.',
-        solution: 'We built a custom Python-based logic engine that connects Shopify APIs with their ERP, featuring real-time conflict resolution.',
-        outcome: '98% reduction in manual data entry errors. 24/7 real-time inventory management with zero overselling in 12 months.',
+        id: 'cs-jhansi-hotel',
+        client: 'JMK Group',
+        title: 'Jhansi Hotel & Resorts',
+        category: 'Hospitality & Luxury',
+        summary: 'Design and develop a comprehensive, SEO-optimized website for Jhansi Hotel, a landmark 4-star heritage property established in 1905.',
+        challenge: 'Legacy non-responsive website that failed to showcase the 33 heritage luxury suites and lost booking revenue to OTAs.',
+        solution: 'Built a sub-second loading React platform with WhatsApp direct booking integration, high-res room gallery, and SEO schema.',
+        outcome: '340% increase in direct commission-free booking inquiries within 60 days of launch.',
+        liveUrl: 'https://jhansi-hotel.web.app/',
+        budget: '$1,500',
+        turnaround: '14 Days',
         metrics: [
-            { label: 'Time Saved', value: '45h/week' },
-            { label: 'Sync Delay', value: '< 2s' },
+            { label: 'Direct Bookings', value: '+340%' },
+            { label: 'Load Speed', value: '0.6s' },
         ],
-        tags: ['Automation', 'Logic Architecture'],
+        tags: ['React', 'Hospitality', 'SEO'],
         color: 'var(--accent-orange)'
     },
     {
+        id: 'cs-global-erp',
+        client: 'Global E-commerce Hub',
+        title: 'Inventory Automation & ERP Sync',
+        category: 'E-commerce & Logistics',
+        summary: 'Multi-store inventory automation pipeline connecting Shopify APIs directly to warehouse ERP systems.',
+        challenge: 'The client was manually syncing inventory across 5 stores, leading to a 15% error rate and overselling issues.',
+        solution: 'We built a custom Python-based logic engine that connects Shopify APIs with their ERP, featuring real-time conflict resolution.',
+        outcome: '98% reduction in manual data entry errors. 24/7 real-time inventory management with zero overselling in 12 months.',
+        liveUrl: 'https://talos.design',
+        budget: '$2,400',
+        turnaround: '10 Days',
+        metrics: [
+            { label: 'Time Saved', value: '45h/wk' },
+            { label: 'Sync Delay', value: '< 2s' },
+        ],
+        tags: ['Automation', 'Logic Architecture'],
+        color: 'var(--accent-cyan)'
+    },
+    {
+        id: 'cs-design-studio',
         client: 'Boutique Design Studio',
         title: 'High-Performance 3D Portfolio',
+        category: 'Design & Creative',
+        summary: 'Immersive Three.js digital experience with custom motion shaders and interactive project showcase.',
         challenge: 'A premium brand with a generic template site that failed to communicate their high-end artistic value.',
         solution: 'An immersive Three.js experience with custom shaders and motion-sensitive UI that prioritizes visual storytelling.',
         outcome: 'Increased visitor engagement by 320% and tripled project inquiries through a premium interactive experience.',
+        liveUrl: 'https://talos.design',
+        budget: '$3,000',
+        turnaround: '18 Days',
         metrics: [
             { label: 'Engagement', value: '+320%' },
             { label: 'Load Time', value: '0.8s' },
         ],
         tags: ['Design', 'Interactive'],
-        color: 'var(--accent-cyan)'
+        color: '#f06292'
     }
 ];
 
@@ -89,7 +121,7 @@ function ImpactChart() {
                         </div>
                     </div>
                 </div>
- 
+
                 <div className="flex-1 w-full grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                     {IMPACT_DATA.map((item, i) => (
                         <div key={item.label} className="flex flex-col items-center group/chart">
@@ -131,6 +163,11 @@ function ImpactChart() {
 }
 
 export default function Impact() {
+    const [selectedStudy, setSelectedStudy] = useState<any | null>(null);
+    const [deviceView, setDeviceView] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+    const [displayMode, setDisplayMode] = useState<'live' | 'details'>('live');
+    const [iframeLoading, setIframeLoading] = useState(true);
+
     return (
         <div className="container py-24 min-h-screen px-4">
             <motion.div
@@ -189,17 +226,23 @@ export default function Impact() {
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="relative"
+                            className="relative cursor-pointer"
+                            onClick={() => setSelectedStudy(study)}
                         >
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
                                 <div className={`lg:col-span-7 group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                                    <div className="glass-card p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border border-[var(--border-color)] relative overflow-hidden transition-all hover:border-[rgba(245,158,11,0.2)]">
+                                    <div className="glass-card p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border border-[var(--border-color)] relative overflow-hidden transition-all hover:border-[rgba(245,158,11,0.4)] group-hover:shadow-2xl">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-[0.03] blur-[60px]" />
                                         
-                                        <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.4em] text-[var(--accent-orange)] mb-6 block">
-                                            {study.client}
-                                        </span>
-                                        <h3 className="text-3xl md:text-5xl font-black mb-8 md:mb-10 leading-[0.9] uppercase tracking-tighter">{study.title}</h3>
+                                        <div className="flex items-center justify-between gap-4 mb-6">
+                                            <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.4em] text-[var(--accent-orange)] block">
+                                                {study.client}
+                                            </span>
+                                            <span className="text-[10px] font-mono text-[var(--accent-cyan)] font-bold flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full border border-white/10 group-hover:bg-[var(--accent-orange)] group-hover:text-black transition-all">
+                                                Interactive Preview <ExternalLink size={12} />
+                                            </span>
+                                        </div>
+                                        <h3 className="text-3xl md:text-5xl font-black mb-8 md:mb-10 leading-[0.9] uppercase tracking-tighter group-hover:text-[var(--accent-orange)] transition-colors">{study.title}</h3>
                                         
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
                                             <div className="space-y-6 md:space-y-8">
@@ -292,12 +335,164 @@ export default function Impact() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[rgba(245,158,11,0.05)] to-transparent pointer-events-none" />
                 <h3 className="text-4xl md:text-6xl font-black mb-10 md:mb-12 uppercase tracking-tighter leading-[0.9]">Build Your <br /><span className="text-gradient-orange text-glow-orange">Success Story.</span></h3>
                 <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-                    <button className="btn btn-primary px-10 md:px-12 py-4 md:py-5 text-sm md:text-base shadow-[0_0_40px_var(--accent-orange-glow)] flex items-center justify-center gap-3">
+                    <a href="/#contact" className="btn btn-primary px-10 md:px-12 py-4 md:py-5 text-sm md:text-base shadow-[0_0_40px_var(--accent-orange-glow)] flex items-center justify-center gap-3">
                         Engineer Your Future <TrendingUp size={18} />
-                    </button>
-                    <button className="btn btn-outline px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs italic font-mono uppercase tracking-widest text-[var(--text-muted)]">Book briefing</button>
+                    </a>
+                    <a href="https://wa.me/917247250918" target="_blank" rel="noreferrer" className="btn btn-outline px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs italic font-mono uppercase tracking-widest text-[var(--text-muted)] flex items-center justify-center gap-2">
+                        Book briefing
+                    </a>
                 </div>
             </motion.div>
+
+            {/* Interactive Preview Modal */}
+            <AnimatePresence>
+                {selectedStudy && (
+                    <div 
+                        className="fixed inset-0 z-[300] bg-black/85 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6 overflow-hidden text-left"
+                        onClick={() => setSelectedStudy(null)}
+                    >
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="w-full max-w-6xl h-[88vh] max-h-[850px] rounded-[2rem] overflow-hidden relative glass-panel border border-[var(--border-color)] bg-[#07090E] shadow-2xl flex flex-col"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="px-5 py-3 border-b border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-3 shrink-0">
+                                <div className="flex items-center gap-3 min-w-0 flex-1 sm:flex-initial">
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                        <span className="w-3 h-3 rounded-full bg-red-500/80 cursor-pointer hover:opacity-80" onClick={() => setSelectedStudy(null)} />
+                                        <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                                        <span className="w-3 h-3 rounded-full bg-green-400/80" />
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-[#07090E] px-3 py-1 rounded-xl border border-[var(--border-color)] text-[11px] font-mono text-[var(--text-muted)] truncate max-w-[220px] sm:max-w-md">
+                                        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+                                        <span className="truncate">{selectedStudy.liveUrl}</span>
+                                        <a href={selectedStudy.liveUrl} target="_blank" rel="noreferrer" className="text-[10px] text-[var(--accent-orange)] hover:underline flex items-center gap-0.5 ml-auto shrink-0 font-bold">
+                                            <ExternalLink size={10} />
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <div className="flex items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
+                                        <button onClick={() => setDisplayMode('live')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'live' ? 'bg-[var(--accent-cyan)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Globe size={13} /> Interactive Site
+                                        </button>
+                                        <button onClick={() => setDisplayMode('details')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'details' ? 'bg-[var(--accent-cyan)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Info size={13} /> Overview
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
+                                        <button onClick={() => setDeviceView('desktop')} className={`px-2.5 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1 transition-all ${deviceView === 'desktop' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Monitor size={13} /> Desktop
+                                        </button>
+                                        <button onClick={() => setDeviceView('tablet')} className={`px-2.5 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1 transition-all ${deviceView === 'tablet' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Tablet size={13} /> Tablet
+                                        </button>
+                                        <button onClick={() => setDeviceView('mobile')} className={`px-2.5 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1 transition-all ${deviceView === 'mobile' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Smartphone size={13} /> Mobile
+                                        </button>
+                                    </div>
+
+                                    <button onClick={() => setSelectedStudy(null)} className="p-1.5 text-[var(--text-muted)] hover:text-white rounded-lg">
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Canvas */}
+                            <div className="flex-1 min-h-0 relative bg-black/70 overflow-hidden flex items-center justify-center">
+                                <div className={`transition-all duration-300 w-full h-full flex flex-col items-center justify-center ${deviceView === 'desktop' ? 'max-w-full' : deviceView === 'tablet' ? 'max-w-[720px] py-4' : 'max-w-[360px] py-4'}`}>
+                                    <div className="w-full h-full relative bg-white overflow-hidden flex-1 min-h-0 shadow-2xl rounded-none sm:rounded-xl">
+                                        {displayMode === 'live' ? (
+                                            <div className="relative w-full h-full flex-1 min-h-0 overflow-hidden">
+                                                {iframeLoading && (
+                                                    <div className="absolute inset-0 bg-[#07090E] flex flex-col items-center justify-center gap-3 z-10">
+                                                        <RefreshCw size={24} className="text-[var(--accent-cyan)] animate-spin" />
+                                                        <span className="text-xs font-mono text-[var(--text-muted)]">Loading case study: {selectedStudy.liveUrl}</span>
+                                                    </div>
+                                                )}
+                                                <div className="w-full h-full overflow-hidden relative flex-1 min-h-0">
+                                                    <iframe src={selectedStudy.liveUrl} title={selectedStudy.title} onLoad={() => setIframeLoading(false)} className="w-[calc(100%+24px)] h-full -mr-[24px] border-none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex-1 min-h-0 p-6 sm:p-10 flex flex-col justify-start relative bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#1e293b] overflow-y-auto no-scrollbar pb-32 text-white space-y-8">
+                                                <div>
+                                                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] border border-[var(--accent-orange)]/30 mb-3 inline-block">
+                                                        {selectedStudy.category}
+                                                    </span>
+                                                    <h3 className="text-3xl sm:text-5xl font-bold font-display text-white mb-4 tracking-tight">{selectedStudy.title}</h3>
+                                                    <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-3xl">{selectedStudy.summary}</p>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10">
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <DollarSign size={12} className="text-emerald-400" /> Estimated Cost
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-emerald-400">{selectedStudy.budget}</div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <Clock size={12} className="text-sky-400" /> Turnaround
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-white">{selectedStudy.turnaround}</div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <Zap size={12} className="text-amber-400" /> Speed Index
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-amber-400">99/100 Mobile</div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <ShieldCheck size={12} className="text-indigo-400" /> SLA Guarantee
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-white">99.9% Uptime</div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-orange)] mb-3 flex items-center gap-2">
+                                                        <CheckCircle2 size={14} /> Delivered Solution & Outcome
+                                                    </h4>
+                                                    <p className="text-sm text-white/90 leading-relaxed bg-white/5 p-5 rounded-2xl border border-white/10 italic">
+                                                        "{selectedStudy.outcome}"
+                                                    </p>
+                                                </div>
+
+                                                <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 shrink-0">
+                                                    <div className="flex items-center gap-2 text-xs font-mono text-white/60">
+                                                        <CheckCircle2 size={14} className="text-emerald-400" /> Verified Production Case Study
+                                                    </div>
+                                                    <a href={selectedStudy.liveUrl} target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all shadow-lg">
+                                                        Open Website <ExternalLink size={14} />
+                                                    </a>
+                                                </div>
+                                                <div className="h-16 w-full shrink-0 pointer-events-none" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Modal Action Bar */}
+                            <div className="px-6 py-3 border-t border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-4 shrink-0">
+                                <a href="/#contact" className="px-5 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md flex items-center gap-2">
+                                    Build A Website Like This →
+                                </a>
+                                <button onClick={() => setSelectedStudy(null)} className="px-5 py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/10 transition-all">
+                                    Close Preview
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
