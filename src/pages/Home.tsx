@@ -4,6 +4,9 @@ import { motion, useScroll } from 'framer-motion';
 import { useState, lazy, Suspense } from 'react';
 import { scrollToId } from '../utils/scrollUtils';
 import { ScrollTracker } from '../components/ScrollTracker';
+import OneWayMirrorHero from '../components/OneWayMirrorHero';
+
+
 
 const FeaturedCaseStudies = lazy(() => import('../components/FeaturedCaseStudies'));
 
@@ -13,10 +16,10 @@ const SERVICES = [
     id: 'web-design',
     number: '01',
     icon: LayoutGrid,
-    title: 'Web Design',
-    benefit: 'A website that turns visitors into clients',
-    description: 'We build high-performance, fully custom websites that are fast, accessible, and designed to convert.',
-    features: ['Fully responsive', 'SEO-optimised', 'Fast load times', 'Clean admin panel'],
+    title: 'High-Converting Websites',
+    benefit: 'Turn Visitors Into Paying Customers',
+    description: 'Custom-designed websites engineered for speed, trust, mobile responsiveness, and maximum lead generation.',
+    features: ['Mobile & speed optimized', 'Google Search & SEO setup', 'Instant WhatsApp lead button', 'Easy content manager'],
     accentColor: 'var(--accent-orange)',
     accentBg: 'var(--accent-orange-glow)',
     accentBorder: 'var(--border-color)',
@@ -25,10 +28,10 @@ const SERVICES = [
     id: 'chatbots',
     number: '02',
     icon: Bot,
-    title: 'AI Chatbots',
-    benefit: '24/7 customer handling — no extra staff needed',
-    description: 'We deploy custom AI agents trained on your business content.',
-    features: ['Trained on your content', 'Handles enquiries', 'Seamless hand-off', 'Integrates with WhatsApp'],
+    title: '24/7 AI Sales Assistant',
+    benefit: 'Capture Inquiries & Bookings 24/7',
+    description: 'Intelligent AI assistants trained on your business that qualify leads and respond to clients on WhatsApp and web instantly.',
+    features: ['Trained on your business', 'Instant lead qualification', '24/7 automated customer support', 'Direct WhatsApp integration'],
     accentColor: 'var(--accent-cyan)',
     accentBg: 'var(--accent-cyan-glow)',
     accentBorder: 'var(--border-color)',
@@ -37,33 +40,33 @@ const SERVICES = [
     id: 'automation',
     number: '03',
     icon: Settings,
-    title: 'System Automation',
-    benefit: 'Eliminate the repetitive work eating your day',
-    description: 'We build automated pipelines that connect your apps and communications.',
-    features: ['Connect apps', 'Auto-send invoices', 'CRM sync', 'Custom dashboards'],
-    accentColor: 'var(--accent-magenta)',
-    accentBg: 'var(--accent-magenta-glow)',
+    title: 'Workflow Automation',
+    benefit: 'Save 20+ Hours of Work Weekly',
+    description: 'Eliminate repetitive manual tasks, automate client invoicing, and sync your business communication channels automatically.',
+    features: ['Auto-send invoices & receipts', 'CRM & payment gateway sync', 'Instant WhatsApp notifications', 'Custom operational dashboards'],
+    accentColor: 'var(--accent-orange)',
+    accentBg: 'var(--accent-orange-glow)',
     accentBorder: 'var(--border-color)',
   },
 ];
 
 const PROJECTS = [
-  { id: 'presence', label: 'Package 01', title: 'Digital Presence', accent: 'orange', icon: Globe, description: 'Your complete online identity — designed, built, and deployed.', highlights: ['Custom design', 'Brand identity', 'SEO optimization'], path: '/projects/presence' },
-  { id: 'automation', label: 'Package 02', title: 'Smart Automation', accent: 'cyan', icon: Bot, description: 'Automate bookings and queries with intelligent systems.', highlights: ['AI booking', 'Query handling', 'CRM integration'], path: '/projects/automation' },
-  { id: 'custom', label: 'Package 03', title: 'Custom Build', accent: 'magenta', icon: Wrench, description: 'Mix and match features or request something unique.', highlights: ['Pick features', 'Tailored architecture', 'Priority support'], path: '/projects/custom' },
+  { id: 'presence', label: 'PACKAGE 01', title: 'Digital Business Launch', accent: 'orange', icon: Globe, description: 'Establish immediate market credibility and capture qualified online leads with a high-performance web presence.', highlights: ['Custom lead-generation site', 'Google Maps & SEO setup', 'Instant WhatsApp chat button'], path: '/projects/presence' },
+  { id: 'automation', label: 'PACKAGE 02 — MOST POPULAR', title: 'Automated Growth Engine', accent: 'cyan', icon: Bot, description: 'Automate customer follow-ups, sales inquiries, and client bookings without hiring extra staff.', highlights: ['Everything in Digital Launch', '24/7 AI WhatsApp sales bot', 'Automated CRM & billing sync'], path: '/projects/automation' },
+  { id: 'custom', label: 'PACKAGE 03 — ENTERPRISE', title: 'Custom Business Platform', accent: 'orange', icon: Wrench, description: 'Bespoke software architecture, custom operational portals, and specialized workflows tailored for your company.', highlights: ['Tailored workflow architecture', 'Custom web & client portals', 'Dedicated ongoing support'], path: '/projects/custom' },
 ];
 
 const STUDIO_VALUES = [
-  { icon: Zap, title: 'Speed & Precision', description: 'We move fast without cutting corners.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
-  { icon: Heart, title: 'Client Obsessed', description: 'Your success is our success.', color: 'var(--accent-cyan)', bgColor: 'var(--accent-cyan-glow)', borderColor: 'var(--border-color)' },
-  { icon: Globe, title: 'Remote First', description: 'Based in India, serving clients worldwide.', color: 'var(--accent-magenta)', bgColor: 'var(--accent-magenta-glow)', borderColor: 'var(--border-color)' },
+  { icon: Zap, title: 'Business Growth Focus', description: 'We measure success in clear ROI, time saved, and revenue growth—not confusing tech jargon.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
+  { icon: Heart, title: 'Transparent Partnership', description: 'Fixed quotes, clear milestone delivery, and zero surprise fees.', color: 'var(--accent-cyan)', bgColor: 'var(--accent-cyan-glow)', borderColor: 'var(--border-color)' },
+  { icon: Globe, title: 'Engineered in Jhansi, India', description: 'Headquartered in UP, India, serving regional MSMEs and global businesses with long-term support.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
 ];
 
 const CONTACT_STEPS = [
-  { label: 'We read your message', sub: 'Usually within a few hours' },
-  { label: 'We schedule a call', sub: 'Free 30-min discovery session' },
-  { label: 'You get a proposal', sub: 'Scope, timeline & fixed price' },
-  { label: 'We build', sub: 'Phased delivery with check-ins' },
+  { label: 'Share Your Business Goals', sub: 'Tell us about your operations or growth targets' },
+  { label: 'Free Strategy Call', sub: '15-minute consultation to map out your solution' },
+  { label: 'Transparent Growth Plan', sub: 'Fixed scope, clear timeline, and predictable quote' },
+  { label: 'Build & Scale Operations', sub: 'Phased delivery with full team training and launch' },
 ];
 
 const accentMap: Record<string, { color: string; glow: string; bg: string; border: string }> = {
@@ -130,91 +133,23 @@ export default function Home() {
       <ScrollTracker scrollProgress={scrollYProgress} isDarkMode={isDarkMode} />
 
       <div className="relative w-full z-10 pointer-events-auto">
-        <main className="flex flex-col w-full md:w-[90%] lg:w-[85%] md:mr-auto px-4 sm:px-8 xl:pl-16">
 
-          {/* ── SECTION 1: HERO ─────────────────────────────────────────── */}
-          <section id="hero" className="relative w-full flex flex-col items-center md:items-start justify-center min-h-[100dvh] pt-40 pb-4">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.1, delayChildren: 0 }
-                }
-              }}
-              className="container relative z-10 flex flex-col items-center md:items-start text-center md:text-left py-10 md:py-0"
-            >
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                className="badge badge-online mb-6 md:mb-10 shadow-[0_0_15px_rgba(34,197,94,0.2)]"
-              >
-                Systems Online
-              </motion.div>
+        {/* ── SECTION 1: HERO — ONE-WAY MIRROR ─────────────────────────────── */}
+        <OneWayMirrorHero />
 
-              <motion.h1
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="text-[clamp(2.5rem,8vw,5.5rem)] text-center md:text-left mb-[clamp(0.5rem,2vh,1.5rem)] max-w-5xl tracking-tighter leading-[0.95]"
-              >
-                Engineering the <br />
-                <span className="text-gradient-orange text-glow-orange">Future of Work</span>
-              </motion.h1>
-
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-[clamp(1rem,3vw,1.35rem)] text-[var(--text-secondary)] text-center md:text-left max-w-2xl leading-relaxed mb-[clamp(1.5rem,4vh,3rem)] opacity-90"
-              >
-                We deploy intelligent agents and automate your critical workflows.
-                Scale your ambition with digital infrastructure built for tomorrow.
-              </motion.p>
-
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, scale: 0.95 },
-                  visible: { opacity: 1, scale: 1 }
-                }}
-                className="flex flex-col sm:flex-row gap-5"
-              >
-                <button
-                  onClick={() => scrollToId('contact')}
-                  className="btn btn-primary py-4 px-10 shadow-[0_0_30px_var(--accent-orange-glow)] text-base"
-                >
-                  Book a Free Call
-                </button>
-                <button
-                  onClick={() => scrollToId('packages')}
-                  className="btn btn-outline py-4 px-10 text-base"
-                >
-                  See Our Packages
-                </button>
-              </motion.div>
-            </motion.div>
-          </section>
+        <main className="flex flex-col w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
           {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
-          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
+          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              className="text-center md:text-left mb-16"
+              className="text-center md:text-left mb-12 sm:mb-16"
             >
               <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[SOLUTIONS]</div>
               <h2 className="text-[clamp(1.5rem,5vw,3rem)] font-display uppercase mb-4">Built for <span className="text-gradient-orange text-glow-orange">Performance</span></h2>
-              <p className="text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 text-[clamp(10px,2vw,14px)]">Three focused services delivered end-to-end for businesses that want results.</p>
+              <p className="text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 text-[clamp(12px,2vw,15px)]">Solving real operational bottlenecks with high-performance web systems and automation.</p>
             </motion.div>
 
             <motion.div
@@ -228,7 +163,7 @@ export default function Home() {
                   transition: { staggerChildren: 0.1 }
                 }
               }}
-              className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-3 gap-8"
+              className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
             >
               {SERVICES.map((svc) => (
                 <motion.div
@@ -238,7 +173,7 @@ export default function Home() {
                     visible: { opacity: 1, y: 0 }
                   }}
                   whileHover={{ y: -5 }}
-                  className="glass-card p-10 rounded-3xl flex flex-col h-full overflow-hidden transition-all duration-300"
+                  className="glass-card p-6 sm:p-8 lg:p-10 rounded-3xl flex flex-col h-full overflow-hidden transition-all duration-300"
                   style={{ borderColor: svc.accentBorder }}
                 >
                   <div className="flex items-center gap-4 mb-4">
@@ -246,7 +181,7 @@ export default function Home() {
                       <svc.icon size={20} style={{ color: svc.accentColor }} />
                     </div>
                     <div>
-                      <h3 className="text-lg font-display uppercase font-bold leading-tight tracking-tight">{svc.title}</h3>
+                      <h3 className="text-base sm:text-lg font-display uppercase font-bold leading-tight tracking-tight">{svc.title}</h3>
                       <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{svc.number}</span>
                     </div>
                   </div>
@@ -275,12 +210,12 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 3: PACKAGES ─────────────────────────────────────── */}
-          <section id="packages" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
+          <section id="packages" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              className="text-center md:text-left mb-16"
+              className="text-center md:text-left mb-12 sm:mb-16"
             >
               <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[PACKAGES]</div>
               <h2 className="text-[clamp(1.5rem,5vw,3rem)] font-display uppercase mb-4">Choose Your <span className="text-[var(--accent-cyan)] text-glow">Setup</span></h2>
@@ -297,7 +232,7 @@ export default function Home() {
                   transition: { staggerChildren: 0.15 }
                 }
               }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full max-w-6xl"
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl"
             >
               {PROJECTS.map((project) => {
                 const a = accentMap[project.accent];
@@ -309,23 +244,23 @@ export default function Home() {
                       visible: { opacity: 1, y: 0 }
                     }}
                     whileHover={{ scale: 1.02 }}
-                    className="glass-card p-10 flex flex-col group h-full justify-between rounded-3xl"
+                    className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col group h-full justify-between rounded-3xl"
                     style={{ borderColor: a.border }}
                   >
                     <div>
                       <span className="text-[11px] font-mono uppercase tracking-[.25em] mb-4 block" style={{ color: a.color }}>{project.label}</span>
                       <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ backgroundColor: a.bg, border: `1px solid ${a.border}` }}>
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shrink-0" style={{ backgroundColor: a.bg, border: `1px solid ${a.border}` }}>
                           <project.icon size={22} style={{ color: a.color }} />
                         </div>
-                        <h3 className="text-xl font-display font-bold tracking-tight">{project.title}</h3>
+                        <h3 className="text-lg sm:text-xl font-display font-bold tracking-tight">{project.title}</h3>
                       </div>
                       <p className="text-[var(--text-secondary)] text-[0.85rem] mb-8 leading-relaxed opacity-80">{project.description}</p>
 
                       <ul className="space-y-3 mb-10">
                         {project.highlights.map(h => (
                           <li key={h} className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: a.color }} />
+                            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: a.color }} />
                             {h}
                           </li>
                         ))}
@@ -353,25 +288,25 @@ export default function Home() {
               })}
             </motion.div>
           </section>
-          
+
           <Suspense fallback={<div className="min-h-[200px]" />}>
             <FeaturedCaseStudies />
           </Suspense>
 
 
-          {/* ── SECTION 4: STUDIO ───────────────────────────────────────── */}
-          <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(2rem,6vw,6rem)] items-center w-full">
+          {/* ── SECTION 4: STUDIO (WHO WE ARE & FOUNDERS) ────────────────── */}
+          <section id="studio" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[clamp(2rem,6vw,6rem)] items-center w-full">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <div className="badge badge-online mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">The Studio</div>
-                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">We Are <span className="text-gradient-orange text-glow-orange">Talos</span></h2>
-                <p className="text-[clamp(0.9rem,2vw,1.25rem)] text-[var(--text-secondary)] mb-10 leading-relaxed opacity-90">
-                  Based in India, we engineer high-performance digital systems for ambitious businesses worldwide. We bridge the gap between complex AI and practical business outcomes.
+                <div className="badge badge-online mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">Who We Are</div>
+                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">Engineered in <span className="text-gradient-orange text-glow-orange">Jhansi, India</span></h2>
+                <p className="text-[clamp(0.9rem,2vw,1.25rem)] text-[var(--text-secondary)] mb-8 leading-relaxed opacity-90">
+                  Headquartered in <strong>Jhansi, Uttar Pradesh, India</strong>, Talos.design is built by engineers dedicated to providing transparent, highly reliable digital systems and AI automation for MSMEs and growing enterprises.
                 </p>
 
                 <motion.div
@@ -409,7 +344,7 @@ export default function Home() {
                   to="/about"
                   className="btn btn-outline mt-10 text-sm py-3 px-8 inline-flex items-center gap-2 group"
                 >
-                  Our Philosophy <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Meet Our Team & Philosophy <span className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
               </motion.div>
 
@@ -418,20 +353,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                className="hidden lg:block relative"
+                className="w-full relative mt-8 lg:mt-0"
               >
-                <div className="relative glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12 aspect-[4/3]">
+                <div className="relative glass-card rounded-2xl sm:rounded-[3rem] overflow-hidden flex items-center justify-center p-8 sm:p-12 aspect-auto sm:aspect-[4/3] min-h-[240px]">
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
                   <div className="relative z-10 text-center">
                     <motion.div
                       animate={{ y: [0, -10, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="text-7xl mb-6"
+                      className="text-5xl sm:text-7xl mb-4 sm:mb-6"
                     >
                       🇮🇳
                     </motion.div>
-                    <div className="text-xs font-mono uppercase tracking-[0.3em] text-[var(--text-primary)] font-bold">Engineered in India</div>
-                    <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mt-2">Serving the World</div>
+                    <div className="text-xs font-mono uppercase tracking-[0.3em] text-[var(--text-primary)] font-bold">Jhansi, UP, India</div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mt-2">Serving Indian MSMEs & Global Clients</div>
                   </div>
                 </div>
               </motion.div>
@@ -439,12 +374,12 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 5: CONTACT + FOOTER ─────────────────────────────────────── */}
-          <section id="contact" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-40 pb-4">
+          <section id="contact" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(2rem,5vw,6rem)] w-full items-start"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[clamp(2rem,5vw,6rem)] w-full items-start"
             >
               <div>
                 <div className="badge badge-active mb-6 font-mono text-xs">[TRANSMISSION]</div>
@@ -491,7 +426,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="glass-card p-10 rounded-[2rem] w-full"
+                className="glass-card p-6 sm:p-8 lg:p-10 rounded-2xl sm:rounded-[2rem] w-full"
               >
                 {status === 'success' ? (
                   <motion.div

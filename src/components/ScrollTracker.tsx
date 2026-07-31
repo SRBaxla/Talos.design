@@ -40,7 +40,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     };
 
     const observer = new IntersectionObserver(handleIntersection, observerOptions);
-    
+
     SECTIONS.forEach(section => {
       const el = document.getElementById(section.id);
       if (el) observer.observe(el);
@@ -129,7 +129,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
                 opacity="0.4"
               />
 
-               <motion.path
+              <motion.path
                 d={`M ${radius} 0 A ${radius} ${radius} 0 0 0 ${radius} ${radius * 2}`}
                 fill="none"
                 stroke="url(#tracker-gradient)"

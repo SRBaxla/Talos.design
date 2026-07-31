@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Search, ArrowUpDown, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { Search, ArrowUpDown, Edit2, Trash2, ExternalLink, Monitor, Eye, EyeOff } from 'lucide-react';
 import type { Project } from '../store/adminStore';
-import { deleteProject } from '../store/adminStore';
+import { deleteProject, updateProject } from '../store/adminStore';
+import AdminPreviewWidgetModal from './AdminPreviewWidgetModal';
 
 interface ProjectTableProps {
     projects: Project[];
@@ -36,6 +37,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortKey, setSortKey] = useState<string>('createdAt');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+    const [previewProject, setPreviewProject] = useState<Project | null>(null);
 
     const toggleSort = (key: string) => {
         if (sortKey === key) {
@@ -43,6 +45,19 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
         } else {
             setSortKey(key);
             setSortDir('asc');
+        }
+    };
+
+    const handleToggleVisibility = async (e: React.MouseEvent, id: string, currentShow: boolean | undefined, currentStatus: string) => {
+        e.stopPropagation();
+        try {
+            const nextState = !(currentShow === true || currentStatus === 'published');
+            await updateProject(id, {
+                showOnWebsite: nextState,
+                status: nextState ? 'published' : 'in-progress'
+            });
+        } catch (err) {
+            console.error('Failed to toggle project showcase visibility:', err);
         }
     };
 
@@ -180,7 +195,28 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                                         {p.startDate ? new Date(p.startDate).toLocaleDateString() : '—'}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                        <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                onClick={(e) => handleToggleVisibility(e, p.id, p.showOnWebsite, p.status)}
+                                                className={`px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                                                    p.showOnWebsite === true || p.status === 'published'
+                                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
+                                                        : 'bg-zinc-800/80 text-zinc-400 border border-zinc-700 hover:text-white hover:border-zinc-500'
+                                                }`}
+                                                title={p.showOnWebsite === true || p.status === 'published' ? "Pushed to Public Showcase (Click to Hide)" : "Add to Public Showcase (Click to Push Live)"}
+                                            >
+                                                {p.showOnWebsite === true || p.status === 'published' ? <Eye size={13} /> : <EyeOff size={13} />}
+                                                <span className="hidden sm:inline">
+                                                    {p.showOnWebsite === true || p.status === 'published' ? 'Showcase: ON' : 'Add to Showcase'}
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() => setPreviewProject(p)}
+                                                className="p-1.5 text-[var(--accent-orange)] hover:bg-[var(--accent-orange)]/10 rounded transition-colors"
+                                                title="Open Live Preview Widget"
+                                            >
+                                                <Monitor size={16} />
+                                            </button>
                                             <button
                                                 onClick={() => onEdit(p)}
                                                 className="p-1.5 text-[var(--text-muted)] hover:text-blue-400 hover:bg-blue-400/10 rounded transition-colors"
@@ -194,7 +230,7 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="p-1.5 text-[var(--text-muted)] hover:text-green-400 hover:bg-green-400/10 rounded transition-colors"
-                                                    title="View Live"
+                                                    title="View Live Site"
                                                 >
                                                     <ExternalLink size={16} />
                                                 </a>
@@ -214,6 +250,23 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                     </tbody>
                 </table>
             </div>
+
+            {/* Admin Live Preview Widget Modal */}
+            <AdminPreviewWidgetModal
+                open={!!previewProject}
+                onClose={() => setPreviewProject(null)}
+                item={previewProject ? {
+                    id: previewProject.id,
+                    title: previewProject.title || (previewProject as any).name,
+                    client: previewProject.client,
+                    category: TYPE_LABELS[previewProject.type] || previewProject.type,
+                    description: previewProject.description || previewProject.notes,
+                    liveUrl: previewProject.liveUrl,
+                    showOnWebsite: previewProject.status === 'published',
+                    type: 'project'
+                } : null}
+            />
         </div>
     );
 }
+

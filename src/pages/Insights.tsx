@@ -77,6 +77,10 @@ export default function Insights() {
         return saved ? JSON.parse(saved) : [];
     });
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [selectedArticleId]);
+
     const toggleBookmark = (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
         const newBookmarks = bookmarks.includes(id) 

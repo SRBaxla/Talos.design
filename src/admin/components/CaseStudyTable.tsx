@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Search, ArrowUpDown, Edit2, Trash2, ExternalLink, Eye, EyeOff } from 'lucide-react';
+import { Search, ArrowUpDown, Edit2, Trash2, ExternalLink, Eye, EyeOff, Monitor } from 'lucide-react';
 import type { CaseStudy } from '../store/adminStore';
 import { deleteCaseStudy, updateCaseStudy } from '../store/adminStore';
+import AdminPreviewWidgetModal from './AdminPreviewWidgetModal';
 
 interface CaseStudyTableProps {
     studies: CaseStudy[];
@@ -22,6 +23,7 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [sortKey, setSortKey] = useState<string>('createdAt');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+    const [previewStudy, setPreviewStudy] = useState<CaseStudy | null>(null);
 
     const toggleSort = (key: string) => {
         if (sortKey === key) {
@@ -158,13 +160,27 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
                                         {s.publishDate || '—'}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                        <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                onClick={() => setPreviewStudy(s)}
+                                                className="p-1.5 text-[var(--accent-orange)] hover:bg-[var(--accent-orange)]/10 rounded transition-colors"
+                                                title="Open Live Preview Widget"
+                                            >
+                                                <Monitor size={16} />
+                                            </button>
                                             <button
                                                 onClick={(e) => handleToggleVisibility(e, s.id, s.showOnWebsite)}
-                                                className={`p-1.5 rounded transition-colors ${s.showOnWebsite !== false ? 'text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10' : 'text-[var(--text-muted)] hover:text-white hover:bg-white/10'}`}
-                                                title={s.showOnWebsite !== false ? "Visible on website" : "Hidden from website"}
+                                                className={`px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                                                    s.showOnWebsite !== false
+                                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
+                                                        : 'bg-zinc-800/80 text-zinc-400 border border-zinc-700 hover:text-white hover:border-zinc-500'
+                                                }`}
+                                                title={s.showOnWebsite !== false ? "Pushed to Public Showcase (Click to Hide)" : "Add to Public Showcase (Click to Push Live)"}
                                             >
-                                                {s.showOnWebsite !== false ? <Eye size={16} /> : <EyeOff size={16} />}
+                                                {s.showOnWebsite !== false ? <Eye size={13} /> : <EyeOff size={13} />}
+                                                <span className="hidden sm:inline">
+                                                    {s.showOnWebsite !== false ? 'Showcase: ON' : 'Add to Showcase'}
+                                                </span>
                                             </button>
                                             <button
                                                 onClick={() => onEdit(s)}
@@ -179,7 +195,7 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="p-1.5 text-[var(--text-muted)] hover:text-green-400 hover:bg-green-400/10 rounded transition-colors"
-                                                    title="View Live"
+                                                    title="View Live Site"
                                                 >
                                                     <ExternalLink size={16} />
                                                 </a>
@@ -199,6 +215,26 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
                     </tbody>
                 </table>
             </div>
+
+            {/* Admin Live Preview Widget Modal */}
+            <AdminPreviewWidgetModal
+                open={!!previewStudy}
+                onClose={() => setPreviewStudy(null)}
+                item={previewStudy ? {
+                    id: previewStudy.id,
+                    title: previewStudy.title,
+                    client: previewStudy.client,
+                    category: previewStudy.industry,
+                    description: previewStudy.summary || previewStudy.solution || previewStudy.challenge,
+                    challenge: previewStudy.challenge,
+                    solution: previewStudy.solution,
+                    results: previewStudy.results,
+                    liveUrl: previewStudy.liveUrl,
+                    showOnWebsite: previewStudy.showOnWebsite,
+                    type: 'caseStudy'
+                } : null}
+            />
         </div>
     );
 }
+

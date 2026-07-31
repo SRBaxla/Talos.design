@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut, FolderKanban, FileText, MessageSquare, ExternalLink,
     Send, Clock, CheckCircle, ChevronRight, Hexagon, User as UserIcon, Download, DollarSign,
+    Monitor, Tablet, Smartphone, X, RefreshCw
 } from 'lucide-react';
 import {
     useProjects, useInvoices, useMessages, sendMessage,
@@ -71,6 +72,10 @@ function StageStepper({ status }: { status: Project['status'] }) {
 
 function ProjectCard({ project, onMessageClick }: { project: Project; onMessageClick: () => void }) {
     const [expanded, setExpanded] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [deviceView, setDeviceView] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+    const [iframeLoading, setIframeLoading] = useState(true);
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -80,19 +85,17 @@ function ProjectCard({ project, onMessageClick }: { project: Project; onMessageC
             {/* Header row */}
             <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                         <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                             {TYPE_LABELS[project.type]}
                         </span>
                         {project.liveUrl && (
-                            <a
-                                href={project.liveUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[var(--accent-orange)] hover:underline text-[10px] flex items-center gap-1"
+                            <button
+                                onClick={() => { setIframeLoading(true); setPreviewOpen(true); }}
+                                className="px-2 py-0.5 rounded bg-[var(--accent-orange)]/15 border border-[var(--accent-orange)]/30 text-[var(--accent-orange)] font-bold hover:bg-[var(--accent-orange)] hover:text-[#07090E] transition-all text-[10px] flex items-center gap-1"
                             >
-                                <ExternalLink size={10} /> Live
-                            </a>
+                                <ExternalLink size={10} /> Live Site Preview
+                            </button>
                         )}
                     </div>
                     <h3 className="text-lg font-display font-bold truncate">{project.title}</h3>
@@ -200,6 +203,126 @@ function ProjectCard({ project, onMessageClick }: { project: Project; onMessageC
                                 <MessageSquare size={12} /> Message team about this project
                             </button>
                         </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Interactive Live Site Preview Modal for Clients */}
+            <AnimatePresence>
+                {previewOpen && project.liveUrl && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setPreviewOpen(false)}
+                        className="fixed inset-0 z-[300] bg-black/85 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6 overflow-hidden text-left"
+                    >
+                        <motion.div 
+                            className="w-full max-w-6xl h-[88vh] max-h-[850px] rounded-[2rem] overflow-hidden relative glass-panel border border-[var(--border-color)] bg-[#07090E] shadow-2xl flex flex-col"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Modal Header */}
+                            <div className="px-5 py-3 border-b border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-3 shrink-0">
+                                <div className="flex items-center gap-3 min-w-0 flex-1 sm:flex-initial">
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                        <span className="w-3 h-3 rounded-full bg-red-500/80 cursor-pointer hover:opacity-80" onClick={() => setPreviewOpen(false)} />
+                                        <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                                        <span className="w-3 h-3 rounded-full bg-green-400/80" />
+                                    </div>
+
+                                    {/* Integrated Live URL Address Bar */}
+                                    <div className="flex items-center gap-2 bg-[#07090E] px-3 py-1 rounded-xl border border-[var(--border-color)] text-[11px] font-mono text-[var(--text-muted)] truncate max-w-[220px] sm:max-w-md">
+                                        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+                                        <span className="truncate">{project.liveUrl}</span>
+                                        {project.liveUrl && (
+                                            <a 
+                                                href={project.liveUrl} 
+                                                target="_blank" 
+                                                rel="noreferrer"
+                                                className="text-[10px] text-[var(--accent-orange)] hover:underline flex items-center gap-0.5 ml-auto shrink-0 font-bold"
+                                                title="Open in external browser tab"
+                                            >
+                                                <ExternalLink size={10} />
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
+                                        <button 
+                                            onClick={() => setDeviceView('desktop')}
+                                            className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${deviceView === 'desktop' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}
+                                        >
+                                            <Monitor size={13} /> Desktop
+                                        </button>
+                                        <button 
+                                            onClick={() => setDeviceView('tablet')}
+                                            className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${deviceView === 'tablet' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}
+                                        >
+                                            <Tablet size={13} /> Tablet
+                                        </button>
+                                        <button 
+                                            onClick={() => setDeviceView('mobile')}
+                                            className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${deviceView === 'mobile' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}
+                                        >
+                                            <Smartphone size={13} /> Mobile
+                                        </button>
+                                    </div>
+                                    <button onClick={() => setPreviewOpen(false)} className="p-1.5 text-[var(--text-muted)] hover:text-white rounded-lg">
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Direct Edge-To-Edge Preview Canvas */}
+                            <div className="flex-1 min-h-0 relative bg-black/70 overflow-hidden flex items-center justify-center">
+                                <div 
+                                    className={`transition-all duration-300 w-full h-full flex flex-col items-center justify-center ${
+                                        deviceView === 'desktop' ? 'max-w-full' :
+                                        deviceView === 'tablet' ? 'max-w-[720px] py-4' : 'max-w-[360px] py-4'
+                                    }`}
+                                >
+                                    <div className="w-full h-full relative bg-white overflow-hidden flex-1 min-h-0 shadow-2xl rounded-none sm:rounded-xl">
+                                        <div className="relative w-full h-full flex-1 min-h-0 overflow-hidden">
+                                            {iframeLoading && (
+                                                <div className="absolute inset-0 bg-[#07090E] flex flex-col items-center justify-center gap-3 z-10">
+                                                    <RefreshCw size={24} className="text-[var(--accent-orange)] animate-spin" />
+                                                    <span className="text-xs font-mono text-[var(--text-muted)]">Loading project build: {project.liveUrl}</span>
+                                                </div>
+                                            )}
+                                            <div className="w-full h-full overflow-hidden relative flex-1 min-h-0">
+                                                <iframe 
+                                                    src={project.liveUrl} 
+                                                    title={project.title}
+                                                    onLoad={() => setIframeLoading(false)}
+                                                    className="w-[calc(100%+24px)] h-full -mr-[24px] border-none"
+                                                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="px-6 py-4 border-t border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-4 shrink-0">
+                                <a 
+                                    href={project.liveUrl} 
+                                    target="_blank" 
+                                    rel="noreferrer"
+                                    className="px-5 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all shadow-md"
+                                >
+                                    Open Website In New Tab <ExternalLink size={14} />
+                                </a>
+                                <button 
+                                    onClick={() => setPreviewOpen(false)}
+                                    className="px-6 py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
+                                >
+                                    Close Preview
+                                </button>
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>

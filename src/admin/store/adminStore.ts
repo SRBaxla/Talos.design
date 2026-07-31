@@ -56,6 +56,7 @@ export interface Project {
     technologies?: string[];
     link?: string;
     liveUrl: string;
+    showOnWebsite?: boolean;
     tags: string[];
     // Advanced CRM Tracking
     clientUid?: string;

@@ -3,28 +3,28 @@ import { Bot, Sparkles, Zap, MessageSquare, Shield, Globe, Brain, Clock, Databas
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AGENT_CAPABILITIES = [
-    { icon: MessageSquare, title: 'Linguistic Precision', description: 'Advanced sentiment analysis and intent recognition that captures every nuance of your customer’s query.' },
-    { icon: Brain, title: 'Knowledge Anchoring', description: 'Transform static docs into a dynamic brain that provides 100% accurate, hallucination-free business intelligence.' },
-    { icon: Clock, title: 'Perpetual Operation', description: 'Zero downtime. Zero distraction. Your digital twin manages 1,000+ support threads simultaneously, 24/7.' },
-    { icon: Database, title: 'Deep Ecosystem Sync', description: 'Intelligent bi-directional flow into Salesforce, HubSpot, or your custom CRM for automated lead nurturing.' },
-    { icon: Globe, title: 'Global Omnipresence', description: 'Seamlessly switch between WhatsApp, Instagram, and Web without losing context or customer history.' },
-    { icon: Shield, title: 'Governance & Audit', description: 'Enterprise-grade monitoring suite to audit conversations, fine-tune logic, and ensure brand integrity.' },
+    { icon: MessageSquare, title: 'Instant Client Support', description: 'Answers customer questions 24/7 with 100% accurate info from your price lists and service catalog.' },
+    { icon: Brain, title: 'Factual Accuracy Guaranteed', description: 'Trained exclusively on your company documents and FAQs so it never gives false or misleading answers.' },
+    { icon: Clock, title: '24/7 Lead Qualification', description: 'Gathers client requirements, contact details, and budgets while your office is closed.' },
+    { icon: Database, title: 'Automatic CRM & Lead Sync', description: 'Instantly records new leads into your CRM, Google Sheets, or email inbox in real-time.' },
+    { icon: Globe, title: 'WhatsApp & Website Integration', description: 'Connects directly to your WhatsApp Business number and website chat widget.' },
+    { icon: Shield, title: 'Human Escalation Control', description: 'Instantly notifies your human sales team when a client requests a personal phone call or quote.' },
 ];
 
 const USE_CASES = [
-    { title: 'Customer Experience', description: 'Automate 85% of tier-1 support with instant, accurate resolutions.', color: 'var(--accent-cyan)' },
-    { title: 'Hyper-Growth Sales', description: 'Qualify leads in seconds and book high-value meetings 24/7.', color: 'var(--accent-orange)' },
-    { title: 'Commerce Logistics', description: 'Dynamic order tracking and personalized product recommendations.', color: '#c084fc' },
-    { title: 'Internal Intelligence', description: 'Enable your team with an AI bot trained on internal policies and HR docs.', color: 'var(--accent-cyan)' },
+    { title: 'Customer Service', description: 'Automate 80%+ of routine customer inquiries with instant, accurate answers.', color: 'var(--accent-cyan)' },
+    { title: 'Lead Capture & Sales', description: 'Qualify prospective buyers 24/7 and book sales consultation calls.', color: 'var(--accent-orange)' },
+    { title: 'Order & Booking Status', description: 'Provide customers with real-time status updates on their orders and appointments.', color: '#c084fc' },
+    { title: 'Internal Operations', description: 'Equip your staff with an internal AI assistant to instantly search company SOPs and files.', color: 'var(--accent-cyan)' },
 ];
 
-const TECH_STACK = ['Vector Databases', 'Semantic Search', 'Context Injection', 'Source Attribution'];
+const TECH_STACK = ['WhatsApp Business API', 'Web Lead Widget', 'Instant CRM Sync', 'Multi-Language Support'];
 
 const DELIVERABLES = [
-    { id: '01', title: 'Custom AI Chatbot', description: 'Tailored reasoning engine trained on your unique business data.' },
-    { id: '02', title: 'Knowledge Base Sync', description: 'Automated ingestion of PDF, Doc, and Web sources for RAG anchoring.' },
-    { id: '03', title: 'Multi-Channel View', description: 'Deployment across WhatsApp, Instagram, and Web interfaces.' },
-    { id: '04', title: 'Admin Governance', description: 'Managed dashboard for conversation auditing and logic fine-tuning.' },
+    { id: '01', title: 'WhatsApp Sales Bot', description: 'Auto-reply to incoming WhatsApp inquiries and capture client lead details.' },
+    { id: '02', title: 'Knowledge Base Setup', description: 'Ingest your price sheets, brochures, and FAQs into the AI assistant memory.' },
+    { id: '03', title: 'Website Chat Widget', description: 'Custom styled chat interface installed on your website for instant conversion.' },
+    { id: '04', title: 'Team Dashboard & Alerts', description: 'Receive instant notifications when high-value leads request custom quotes.' },
 ];
 
 function AgentMonitor() {
@@ -130,14 +130,14 @@ export default function AIAgents() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-24 md:mb-32 px-4"
             >
-                <div className="badge badge-active mb-6 tracking-widest">[AGENTIC INFRASTRUCTURE]</div>
-                <h1 className="text-5xl md:text-8xl mb-6 font-black tracking-tighter uppercase leading-[0.9] md:leading-[0.85]">Engineering <br /><span className="text-gradient-orange text-glow-orange">Digital Autonomy.</span></h1>
-                <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed border-l-2 border-[var(--accent-orange)] pl-6 italic">
-                    "The future is not just automated; it's autonomous. We build the reasoning engines that power your next competitive advantage."
+                <div className="badge badge-active mb-6 tracking-widest">[24/7 AUTOMATED SALES & SUPPORT]</div>
+                <h1 className="text-4xl sm:text-5xl md:text-7xl mb-6 font-display font-bold uppercase leading-[1.05] tracking-tight">AI Sales & Customer <br /><span className="text-gradient-orange text-glow-orange">Support Assistants</span></h1>
+                <p className="text-[var(--text-secondary)] text-base md:text-lg max-w-2xl mx-auto leading-relaxed border-l-2 border-[var(--accent-orange)] pl-6 italic">
+                  "Never lose a client to slow response times. We build intelligent AI assistants trained on your business data that answer inquiries, qualify leads, and book calls 24/7 on WhatsApp and Web."
                 </p>
             </motion.div>
 
-            {/* RAG Section */}
+            {/* RAG / Knowledge Base Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center mb-24 md:mb-48">
                 <motion.div
                     initial={{ opacity: 0, x: -30 }}
@@ -145,10 +145,10 @@ export default function AIAgents() {
                     viewport={{ once: true }}
                     className="px-4"
                 >
-                    <div className="badge badge-online mb-6">Semantic Memory</div>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-8 uppercase tracking-tighter decoration-[var(--accent-orange)] decoration-4 underline underline-offset-8">RAG: Knowledge <br />without Hallucination.</h2>
-                    <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-10">
-                        Our Agents don't just guess. We implement "Retrieval-Augmented Generation" (RAG) pipelines that anchor agent logic in your unique business data, ensuring 100% factual accuracy and technical depth in every response.
+                    <div className="badge badge-online mb-6">100% Accurate Data</div>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-6 uppercase tracking-tight">Zero Guesswork. <br /><span className="text-[var(--accent-orange)]">Factual & Reliable Answers.</span></h2>
+                    <p className="text-[var(--text-secondary)] text-base leading-relaxed mb-8">
+                        Our AI assistants strictly reference your verified company brochures, price sheets, and service FAQs. They provide instant, accurate responses so prospective clients get exact information every time.
                     </p>
                     <div className="flex flex-wrap gap-3">
                         {TECH_STACK.map(tech => (

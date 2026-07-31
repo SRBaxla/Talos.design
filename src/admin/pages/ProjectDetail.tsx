@@ -7,8 +7,9 @@ import { useTickets, deleteProject, updateProject, useMessages, sendMessage, use
 import type { Project } from '../store/adminStore';
 import TicketList from '../components/TicketList';
 import ProjectModal from '../components/ProjectModal';
+import AdminPreviewWidgetModal from '../components/AdminPreviewWidgetModal';
 import {
-    ArrowLeft, Edit2, Trash2, ExternalLink, Calendar, DollarSign, Tag, Users, CheckSquare, List, Clock, Send, MessageSquare, KeyRound, Copy, RefreshCw, X
+    ArrowLeft, Edit2, Trash2, ExternalLink, Calendar, DollarSign, Tag, Users, CheckSquare, List, Clock, Send, MessageSquare, KeyRound, Copy, RefreshCw, X, Monitor
 } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
@@ -32,6 +33,7 @@ export default function ProjectDetail() {
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
     const { tickets, loading: ticketsLoading, refresh: refreshTickets } = useTickets('projects', id || '');
     const { messages, loading: mLoading } = useMessages(id || '');
     const { workers } = useWorkers(); // Get workers for assigning
@@ -274,6 +276,9 @@ export default function ProjectDetail() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto shrink-0 border-t lg:border-t-0 border-[var(--border-color)] pt-6 lg:pt-0">
+                        <button className="flex-1 lg:flex-none justify-center flex items-center gap-2 px-5 py-2.5 bg-[var(--accent-orange)]/15 border border-[var(--accent-orange)]/30 text-[var(--accent-orange)] rounded-lg text-sm hover:bg-[var(--accent-orange)] hover:text-[#07090E] transition-all font-bold" onClick={() => setPreviewOpen(true)}>
+                            <Monitor size={16} /> Live Preview Widget
+                        </button>
                         <button className="flex-1 lg:flex-none justify-center flex items-center gap-2 px-5 py-2.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-lg text-sm hover:brightness-110 transition-all font-medium text-[var(--text-primary)]" onClick={() => setModalOpen(true)}>
                             <Edit2 size={16} /> Edit Info
                         </button>
@@ -749,6 +754,22 @@ export default function ProjectDetail() {
                     </div>
                 </div>
             )}
+
+            {/* Admin Live Preview Widget Modal */}
+            <AdminPreviewWidgetModal
+                open={previewOpen}
+                onClose={() => setPreviewOpen(false)}
+                item={project ? {
+                    id: project.id,
+                    title: project.title || (project as any).name,
+                    client: project.client,
+                    category: TYPE_LABELS[project.type] || project.type,
+                    description: project.description || project.notes,
+                    liveUrl: project.liveUrl,
+                    showOnWebsite: project.status === 'published',
+                    type: 'project'
+                } : null}
+            />
         </div>
     );
 }

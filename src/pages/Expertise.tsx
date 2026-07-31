@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useLayoutEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import AIAgents from './AIAgents';
 import Systems from './Systems';
@@ -13,6 +13,7 @@ const TABS = [
 
 export default function Expertise() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(() => {
         if (typeof window !== 'undefined' && window.location.hash) {
             const hashId = window.location.hash.replace('#', '');
@@ -21,18 +22,26 @@ export default function Expertise() {
         return TABS[0].id;
     });
 
+    // Sync tab with URL hash (handle external changes/back button)
     useEffect(() => {
-        if (location.hash) {
-            const hashId = location.hash.replace('#', '');
-            if (TABS.some(t => t.id === hashId) && hashId !== activeTab) {
-                setActiveTab(hashId);
-            }
+        const hashId = location.hash.replace('#', '');
+        if (hashId && TABS.some(t => t.id === hashId) && hashId !== activeTab) {
+            setActiveTab(hashId);
         }
     }, [location.hash, activeTab]);
 
+    // Scroll to top when tab changes
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+    }, [activeTab]);
+
     const handleTabChange = (tabId: string) => {
+        if (tabId === activeTab) return;
+        
+        // Scroll immediately before state change to prevent animation jump
+        window.scrollTo(0, 0);
         setActiveTab(tabId);
-        window.history.replaceState(null, '', `#${tabId}`);
+        navigate(`#${tabId}`, { replace: true });
     };
 
     const activeIndex = TABS.findIndex(t => t.id === activeTab);

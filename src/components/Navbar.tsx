@@ -49,7 +49,7 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
                         }
                     }}
                 >
-                    <img src={isDarkMode ? logo : logoLight} alt="Talos.design" width="120" height="32" className="h-8 w-auto" />
+                    <img id="navbar-logo" src={isDarkMode ? logo : logoLight} alt="Talos.design" width="120" height="32" className="h-8 w-auto" />
                 </NavLink>
 
                 {/* Desktop Menu */}

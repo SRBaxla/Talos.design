@@ -2,15 +2,15 @@ import { Settings, Workflow, Layers, Clock, Database, CheckCircle, Bell, Mail, R
 import { motion } from 'framer-motion';
 
 const FEATURES = [
-    { icon: Workflow, title: 'Elastic Architecture', description: 'Systems that expand as you scale, handling 1x to 100x volume without linear headcount increases.' },
-    { icon: Bell, title: 'Event-Driven Logic', description: 'Real-time triggers that eliminate informational silos and ensure instant cross-platform synchronization.' },
-    { icon: Database, title: 'Data Integrity Suite', description: 'Bi-directional sync with zero-loss protocols, keeping your single source of truth absolute and accurate.' },
-    { icon: Mail, title: 'Automated Lifecycle', description: 'End-to-end customer journey automation—from initial lead capture to recurring retention flows.' },
-    { icon: Clock, title: 'Operational Velocity', description: 'Recover hundreds of work-hours monthly by automating the recursive tasks that stall your top talent.' },
-    { icon: Repeat, title: 'Fail-Safe Pipelines', description: 'Complex conditional handling with redundant logic loops to manage edge cases with zero human friction.' },
+    { icon: Workflow, title: 'Seamless Scalability', description: 'Systems built to handle 10 to 10,000 daily orders without requiring linear headcount growth.' },
+    { icon: Bell, title: 'Real-Time Event Triggers', description: 'Instantly notify your sales team or clients the second an inquiry, booking, or payment is placed.' },
+    { icon: Database, title: '100% Data Accuracy', description: 'Automated CRM and database synchronization so client information is always up to date.' },
+    { icon: Mail, title: 'Automated Invoicing & Billing', description: 'Automatically generate, attach, and email professional invoices upon payment confirmation.' },
+    { icon: Clock, title: 'Time-Saving Workflows', description: 'Recover 20+ hours of manual administrative labor weekly per team member.' },
+    { icon: Repeat, title: 'Reliable & Error-Free', description: 'Built-in fail-safe logic ensuring zero dropped leads, lost orders, or billing mistakes.' },
 ];
 
-const TECH_STACK = ['Python', 'Node.js', 'Zapier', 'Make', 'Firebase', 'AWS Lambda', 'Twilio', 'SendGrid'];
+const TECH_STACK = ['Zapier & Make Automation', 'Custom Python Pipelines', 'Razorpay & Payment Sync', 'Google & CRM Integration'];
 
 function SystemHealth() {
     return (
@@ -143,20 +143,19 @@ export default function Systems() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-24 md:mb-32"
             >
-                <div className="badge badge-active mb-6 tracking-widest">[INFRASTRUCTURE EFFICIENCY]</div>
-                <h1 className="text-5xl md:text-8xl mb-6 font-black tracking-tighter uppercase leading-[0.9] md:leading-[0.85]">Engineering <br /><span className="text-gradient-orange text-glow-orange">Invisible Efficiency.</span></h1>
-                <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed border-l-2 border-[var(--accent-orange)] pl-6 italic">
-                    "Stop paying the manual tax. We architect digital infrastructure that 
-                    eliminates the friction of scale and automates 90% of your recurring operations."
+                <div className="badge badge-active mb-6 tracking-widest">[BUSINESS WORKFLOW AUTOMATION]</div>
+                <h1 className="text-4xl sm:text-5xl md:text-7xl mb-6 font-display font-bold tracking-tight uppercase leading-[1.05]">Workflow & Operations <br /><span className="text-gradient-orange text-glow-orange">Automation Systems</span></h1>
+                <p className="text-[var(--text-secondary)] text-base md:text-lg max-w-2xl mx-auto leading-relaxed border-l-2 border-[var(--accent-orange)] pl-6 italic">
+                    "Stop wasting hours on copy-pasting client data, manual invoicing, and status updates. We automate your backend operations so your business can scale without extra admin costs."
                 </p>
                 <div className="mt-12 flex flex-wrap justify-center gap-4">
                     <div className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-[2rem] glass-panel border border-[rgba(245,158,11,0.1)] text-center">
-                        <div className="text-xl md:text-2xl font-black text-[var(--accent-orange)]">99.9%</div>
-                        <div className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">System Uptime</div>
+                        <div className="text-xl md:text-2xl font-black text-[var(--accent-orange)]">20+ Hours</div>
+                        <div className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Saved Weekly / Staff</div>
                     </div>
                     <div className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-[2rem] glass-panel border border-[rgba(245,158,11,0.1)] text-center">
-                        <div className="text-xl md:text-2xl font-black text-white">18.5h</div>
-                        <div className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Saved/Week</div>
+                        <div className="text-xl md:text-2xl font-black text-white">100%</div>
+                        <div className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Billing Accuracy</div>
                     </div>
                 </div>
             </motion.div>
