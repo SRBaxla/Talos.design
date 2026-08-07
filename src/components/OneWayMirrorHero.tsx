@@ -53,7 +53,7 @@ export const OneWayMirrorHero: React.FC = () => {
             Book a Free Consultation
           </button>
           <a
-            href="https://wa.me/917247250918?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20consult%20about%20scaling%20my%20business."
+            href="https://wa.me/918090489112?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20consult%20about%20scaling%20my%20business."
             target="_blank"
             rel="noopener noreferrer"
             className="btn-hero-secondary flex items-center gap-2"

@@ -1,6 +1,7 @@
 import { Zap, Calendar, Clock, ArrowRight, Brain, Cpu, Globe, Rocket, ChevronLeft, Share2, Bookmark, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export const ARTICLES = [
     {
@@ -391,9 +392,9 @@ export default function Insights() {
                         <div className="p-8 md:p-12 glass-panel rounded-[2rem] md:rounded-[3rem] text-center border border-[var(--border-color)] mb-12 md:24">
                             <h3 className="text-xl md:text-2xl font-bold mb-6">Want deeper technical expertise?</h3>
                             <p className="text-sm md:text-base text-[var(--text-secondary)] mb-8">Schedule a technical briefing with our lead engineers to discuss your specific infrastructure needs.</p>
-                            <a href="/#contact" className="btn btn-primary px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm font-bold uppercase tracking-widest shadow-xl inline-flex items-center gap-2">
+                            <Link to="/contact" className="btn btn-primary px-8 md:px-10 py-3.5 md:py-4 text-xs md:text-sm font-bold uppercase tracking-widest shadow-xl inline-flex items-center gap-2">
                                 Start Technical Briefing →
-                            </a>
+                            </Link>
                         </div>
                     </motion.div>
                 )}

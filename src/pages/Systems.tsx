@@ -1,5 +1,6 @@
-import { Settings, Workflow, Layers, Clock, Database, CheckCircle, Bell, Mail, Repeat, ArrowRight, Zap, Play, Activity } from 'lucide-react';
+import { Settings, Workflow, Layers, Clock, Database, CheckCircle, Bell, Mail, Repeat, ArrowRight, Zap, Play, Activity, Globe, Printer, ExternalLink, ShieldCheck, Cpu, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const FEATURES = [
     { icon: Workflow, title: 'Seamless Scalability', description: 'Systems built to handle 10 to 10,000 daily orders without requiring linear headcount growth.' },
@@ -215,6 +216,140 @@ export default function Systems() {
                             </p>
                         </motion.div>
                     ))}
+                </div>
+            </div>
+
+            {/* Engineering Capabilities: Full-Stack Vertical Suites & Systems */}
+            <div className="mb-24 md:mb-40">
+                <div className="text-center mb-12 md:mb-16">
+                    <div className="badge badge-active mb-4 font-mono text-xs tracking-widest uppercase flex items-center gap-1.5 justify-center mx-auto w-fit">
+                        <Cpu size={12} className="animate-pulse" /> SYSTEM PROTOTYPES & CAPABILITY DEMOS
+                    </div>
+                    <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9]">
+                        Engineering Capabilities: <br />
+                        <span className="text-gradient-orange">Full-Stack Vertical Suites</span>
+                    </h2>
+                    <p className="text-sm md:text-base text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed mt-4 italic border-l-2 border-[var(--accent-orange)] pl-6 text-left">
+                        "This is the caliber of custom digital infrastructure we can build for your business. The system architecture prototypes below demonstrate our capability to design, deploy, and scale complex B2B vertical platforms."
+                    </p>
+                </div>
+
+                <div className="space-y-16">
+                    {/* Prototype Card 1: Medilife WaaS */}
+                    <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-[var(--accent-orange)]/40 relative overflow-hidden bg-black/40">
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/10 pb-6">
+                            <div>
+                                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] border border-[var(--accent-orange)]/30 mb-3 inline-block">
+                                    PROTOTYPE CAPABILITY DEMO
+                                </span>
+                                <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white">Medilife WaaS (Website-as-a-Service) Platform</h3>
+                                <p className="text-xs font-mono text-[var(--accent-cyan)] mt-1">Multi-Tenant Diagnostic Laboratory SaaS Architecture</p>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <a href="https://timely-rolypoly-3a7789.netlify.app/" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-[var(--accent-cyan)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+                                    Launch Live Medilife <ExternalLink size={14} />
+                                </a>
+                                <Link to="/projects/medilife" className="px-5 py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/20 transition-all flex items-center gap-2 border border-white/10">
+                                    Inspect Blueprint →
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Projected Capability Claims */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                            <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                                <div className="text-2xl font-black font-mono text-amber-400">2+ Hours / Day</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Engineered Time Recovery</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Designed to eliminate manual clinic report typing & phone calls.</p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                                <div className="text-2xl font-black font-mono text-emerald-400">100% Retained</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Margin Protection</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Designed to keep direct patient bookings local without call center fees.</p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-sky-500/10 border border-sky-500/20">
+                                <div className="text-2xl font-black font-mono text-sky-400">3.4x Target</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Patient Retention</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Architected for automated 6-month checkup reminders & campaign blasts.</p>
+                            </div>
+                        </div>
+
+                        {/* 5 Architecture Pillar Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--accent-orange)] uppercase">
+                                    <Globe size={14} /> 01. Multi-Tenant Subdomain Engine
+                                </div>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                    TenantResolver middleware maps wildcard subdomains, injecting dynamic CSS custom properties from PostgreSQL in 12ms without code re-deployments.
+                                </p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--accent-cyan)] uppercase">
+                                    <Zap size={14} /> 02. Asynchronous Meta Webhooks
+                                </div>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                    Supabase Edge Functions deliver sub-50ms HTTP 200 acknowledgments, delegating conversion funnel mathematical aggregations to PostgreSQL database triggers.
+                                </p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 uppercase">
+                                    <ShieldCheck size={14} /> 03. Idempotent Provisioning & RLS
+                                </div>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                    500ms debounced live URL validator, network idempotency via event deduplication, and tenant data isolation enforced by PostgreSQL Row Level Security (RLS).
+                                </p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase">
+                                    <DollarSign size={14} /> 04. Modular Hybrid Pricing
+                                </div>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                    Decouples platform subscriptions from pay-as-you-go Meta WhatsApp credit wallets with real-time pre-flight audience dispatch budget estimation.
+                                </p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2 lg:col-span-2">
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-purple-400 uppercase">
+                                    <Printer size={14} /> 05. PABS ASTM/HL7 Hardware Bridge
+                                </div>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                                    Electron/Node.js desktop bridge listening continuously to local pathology analyzer RS232 & TCP socket ports, parsing ASTM E1381 & HL7 payloads for direct cloud PDF WhatsApp dispatch.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Prototype Card 2: Multi-Property Hotel PMS Engine */}
+                    <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-[var(--accent-cyan)]/40 relative overflow-hidden bg-black/40">
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/10 pb-6">
+                            <div>
+                                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/30 mb-3 inline-block">
+                                    PROTOTYPE CAPABILITY DEMO
+                                </span>
+                                <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white">Multi-Property Hotel PMS & ERP Engine</h3>
+                                <p className="text-xs font-mono text-[var(--accent-orange)] mt-1">Dockerized Microservices Hospitality Core</p>
+                            </div>
+                        </div>
+
+                        {/* Projected Capability Claims */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="p-5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+                                <div className="text-2xl font-black font-mono text-[var(--accent-cyan)]">&lt; 400ms</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Web-to-Desk Sync Target</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Architected for instantaneous guest booking updates across property nodes.</p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                                <div className="text-2xl font-black font-mono text-emerald-400">0 Collisions</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Double-Booking Guarantee</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Redis atomic room availability locks across OTAs & direct engines.</p>
+                            </div>
+                            <div className="p-5 rounded-2xl bg-purple-500/10 border border-purple-500/20">
+                                <div className="text-2xl font-black font-mono text-purple-400">Multi-Tenant</div>
+                                <div className="text-xs font-bold text-white uppercase tracking-wider">Property Scalability</div>
+                                <p className="text-[11px] text-[var(--text-secondary)] mt-1">Centralized PMS swarm serving multiple boutique property locations.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

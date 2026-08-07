@@ -1,6 +1,7 @@
 import { ExternalLink, ZoomIn, Zap, Box, Code2, Layers, BarChart3, Binary, Monitor, Smartphone, Tablet, ArrowRight, ShieldCheck, Globe, Info, RefreshCw, X, DollarSign, Clock, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { db } from '../admin/firebase/firebaseConfig';
 import type { CaseStudy, Project } from '../admin/store/adminStore';
@@ -420,12 +421,12 @@ function DesignGallery() {
 
                             {/* Modal Action Bar */}
                             <div className="px-6 py-3 border-t border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-4 shrink-0">
-                                <a 
-                                    href="/#contact" 
+                                <Link 
+                                    to="/contact" 
                                     className="px-5 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md flex items-center gap-2"
                                 >
                                     Build A Website Like This →
-                                </a>
+                                </Link>
                                 <button 
                                     onClick={() => setSelectedItemId(null)} 
                                     className="px-5 py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/10 transition-all"
@@ -533,10 +534,10 @@ export default function Designs() {
                     "Delivered with fixed pricing, clear milestone timelines, sub-second mobile performance, and full search engine optimization."
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/#contact" className="btn-hero-primary">
+                    <Link to="/contact" className="btn-hero-primary">
                         Start Your Website Brief <ArrowRight size={18} />
-                    </a>
-                    <a href="https://wa.me/917247250918?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20discuss%20building%20my%20website." target="_blank" rel="noreferrer" className="btn-hero-secondary">
+                    </Link>
+                    <a href="https://wa.me/918090489112?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20discuss%20building%20my%20website." target="_blank" rel="noreferrer" className="btn-hero-secondary">
                         Consult On WhatsApp
                     </a>
                 </div>

@@ -22,6 +22,7 @@ const Insights = lazy(() => import('./pages/Insights'));
 const ProjectPresence = lazy(() => import('./pages/ProjectPresence'));
 const ProjectAutomation = lazy(() => import('./pages/ProjectAutomation'));
 const ProjectCustom = lazy(() => import('./pages/ProjectCustom'));
+const ProjectMedilife = lazy(() => import('./pages/ProjectMedilife'));
 const ServiceWebDesign = lazy(() => import('./pages/ServiceWebDesign'));
 const ServiceChatbots = lazy(() => import('./pages/ServiceChatbots'));
 const ServiceAutomation = lazy(() => import('./pages/ServiceAutomation'));
@@ -76,6 +77,7 @@ function App() {
             <Route path="projects/presence" element={<ProjectPresence />} />
             <Route path="projects/automation" element={<ProjectAutomation />} />
             <Route path="projects/custom" element={<ProjectCustom />} />
+            <Route path="projects/medilife" element={<ProjectMedilife />} />
             <Route path="services/web-design" element={<ServiceWebDesign />} />
             <Route path="services/chatbots" element={<ServiceChatbots />} />
             <Route path="services/automation" element={<ServiceAutomation />} />

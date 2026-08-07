@@ -1,4 +1,4 @@
-import { Globe, Bot, Wrench, ArrowRight, Sparkles } from 'lucide-react';
+import { Globe, Bot, Wrench, ArrowRight, Sparkles, Cpu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -60,6 +60,26 @@ const PROJECTS = [
         ],
         cta: 'Explore Custom Build',
         path: '/projects/custom',
+    },
+    {
+        id: 'medilife',
+        label: 'FLAGSHIP SaaS ARCHITECTURE',
+        title: 'Medilife WaaS Engine',
+        accent: 'cyan',
+        icon: Cpu,
+
+        description:
+            'Multi-tenant diagnostic lab platform featuring wildcard subdomain branding, sub-50ms Meta webhooks, PABS hardware bridge, and credit wallet billing.',
+        highlights: [
+            'Zero-code wildcard subdomain branding',
+            'Sub-50ms Meta WhatsApp webhook queue',
+            'PABS desktop ASTM/HL7 hardware bridge',
+            'PostgreSQL Row Level Security (RLS)',
+            'Pre-flight Meta credit wallet calculator',
+            '2+ hours daily operational time saved',
+        ],
+        cta: 'Inspect Medilife WaaS',
+        path: '/projects/medilife',
     },
 ];
 

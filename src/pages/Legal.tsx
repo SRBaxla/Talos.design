@@ -226,7 +226,7 @@ export default function Legal() {
                         If you have specific security compliance questions or require custom data processing agreements, our engineering team is here to assist.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Link to="/#contact" className="btn-hero-primary">
+                        <Link to="/contact" className="btn-hero-primary">
                             Contact Compliance Team
                         </Link>
                         <a href="mailto:hello@talos.design" className="btn-hero-secondary">

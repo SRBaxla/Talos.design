@@ -1,6 +1,7 @@
-import { Quote, Star, TrendingUp, Users, Target, ShieldCheck, Zap, ExternalLink, Globe, Info, Monitor, Smartphone, Tablet, X, RefreshCw, DollarSign, Clock, CheckCircle2 } from 'lucide-react';
+import { Quote, Star, TrendingUp, Users, Target, ShieldCheck, Zap, ExternalLink, Globe, Info, Monitor, Smartphone, Tablet, X, RefreshCw, DollarSign, Clock, CheckCircle2, Cpu, Layers, GitBranch, Server, Activity, Database, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export const CASE_STUDIES = [
     {
@@ -20,7 +21,22 @@ export const CASE_STUDIES = [
             { label: 'Load Speed', value: '0.6s' },
         ],
         tags: ['React', 'Hospitality', 'SEO'],
-        color: 'var(--accent-orange)'
+        color: 'var(--accent-orange)',
+        systemType: 'deployments',
+        engineName: 'Multi-Property Hotel PMS',
+        engineType: 'Docker-based PMS Engine',
+        systemArchitecture: {
+            nodeName: 'Jhansi Hotel (Node #01 — Heritage Property)',
+            hostEngine: 'Talos Docker Multi-Property Hotel PMS',
+            syncLatency: '< 400ms',
+            architectureType: 'Decoupled Client Frontend + Centralized PMS Core',
+            dataPipeline: [
+                { step: '01', label: 'Online Guest Suite Selection', desc: 'Guest selects room on sub-second React frontend (jhansi-hotel.web.app).' },
+                { step: '02', label: 'Encrypted Webhook Relay', desc: 'HMAC SHA-256 signed payload sent to Dockerized PMS API Gateway.' },
+                { step: '03', label: 'Atomic Inventory Lock', desc: 'PMS locks room availability across OTAs & direct DB in under 400ms.' },
+                { step: '04', label: 'Front Desk Operations Sync', desc: 'Generates automated billing folios & WhatsApp notification to front desk staff.' }
+            ]
+        }
     },
     {
         id: 'cs-global-erp',
@@ -39,7 +55,10 @@ export const CASE_STUDIES = [
             { label: 'Sync Delay', value: '< 2s' },
         ],
         tags: ['Automation', 'Logic Architecture'],
-        color: 'var(--accent-cyan)'
+        color: 'var(--accent-cyan)',
+        systemType: 'engines',
+        engineName: 'Shopify-to-Warehouse ERP Pipeline',
+        engineType: 'Python Middleware'
     },
     {
         id: 'cs-design-studio',
@@ -58,7 +77,10 @@ export const CASE_STUDIES = [
             { label: 'Load Time', value: '0.8s' },
         ],
         tags: ['Design', 'Interactive'],
-        color: '#f06292'
+        color: '#f06292',
+        systemType: 'deployments',
+        engineName: 'WebGL Graphics Engine',
+        engineType: 'Three.js Shader Pipeline'
     }
 ];
 
@@ -165,8 +187,9 @@ function ImpactChart() {
 export default function Impact() {
     const [selectedStudy, setSelectedStudy] = useState<any | null>(null);
     const [deviceView, setDeviceView] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-    const [displayMode, setDisplayMode] = useState<'live' | 'details'>('live');
+    const [displayMode, setDisplayMode] = useState<'live' | 'details' | 'architecture' | 'properties'>('live');
     const [iframeLoading, setIframeLoading] = useState(true);
+    const [activeShowcaseTab, setActiveShowcaseTab] = useState<'all' | 'deployments' | 'engines' | 'saas'>('all');
 
     return (
         <div className="container py-24 min-h-screen px-4">
@@ -214,30 +237,78 @@ export default function Impact() {
 
             {/* Detailed Case Studies */}
             <div className="mb-24 md:mb-48">
-                <div className="flex items-center justify-between mb-12 md:mb-16 px-4 md:px-0">
-                    <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9]">Selected <br /><span className="text-gradient-orange">Case Studies.</span></h2>
-                    <div className="hidden md:block h-px flex-1 mx-12 bg-gradient-to-r from-[var(--accent-orange)] to-transparent opacity-20" />
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 px-4 md:px-0 gap-6">
+                    <div>
+                        <div className="text-[10px] font-mono uppercase tracking-[0.3em] text-[var(--accent-orange)] mb-2">SYSTEM COMPLEXITY & ARCHITECTURE TAXONOMY</div>
+                        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9]">Selected <br /><span className="text-gradient-orange">Architecture Showcase.</span></h2>
+                    </div>
+                    <div className="text-xs font-mono text-[var(--text-muted)] max-w-xs leading-relaxed">
+                        Hardware-accelerated filtering across client frontends, backend ERP cores, and vertical SaaS platforms.
+                    </div>
+                </div>
+
+                {/* Senior Design Director Tab Structure */}
+                <div className="flex flex-wrap gap-2 md:gap-3 mb-12 md:mb-16 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
+                    {[
+                        { id: 'all', label: 'ALL ARCHITECTURES', count: '5', desc: 'Complete System Ecosystem' },
+                        { id: 'deployments', label: 'LIVE CLIENT DEPLOYMENTS', count: '2', desc: 'Client Frontends & Web Builds' },
+                        { id: 'engines', label: 'CORE ENGINES & ERPs', count: '2', desc: 'Docker PMS & Offline Automation' },
+                        { id: 'saas', label: 'INTEGRATED SaaS PLATFORMS', count: '1', desc: 'Standalone Full-Stack Solutions' }
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveShowcaseTab(tab.id as any)}
+                            className={`relative px-4 md:px-6 py-3 rounded-xl font-mono text-xs text-left transition-all duration-200 flex-1 min-w-[200px] flex flex-col justify-between ${
+                                activeShowcaseTab === tab.id
+                                    ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                                    : 'text-[var(--text-muted)] hover:text-white hover:bg-white/5'
+                            }`}
+                            style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
+                        >
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                                <span className="uppercase font-bold tracking-wider">{tab.label}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeShowcaseTab === tab.id ? 'bg-[#07090E] text-[var(--accent-orange)]' : 'bg-white/10 text-white/70'}`}>
+                                    {tab.count}
+                                </span>
+                            </div>
+                            <span className={`text-[10px] font-normal tracking-normal truncate ${activeShowcaseTab === tab.id ? 'text-[#07090E]/80 font-medium' : 'text-[var(--text-muted)]'}`}>
+                                {tab.desc}
+                            </span>
+                        </button>
+                    ))}
                 </div>
                 
-                <div className="space-y-20 md:space-y-32">
-                    {CASE_STUDIES.map((study, index) => (
-                        <motion.div
-                            key={study.title}
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="relative cursor-pointer"
-                            onClick={() => setSelectedStudy(study)}
-                        >
+                {/* 60fps Hardware-Accelerated AnimatePresence Grid */}
+                <motion.div layout className="space-y-16 md:space-y-24" style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}>
+                    <AnimatePresence mode="popLayout">
+                        {CASE_STUDIES.filter(study => activeShowcaseTab === 'all' || study.systemType === activeShowcaseTab).map((study, index) => (
+                            <motion.div
+                                key={study.id}
+                                layout
+                                initial={{ opacity: 0, scale: 0.98, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.98, y: -20 }}
+                                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                                className="relative cursor-pointer"
+                                style={{ willChange: 'transform, opacity', transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
+                                onClick={() => setSelectedStudy(study)}
+                            >
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
                                 <div className={`lg:col-span-7 group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                                     <div className="glass-card p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border border-[var(--border-color)] relative overflow-hidden transition-all hover:border-[rgba(245,158,11,0.4)] group-hover:shadow-2xl">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-[0.03] blur-[60px]" />
                                         
                                         <div className="flex items-center justify-between gap-4 mb-6">
-                                            <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.4em] text-[var(--accent-orange)] block">
-                                                {study.client}
-                                            </span>
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.4em] text-[var(--accent-orange)] block">
+                                                    {study.client}
+                                                </span>
+                                                {study.engineName && (
+                                                    <span className="text-[9px] font-mono text-[var(--accent-orange)] font-bold flex items-center gap-1 bg-[var(--accent-orange)]/10 px-2.5 py-0.5 rounded-full border border-[var(--accent-orange)]/30 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                                                        <Cpu size={11} className="text-[var(--accent-orange)] animate-pulse" /> Engine: {study.engineName}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <span className="text-[10px] font-mono text-[var(--accent-cyan)] font-bold flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full border border-white/10 group-hover:bg-[var(--accent-orange)] group-hover:text-black transition-all">
                                                 Interactive Preview <ExternalLink size={12} />
                                             </span>
@@ -289,7 +360,8 @@ export default function Impact() {
                             </div>
                         </motion.div>
                     ))}
-                </div>
+                    </AnimatePresence>
+                </motion.div>
             </div>
 
             {/* Testimonials */}
@@ -335,10 +407,10 @@ export default function Impact() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[rgba(245,158,11,0.05)] to-transparent pointer-events-none" />
                 <h3 className="text-4xl md:text-6xl font-black mb-10 md:mb-12 uppercase tracking-tighter leading-[0.9]">Build Your <br /><span className="text-gradient-orange text-glow-orange">Success Story.</span></h3>
                 <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
-                    <a href="/#contact" className="btn btn-primary px-10 md:px-12 py-4 md:py-5 text-sm md:text-base shadow-[0_0_40px_var(--accent-orange-glow)] flex items-center justify-center gap-3">
+                    <Link to="/contact" className="btn btn-primary px-10 md:px-12 py-4 md:py-5 text-sm md:text-base shadow-[0_0_40px_var(--accent-orange-glow)] flex items-center justify-center gap-3">
                         Engineer Your Future <TrendingUp size={18} />
-                    </a>
-                    <a href="https://wa.me/917247250918" target="_blank" rel="noreferrer" className="btn btn-outline px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs italic font-mono uppercase tracking-widest text-[var(--text-muted)] flex items-center justify-center gap-2">
+                    </Link>
+                    <a href="https://wa.me/918090489112" target="_blank" rel="noreferrer" className="btn btn-outline px-10 md:px-12 py-4 md:py-5 text-[10px] md:text-xs italic font-mono uppercase tracking-widest text-[var(--text-muted)] flex items-center justify-center gap-2">
                         Book briefing
                     </a>
                 </div>
@@ -376,13 +448,21 @@ export default function Impact() {
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-2">
-                                    <div className="flex items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
+                                    <div className="flex flex-wrap items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
                                         <button onClick={() => setDisplayMode('live')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'live' ? 'bg-[var(--accent-cyan)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
                                             <Globe size={13} /> Interactive Site
                                         </button>
                                         <button onClick={() => setDisplayMode('details')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'details' ? 'bg-[var(--accent-cyan)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
                                             <Info size={13} /> Overview
                                         </button>
+                                        <button onClick={() => setDisplayMode('architecture')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'architecture' ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold shadow-[0_0_12px_rgba(245,158,11,0.3)]' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                            <Layers size={13} /> System Architecture
+                                        </button>
+                                        {selectedStudy.deployedProperties && (
+                                            <button onClick={() => setDisplayMode('properties')} className={`px-3 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 transition-all ${displayMode === 'properties' ? 'bg-[var(--accent-cyan)] text-[#07090E] font-bold' : 'text-[var(--text-muted)] hover:text-white'}`}>
+                                                <Building2 size={13} /> Deployed Properties ({selectedStudy.deployedProperties.length})
+                                            </button>
+                                        )}
                                     </div>
 
                                     <div className="flex items-center gap-1 bg-[#07090E] p-1 rounded-xl border border-[var(--border-color)]">
@@ -406,8 +486,7 @@ export default function Impact() {
                             {/* Canvas */}
                             <div className="flex-1 min-h-0 relative bg-black/70 overflow-hidden flex items-center justify-center">
                                 <div className={`transition-all duration-300 w-full h-full flex flex-col items-center justify-center ${deviceView === 'desktop' ? 'max-w-full' : deviceView === 'tablet' ? 'max-w-[720px] py-4' : 'max-w-[360px] py-4'}`}>
-                                    <div className="w-full h-full relative bg-white overflow-hidden flex-1 min-h-0 shadow-2xl rounded-none sm:rounded-xl">
-                                        {displayMode === 'live' ? (
+                                    <div className="w-full h-full relative bg-white overflow-hidden flex-1 min-h-0 shadow-2xl rounded-none sm:rounded-xl">                                        {displayMode === 'live' ? (
                                             <div className="relative w-full h-full flex-1 min-h-0 overflow-hidden">
                                                 {iframeLoading && (
                                                     <div className="absolute inset-0 bg-[#07090E] flex flex-col items-center justify-center gap-3 z-10">
@@ -417,6 +496,147 @@ export default function Impact() {
                                                 )}
                                                 <div className="w-full h-full overflow-hidden relative flex-1 min-h-0">
                                                     <iframe src={selectedStudy.liveUrl} title={selectedStudy.title} onLoad={() => setIframeLoading(false)} className="w-[calc(100%+24px)] h-full -mr-[24px] border-none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" />
+                                                </div>
+                                            </div>
+                                        ) : displayMode === 'architecture' ? (
+                                            <div className="flex-1 min-h-0 p-6 sm:p-10 flex flex-col justify-start relative bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#1e293b] overflow-y-auto no-scrollbar pb-32 text-white space-y-8">
+                                                <div className="p-6 rounded-3xl bg-white/5 border border-[rgba(245,158,11,0.3)] relative overflow-hidden">
+                                                    <div className="absolute top-0 right-0 p-4">
+                                                        <span className="px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-green-500/20 text-green-400 border border-green-500/30 flex items-center gap-1.5">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Active Linkage Node
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-orange)] mb-2 flex items-center gap-2">
+                                                        <Cpu size={14} /> Linkage Architecture Topology
+                                                    </div>
+                                                    <h3 className="text-2xl sm:text-3xl font-bold font-display text-white mb-2">
+                                                        {selectedStudy.title} ↔ {selectedStudy.engineName || 'Multi-Property Hotel PMS'}
+                                                    </h3>
+                                                    <p className="text-xs sm:text-sm text-white/70 max-w-2xl leading-relaxed">
+                                                        Connects live client web frontend (<span className="text-[var(--accent-orange)] font-mono">{selectedStudy.liveUrl}</span>) with the underlying containerized Docker Multi-Property PMS core for real-time room reservation & front-desk sync.
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-orange)] mb-4 flex items-center gap-2">
+                                                        <GitBranch size={14} /> Real-Time Event Sync Pipeline
+                                                    </h4>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        {selectedStudy.systemArchitecture?.dataPipeline ? (
+                                                            selectedStudy.systemArchitecture.dataPipeline.map((pipe: any) => (
+                                                                <div key={pipe.step} className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--accent-orange)]/40 transition-all">
+                                                                    <div className="flex items-center gap-3 mb-2">
+                                                                        <span className="w-7 h-7 rounded-xl bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] font-mono font-bold text-xs flex items-center justify-center border border-[var(--accent-orange)]/30">
+                                                                            {pipe.step}
+                                                                        </span>
+                                                                        <span className="text-xs font-bold text-white font-mono">{pipe.label}</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white/70 leading-relaxed pl-10">{pipe.desc}</p>
+                                                                </div>
+                                                            ))
+                                                        ) : (
+                                                            <>
+                                                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                                                                    <div className="flex items-center gap-3 mb-2">
+                                                                        <span className="w-7 h-7 rounded-xl bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] font-mono font-bold text-xs flex items-center justify-center border border-[var(--accent-orange)]/30">01</span>
+                                                                        <span className="text-xs font-bold text-white font-mono">Online Guest Suite Selection</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white/70 leading-relaxed pl-10">Guest books room on jhansi-hotel.web.app frontend with sub-second response.</p>
+                                                                </div>
+                                                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                                                                    <div className="flex items-center gap-3 mb-2">
+                                                                        <span className="w-7 h-7 rounded-xl bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] font-mono font-bold text-xs flex items-center justify-center border border-[var(--accent-orange)]/30">02</span>
+                                                                        <span className="text-xs font-bold text-white font-mono">Encrypted Webhook Relay</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white/70 leading-relaxed pl-10">HMAC SHA-256 signed payload sent to Dockerized PMS API Gateway.</p>
+                                                                </div>
+                                                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                                                                    <div className="flex items-center gap-3 mb-2">
+                                                                        <span className="w-7 h-7 rounded-xl bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] font-mono font-bold text-xs flex items-center justify-center border border-[var(--accent-orange)]/30">03</span>
+                                                                        <span className="text-xs font-bold text-white font-mono">Atomic Inventory Lock</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white/70 leading-relaxed pl-10">PMS locks room availability across OTAs & direct inventory in &lt; 400ms.</p>
+                                                                </div>
+                                                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                                                                    <div className="flex items-center gap-3 mb-2">
+                                                                        <span className="w-7 h-7 rounded-xl bg-[var(--accent-orange)]/20 text-[var(--accent-orange)] font-mono font-bold text-xs flex items-center justify-center border border-[var(--accent-orange)]/30">04</span>
+                                                                        <span className="text-xs font-bold text-white font-mono">Front Desk Operations Sync</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white/70 leading-relaxed pl-10">Instant reservation folio dispatch to front desk printing queue & WhatsApp bot.</p>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10">
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <Activity size={12} className="text-emerald-400" /> Sync Latency
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-emerald-400">
+                                                            {selectedStudy.systemArchitecture?.syncLatency || '< 400ms'}
+                                                        </div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <ShieldCheck size={12} className="text-sky-400" /> Room Lock State
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-white">100% Atomic</div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <Server size={12} className="text-amber-400" /> Deployment Host
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-amber-400">Docker Swarm</div>
+                                                    </div>
+                                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                                        <div className="text-[10px] font-mono text-white/60 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                                            <Database size={12} className="text-indigo-400" /> Protocol
+                                                        </div>
+                                                        <div className="text-lg sm:text-xl font-bold font-mono text-white">HTTPS + WSS</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : displayMode === 'properties' && selectedStudy.deployedProperties ? (
+                                            <div className="flex-1 min-h-0 p-6 sm:p-10 flex flex-col justify-start relative bg-gradient-to-br from-[#0b0f19] via-[#0f172a] to-[#1e293b] overflow-y-auto no-scrollbar pb-32 text-white space-y-8">
+                                                <div>
+                                                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-[var(--accent-cyan)]/20 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/30 mb-3 inline-block">
+                                                        Multi-Tenant Scalability Proof
+                                                    </span>
+                                                    <h3 className="text-3xl sm:text-4xl font-bold font-display text-white mb-2">Deployed Active Properties</h3>
+                                                    <p className="text-sm text-white/70 max-w-2xl">
+                                                        Real-world hotel properties connected to the Multi-Property PMS Engine with synchronized inventories and automated front-desk operations.
+                                                    </p>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    {selectedStudy.deployedProperties.map((prop: any) => (
+                                                        <div key={prop.name} className="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[var(--accent-orange)] transition-all flex flex-col justify-between space-y-6">
+                                                            <div>
+                                                                <div className="flex items-center justify-between gap-2 mb-3">
+                                                                    <span className="text-[10px] font-mono text-[var(--accent-orange)] bg-[var(--accent-orange)]/10 px-2.5 py-1 rounded-md border border-[var(--accent-orange)]/20 font-bold">
+                                                                        {prop.nodeId}
+                                                                    </span>
+                                                                    <span className="text-[10px] font-mono text-green-400 flex items-center gap-1">
+                                                                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> {prop.status}
+                                                                    </span>
+                                                                </div>
+                                                                <h4 className="text-lg font-bold text-white mb-1 font-display">{prop.name}</h4>
+                                                                <p className="text-xs text-white/60 mb-4">{prop.type} • {prop.suites}</p>
+                                                                
+                                                                <div className="p-3 rounded-xl bg-white/5 border border-white/10 mb-4">
+                                                                    <div className="text-[9px] font-mono uppercase text-white/50 mb-1">Key Impact Metric</div>
+                                                                    <div className="text-sm font-bold font-mono text-emerald-400">{prop.performance}</div>
+                                                                </div>
+                                                            </div>
+
+                                                            <a href={prop.liveUrl} target="_blank" rel="noreferrer" className="w-full py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider text-center flex items-center justify-center gap-2 hover:bg-[var(--accent-orange)] hover:text-black transition-all">
+                                                                Inspect Node Site <ExternalLink size={12} />
+                                                            </a>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         ) : (
@@ -482,9 +702,9 @@ export default function Impact() {
 
                             {/* Modal Action Bar */}
                             <div className="px-6 py-3 border-t border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-wrap items-center justify-between gap-4 shrink-0">
-                                <a href="/#contact" className="px-5 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md flex items-center gap-2">
+                                <Link to="/contact" className="px-5 py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md flex items-center gap-2">
                                     Build A Website Like This →
-                                </a>
+                                </Link>
                                 <button onClick={() => setSelectedStudy(null)} className="px-5 py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/10 transition-all">
                                     Close Preview
                                 </button>

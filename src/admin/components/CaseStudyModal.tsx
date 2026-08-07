@@ -171,7 +171,6 @@ export default function CaseStudyModal({ open, onClose, study }: CaseStudyModalP
                                 Show on Website
                             </label>
                         </div>
- admissions.tsx
                     </div>
 
                     <div className="admin-field">

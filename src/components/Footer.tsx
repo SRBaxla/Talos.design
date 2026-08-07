@@ -1,4 +1,4 @@
-import { Hexagon, Twitter, Github, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
+import { Hexagon, Twitter, Instagram, Phone, Mail, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
@@ -22,9 +22,9 @@ export function Footer() {
                                 <MapPin size={14} className="text-[var(--accent-orange)] shrink-0" />
                                 <span>Jhansi, Uttar Pradesh, India 🇮🇳</span>
                             </div>
-                            <a href="tel:+917247250918" className="flex items-center gap-2.5 hover:text-white transition-colors">
+                            <a href="tel:+918090489112" className="flex items-center gap-2.5 hover:text-white transition-colors">
                                 <Phone size={14} className="text-[var(--accent-orange)] shrink-0" />
-                                <span>+91 72472 50918</span>
+                                <span>+91 80904 89112</span>
                             </a>
                             <a href="mailto:hello@talos.design" className="flex items-center gap-2.5 hover:text-white transition-colors">
                                 <Mail size={14} className="text-[var(--accent-orange)] shrink-0" />
@@ -65,11 +65,11 @@ export function Footer() {
                         </p>
 
                         <div className="flex flex-col gap-3 mb-6">
-                            <a href="/#contact" className="w-full py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider text-center hover:brightness-110 transition-all shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                            <Link to="/contact" className="w-full py-2.5 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider text-center hover:brightness-110 transition-all shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                                 Book Free Consultation
-                            </a>
+                            </Link>
                             <a 
-                                href="https://wa.me/917247250918?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20discuss%20building%20my%20system." 
+                                href="https://wa.me/918090489112?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20discuss%20building%20my%20system." 
                                 target="_blank" 
                                 rel="noreferrer" 
                                 className="w-full py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs uppercase tracking-wider text-center flex items-center justify-center gap-2 hover:bg-white/10 transition-all"
@@ -85,11 +85,8 @@ export function Footer() {
                             <a href="https://x.com/talosDesign" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="Twitter">
                                 <Twitter size={16} />
                             </a>
-                            <a href="https://github.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="Github">
-                                <Github size={16} />
-                            </a>
-                            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="LinkedIn">
-                                <Linkedin size={16} />
+                            <a href="https://www.instagram.com/talos.design/" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="Instagram">
+                                <Instagram size={16} />
                             </a>
                         </div>
                     </div>
