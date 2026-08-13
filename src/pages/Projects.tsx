@@ -63,22 +63,22 @@ const PROJECTS = [
     },
     {
         id: 'medilife',
-        label: 'FLAGSHIP SaaS ARCHITECTURE',
-        title: 'Medilife WaaS Engine',
+        label: 'DEMO READY CLINIC PLATFORM',
+        title: 'Medilife Diagnostic Platform',
         accent: 'cyan',
         icon: Cpu,
 
         description:
-            'Multi-tenant diagnostic lab platform featuring wildcard subdomain branding, sub-50ms Meta webhooks, PABS hardware bridge, and credit wallet billing.',
+            'Diagnostic lab platform featuring custom web storefronts, pathologist peer-reviewed reports, 1-click WhatsApp PDF dispatch, and automated patient retention.',
         highlights: [
-            'Zero-code wildcard subdomain branding',
-            'Sub-50ms Meta WhatsApp webhook queue',
-            'PABS desktop ASTM/HL7 hardware bridge',
-            'PostgreSQL Row Level Security (RLS)',
-            'Pre-flight Meta credit wallet calculator',
+            'Branded online clinic storefront',
+            'Pathologist peer-review verification gatekeeper',
+            '1-Click NABL PDF WhatsApp dispatch',
+            '80% drop in status phone calls',
             '2+ hours daily operational time saved',
+            'Automated follow-up health reminders',
         ],
-        cta: 'Inspect Medilife WaaS',
+        cta: 'Launch Medilife Demo',
         path: '/projects/medilife',
     },
 ];

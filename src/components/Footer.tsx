@@ -1,4 +1,4 @@
-import { Hexagon, Twitter, Instagram, Phone, Mail, MapPin } from 'lucide-react';
+import { Hexagon, Twitter, Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
@@ -87,6 +87,9 @@ export function Footer() {
                             </a>
                             <a href="https://www.instagram.com/talos.design/" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="Instagram">
                                 <Instagram size={16} />
+                            </a>
+                            <a href="https://www.linkedin.com/company/talos-design-solutions" target="_blank" rel="noreferrer" className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:text-[var(--accent-orange)] hover:border-[var(--accent-orange)] transition-colors" aria-label="LinkedIn">
+                                <Linkedin size={16} />
                             </a>
                         </div>
                     </div>
