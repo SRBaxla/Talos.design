@@ -1,8 +1,60 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
-    Globe, Zap, TrendingUp, Clock, PhoneOff, 
-    ExternalLink, ArrowRight, Key, CheckSquare, Sparkles
+    Database, Server, ShieldCheck, Workflow, 
+    Cloud, Activity, Clock, ArrowRight, Sparkles, Layers
 } from 'lucide-react';
+
+const INFRASTRUCTURE_PILLARS = [
+    {
+        icon: Server,
+        title: 'API Architecture & Gateways',
+        description: 'High-performance REST & WebSocket APIs with structured payloads, edge rate limiting, and strict type safety.',
+        badge: 'Core Services'
+    },
+    {
+        icon: Database,
+        title: 'PostgreSQL & Data Modeling',
+        description: 'ACID-compliant relational architectures with Row Level Security (RLS) for multi-tenant data isolation.',
+        badge: 'Storage'
+    },
+    {
+        icon: Workflow,
+        title: 'Data Pipelines & Event Streams',
+        description: 'Reliable webhook ingestion, asynchronous message brokers, and automated synchronization across platforms.',
+        badge: 'Pipelines'
+    },
+    {
+        icon: ShieldCheck,
+        title: 'Authentication & Access Control',
+        description: 'Secure token-based auth, OAuth 2.0 integrations, granular role-based permissions (RBAC), and audit trails.',
+        badge: 'Security'
+    },
+    {
+        icon: Cloud,
+        title: 'Cloud & Container Deployment',
+        description: 'Dockerized microservices, serverless compute functions, edge CDN asset delivery, and automated CI/CD pipelines.',
+        badge: 'Infrastructure'
+    },
+    {
+        icon: Clock,
+        title: 'Background Jobs & Automation',
+        description: 'Distributed worker queues, scheduled cron tasks, fault-tolerant retry handlers, and PDF/document generation.',
+        badge: 'Execution'
+    },
+    {
+        icon: Activity,
+        title: 'Telemetry & System Health',
+        description: 'Real-time performance monitoring, structured error logging, endpoint health diagnostics, and uptime reliability.',
+        badge: 'Reliability'
+    },
+    {
+        icon: Layers,
+        title: 'Modular SaaS Architecture',
+        description: 'Composable service boundaries enabling rapid extension into custom business platforms, client portals, and vertical solutions.',
+        badge: 'Architecture'
+    }
+];
 
 export default function Systems() {
     return (
@@ -10,131 +62,78 @@ export default function Systems() {
             {/* Header */}
             <div className="mb-16 text-center max-w-3xl mx-auto">
                 <span className="badge font-mono text-xs text-[var(--accent-cyan)] border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/10 px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block font-bold">
-                    SYSTEMS & ARCHITECTURE
+                    SYSTEMS &amp; ARCHITECTURE
                 </span>
                 <h1 className="text-4xl md:text-6xl font-display font-bold tracking-tight uppercase leading-[0.95] mb-6">
-                    Production <span className="text-gradient-orange">Engine Solutions.</span>
+                    Backend &amp; <span className="text-gradient-orange">Systems Engineering.</span>
                 </h1>
                 <p className="text-base md:text-lg text-[var(--text-secondary)] leading-relaxed">
-                    Custom digital infrastructure engineered for vertical SaaS, automated workflows, and enterprise scale.
+                    Robust digital infrastructure engineered for scalability, data security, high-throughput APIs, and automated business workflows.
                 </p>
             </div>
 
-            {/* Showcase Vertical Suites */}
-            <div className="space-y-16">
-                {/* Prototype Card 1: Medilife Diagnostic Platform */}
-                <div className="glass-panel p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-[var(--accent-orange)]/40 relative overflow-hidden bg-black/40 shadow-2xl">
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-white/10 pb-6">
+            {/* Technical Systems Pillars Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                {INFRASTRUCTURE_PILLARS.map((pillar, i) => (
+                    <motion.div
+                        key={pillar.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.05 }}
+                        className="glass-panel p-6 rounded-2xl border border-[var(--border-color)] hover:border-[var(--accent-cyan)]/50 transition-all flex flex-col justify-between group"
+                    >
                         <div>
-                            <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-3 inline-flex items-center gap-1.5">
-                                <Sparkles size={12} className="animate-pulse" /> DEMO READY — DIAGNOSTIC CLINIC PLATFORM
-                            </span>
-                            <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white">Medilife Diagnostic Clinic Engine</h3>
-                            <p className="text-xs font-mono text-[var(--accent-cyan)] mt-1">Branded Online Storefront, Pathologist Peer Review & Automated WhatsApp PDF Dispatch</p>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[rgba(69,104,130,0.15)] flex items-center justify-center text-[var(--accent-cyan)] group-hover:scale-110 transition-transform">
+                                    <pillar.icon size={20} />
+                                </div>
+                                <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] border border-white/5 px-2 py-0.5 rounded">
+                                    {pillar.badge}
+                                </span>
+                            </div>
+                            <h3 className="text-base font-bold uppercase tracking-tight text-white mb-2">{pillar.title}</h3>
+                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{pillar.description}</p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                            <a href="https://timely-rolypoly-3a7789.netlify.app/" target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-[var(--accent-cyan)] text-[#07090E] font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-                                Launch Live Demo <ExternalLink size={14} />
-                            </a>
-                            <Link to="/projects/medilife" className="px-5 py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/20 transition-all flex items-center gap-2 border border-white/10">
-                                Inspect Clinic Showcase <ArrowRight size={14} />
-                            </Link>
-                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Vertical Solution Callout: MediLife Reference */}
+            <div className="glass-panel p-8 md:p-12 rounded-3xl border border-[var(--accent-orange)]/30 bg-black/40 relative overflow-hidden mb-16 shadow-xl">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                    <div className="max-w-2xl space-y-3">
+                        <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">
+                            <Sparkles size={12} className="animate-pulse" /> PRODUCTION DEPLOYMENT EXAMPLE
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-white">
+                            Vertical Software in Practice: <span className="text-gradient-orange">MediLife Clinic Engine</span>
+                        </h2>
+                        <p className="text-xs md:text-sm text-[var(--text-secondary)] leading-relaxed">
+                            MediLife is an example of an end-to-end vertical solution engineered with our systems infrastructure — featuring PostgreSQL RLS data segregation, pathologist verification gates, and automated WhatsApp PDF dispatch pipelines.
+                        </p>
                     </div>
-
-                    {/* Operational Metrics Strip */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                                <Clock size={20} />
-                            </div>
-                            <div>
-                                <div className="text-xl font-black font-mono text-amber-400">2+ Hours / Day</div>
-                                <div className="text-xs font-bold text-white uppercase tracking-wider">Daily Time Saved</div>
-                            </div>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                                <PhoneOff size={20} />
-                            </div>
-                            <div>
-                                <div className="text-xl font-black font-mono text-emerald-400">80% Drop</div>
-                                <div className="text-xs font-bold text-white uppercase tracking-wider">In Status Phone Calls</div>
-                            </div>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
-                                <TrendingUp size={20} />
-                            </div>
-                            <div>
-                                <div className="text-xl font-black font-mono text-sky-400">3.4x Higher</div>
-                                <div className="text-xs font-bold text-white uppercase tracking-wider">Patient Retention</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Quick Demo Credentials Callout */}
-                    <div className="p-4 md:p-5 rounded-2xl bg-black/60 border border-white/15 mb-8 flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[var(--accent-orange)]/15 border border-[var(--accent-orange)]/30 flex items-center justify-center text-[var(--accent-orange)]">
-                                <Key size={16} />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-mono text-[var(--accent-orange)] uppercase font-bold">Verified Demo Credentials</div>
-                                <div className="text-xs font-bold text-white">Lab Admin Sign-In: <span className="font-mono text-[var(--accent-cyan)] font-normal">admin@medilife.in</span> | <span className="font-mono text-[var(--accent-orange)] font-normal">Admin@2026!</span></div>
-                            </div>
-                        </div>
-                        <a
-                            href="https://timely-rolypoly-3a7789.netlify.app/"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold flex items-center gap-1.5 transition-all"
-                        >
-                            Quick Login <ExternalLink size={12} />
-                        </a>
-                    </div>
-
-                    {/* 4 Core Clinic Modules */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
-                            <div className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--accent-orange)] uppercase">
-                                <Globe size={14} /> 01. Branded Storefront
-                            </div>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                                Custom website & online test booking under your clinic’s own domain name.
-                            </p>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
-                            <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 uppercase">
-                                <CheckSquare size={14} /> 02. Pathologist Peer Review
-                            </div>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                                Mandatory senior doctor verification gatekeeper before report generation.
-                            </p>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
-                            <div className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--accent-cyan)] uppercase">
-                                <Zap size={14} /> 03. WhatsApp PDF Dispatch
-                            </div>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                                1-Click automated PDF report delivery straight to patient’s WhatsApp inbox.
-                            </p>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
-                            <div className="flex items-center gap-2 text-xs font-mono font-bold text-purple-400 uppercase">
-                                <TrendingUp size={14} /> 04. Patient Retention
-                            </div>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                                Automated reminders for 3-month and 6-month blood test follow-up checkups.
-                            </p>
-                        </div>
-                    </div>
+                    <Link
+                        to="/solutions/medilife"
+                        className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/15 transition-all shrink-0 hover:border-[var(--accent-orange)]"
+                    >
+                        Inspect MediLife Solution <ArrowRight size={14} />
+                    </Link>
                 </div>
+            </div>
+
+            {/* Bottom CTA */}
+            <div className="text-center p-8 rounded-3xl glass-panel border border-[var(--border-color)]">
+                <h3 className="text-xl font-display font-bold uppercase tracking-tight mb-2">Need Custom System Architecture?</h3>
+                <p className="text-xs text-[var(--text-secondary)] max-w-lg mx-auto mb-6">
+                    From relational database modeling to complex multi-service automations, we architect reliable backend solutions tailored to your operational scale.
+                </p>
+                <Link
+                    to="/contact"
+                    className="btn btn-primary px-8 py-3 text-xs uppercase tracking-wider font-bold inline-flex items-center gap-2"
+                >
+                    Discuss System Architecture <ArrowRight size={14} />
+                </Link>
             </div>
         </div>
     );

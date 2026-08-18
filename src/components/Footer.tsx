@@ -6,7 +6,7 @@ export function Footer() {
         <footer className="w-full border-t border-[var(--border-color)] bg-[var(--bg-surface)] relative overflow-hidden">
             {/* Bottom Footer Main Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 mb-16">
                     {/* Col 1: Brand & Headquarters */}
                     <div className="flex flex-col gap-4">
                         <Link to="/" className="flex items-center gap-3 group">
@@ -33,23 +33,35 @@ export function Footer() {
                         </div>
                     </div>
 
-                    {/* Col 2: Services & Solutions */}
+                    {/* Col 2: Services & Packages */}
                     <div>
-                        <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Expertise & Services</h4>
+                        <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Services & Packages</h4>
                         <ul className="flex flex-col gap-3 text-xs text-[var(--text-secondary)]">
-                            <li><Link to="/expertise#ai" className="hover:text-[var(--accent-orange)] transition-colors">24/7 AI Sales Assistants</Link></li>
-                            <li><Link to="/expertise#systems" className="hover:text-[var(--accent-orange)] transition-colors">Workflow & Operations Automation</Link></li>
-                            <li><Link to="/expertise#designs" className="hover:text-[var(--accent-orange)] transition-colors">High-Converting Web Design</Link></li>
-                            <li><Link to="/projects/custom" className="hover:text-[var(--accent-orange)] transition-colors">Custom Enterprise Software</Link></li>
-                            <li><Link to="/services" className="hover:text-[var(--accent-orange)] transition-colors">All Growth Packages</Link></li>
+                            <li><Link to="/services/web-design" className="hover:text-[var(--accent-orange)] transition-colors">High-Converting Web Design</Link></li>
+                            <li><Link to="/services/chatbots" className="hover:text-[var(--accent-orange)] transition-colors">AI Sales &amp; Inquiry Assistants</Link></li>
+                            <li><Link to="/services/automation" className="hover:text-[var(--accent-orange)] transition-colors">Workflow &amp; Operations Automation</Link></li>
+                            <li><Link to="/packages" className="hover:text-[var(--accent-orange)] transition-colors">All Packages</Link></li>
+                            <li><Link to="/packages/custom" className="hover:text-[var(--accent-orange)] transition-colors">Custom Business Platform</Link></li>
                         </ul>
                     </div>
 
-                    {/* Col 3: Experience & Company */}
+                    {/* Col 3: Solutions */}
                     <div>
-                        <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Company & Impact</h4>
+                        <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Solutions</h4>
                         <ul className="flex flex-col gap-3 text-xs text-[var(--text-secondary)]">
-                            <li><Link to="/impact" className="hover:text-[var(--accent-orange)] transition-colors">Client Impact & Results</Link></li>
+                            <li><Link to="/solutions/hospitality" className="hover:text-[var(--accent-orange)] transition-colors">Hospitality & Booking</Link></li>
+                            <li><Link to="/solutions/ecommerce" className="hover:text-[var(--accent-orange)] transition-colors">E-Commerce & Retail</Link></li>
+                            <li><Link to="/solutions/appointments" className="hover:text-[var(--accent-orange)] transition-colors">Appointment Businesses</Link></li>
+                            <li><Link to="/solutions/medilife" className="hover:text-[var(--accent-orange)] transition-colors">MediLife Clinic Platform</Link></li>
+                            <li><Link to="/solutions" className="hover:text-[var(--accent-orange)] transition-colors text-white/90">All Industry Solutions</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Col 4: Experience & Company */}
+                    <div>
+                        <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Company & Studio</h4>
+                        <ul className="flex flex-col gap-3 text-xs text-[var(--text-secondary)]">
+                            <li><Link to="/expertise" className="hover:text-[var(--accent-orange)] transition-colors">Engineering Expertise</Link></li>
                             <li><Link to="/insights" className="hover:text-[var(--accent-orange)] transition-colors">Engineering Insights</Link></li>
                             <li><Link to="/about" className="hover:text-[var(--accent-orange)] transition-colors">About Our Studio</Link></li>
                             <li><Link to="/careers" className="hover:text-[var(--accent-orange)] transition-colors">Careers & Open Roles</Link></li>
@@ -57,7 +69,7 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Col 4: Connect & Consultation */}
+                    {/* Col 5: Connect & Consultation */}
                     <div>
                         <h4 className="font-display font-bold uppercase tracking-widest text-xs text-white mb-6">Connect With Us</h4>
                         <p className="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed">

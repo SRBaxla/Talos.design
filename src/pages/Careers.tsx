@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 const VALUES = [
     {
         icon: Rocket,
-        title: 'Built by the New Generation',
+        title: 'Built by Engineers',
         description:
-            'We are a young, ambitious team creating cutting-edge digital solutions for the next era of business. Fresh perspectives drive everything we build.',
+            'We are a focused engineering team building modern digital systems, custom websites, and automation for growing businesses.',
     },
     {
         icon: Users,
@@ -53,14 +53,14 @@ export default function Careers() {
                     transition={{ delay: 0.1 }}
                     className="text-5xl md:text-7xl font-display tracking-tight mb-6"
                 >
-                    Talent <span className="text-[var(--accent-orange)]">Protocol.</span>
+                    Careers &amp; <span className="text-[var(--accent-orange)]">Talent.</span>
                 </motion.h1>
                 <motion.p
                     {...fadeUp}
                     transition={{ delay: 0.2 }}
                     className="text-xl text-[var(--text-secondary)] max-w-2xl"
                 >
-                    We're not actively hiring right now — but great talent never goes unnoticed. Get on our radar for first-priority consideration when we open new positions.
+                    We're not actively hiring right now — but great engineering and design talent never goes unnoticed. Get on our radar for future consideration.
                 </motion.p>
             </div>
 
@@ -79,7 +79,7 @@ export default function Careers() {
                         </div>
                         <h2 className="text-2xl font-display font-bold mb-3">No Active Openings</h2>
                         <p className="text-[var(--text-secondary)] mb-4 leading-relaxed">
-                            We're a young startup laser-focused on delivering for our current clients. All positions are currently filled, but we're always looking ahead.
+                            We're a lean, engineering-led startup focused on shipping high-quality digital products. All positions are currently filled, but we're always interested in meeting sharp engineers and designers.
                         </p>
                         <p className="text-[var(--text-muted)] text-sm font-mono">
                             // Check back soon — new roles are coming.

@@ -76,10 +76,18 @@ export default function Insights() {
     const [emailInput, setEmailInput] = useState('');
     const [subscribed, setSubscribed] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [bookmarks, setBookmarks] = useState<string[]>(() => {
-        const saved = localStorage.getItem('talos_bookmarks');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [bookmarks, setBookmarks] = useState<string[]>([]);
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('talos_bookmarks');
+            if (saved) {
+                setBookmarks(JSON.parse(saved));
+            }
+        } catch {
+            // Ignore localStorage errors in restricted environments
+        }
+    }, []);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -91,7 +99,11 @@ export default function Insights() {
             ? bookmarks.filter(b => b !== id) 
             : [...bookmarks, id];
         setBookmarks(newBookmarks);
-        localStorage.setItem('talos_bookmarks', JSON.stringify(newBookmarks));
+        try {
+            localStorage.setItem('talos_bookmarks', JSON.stringify(newBookmarks));
+        } catch {
+            // Ignore localStorage errors
+        }
     };
 
     const handleSubscribe = (e: React.FormEvent) => {

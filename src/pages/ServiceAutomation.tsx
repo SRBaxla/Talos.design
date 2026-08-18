@@ -56,7 +56,7 @@ const techStack = [
 const process = [
     { step: '01', title: 'Audit', description: 'We map your current workflows and identify bottlenecks, manual tasks, and automation opportunities.' },
     { step: '02', title: 'Architect', description: 'Design the automation blueprint — triggers, actions, data flows, and integration points.' },
-    { step: '03', title: 'Build', description: 'Implement the automations using best-in-class tools and custom code where needed.' },
+    { step: '03', title: 'Build', description: 'Implement the automations using established integration platforms and custom backend code where needed.' },
     { step: '04', title: 'Monitor', description: 'Deploy, test, and set up monitoring dashboards so you can track performance in real time.' },
 ];
 

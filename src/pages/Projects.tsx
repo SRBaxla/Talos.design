@@ -1,4 +1,4 @@
-import { Globe, Bot, Wrench, ArrowRight, Sparkles, Cpu } from 'lucide-react';
+import { Globe, Bot, Wrench, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -21,65 +21,45 @@ const PROJECTS = [
             'Analytics & lead reporting',
         ],
         cta: 'Explore Package 01',
-        path: '/projects/presence',
+        path: '/packages/presence',
     },
     {
         id: 'automation',
-        label: 'PACKAGE 02 — MOST POPULAR',
+        label: 'PACKAGE 02 — POPULAR',
         title: 'Automated Growth Engine',
         accent: 'cyan',
         icon: Bot,
 
         description:
-            'Automate bookings, customer inquiries, client follow-ups, and invoicing with 24/7 intelligent AI systems — zero extra staff required.',
+            'Automate routine inquiries, customer follow-ups, and booking workflows with integrated AI assistants and event-driven pipelines.',
         highlights: [
-            '24/7 AI WhatsApp & Web sales bot',
+            'AI WhatsApp & Web inquiry assistant',
             'Automated lead qualification & capture',
             'Instant CRM & Google Sheets sync',
             'Automated invoice generation & emailing',
-            'WhatsApp payment & deal alerts',
-            'Real-time business performance reporting',
+            'Instant notification & deal alerts',
+            'Clear operational performance reporting',
         ],
         cta: 'Explore Package 02',
-        path: '/projects/automation',
+        path: '/packages/automation',
     },
     {
         id: 'custom',
-        label: 'PACKAGE 03 — ENTERPRISE',
+        label: 'PACKAGE 03 — CUSTOM BUILD',
         title: 'Custom Business Platform',
         accent: 'orange',
         icon: Wrench,
 
         description:
-            'Tailored software architecture, custom ERPs, client portals, and specialized operational workflows built specifically for your enterprise.',
+            'Tailored software architecture, custom portals, internal dashboards, and specialized operational workflows built specifically for your business.',
         highlights: [
             'Tailored workflow architecture',
             'Custom web portals & admin dashboards',
-            'Dedicated 1-on-1 priority support',
+            'Dedicated technical support',
             'Fixed pricing & phased milestone delivery',
         ],
         cta: 'Explore Custom Build',
-        path: '/projects/custom',
-    },
-    {
-        id: 'medilife',
-        label: 'DEMO READY CLINIC PLATFORM',
-        title: 'Medilife Diagnostic Platform',
-        accent: 'cyan',
-        icon: Cpu,
-
-        description:
-            'Diagnostic lab platform featuring custom web storefronts, pathologist peer-reviewed reports, 1-click WhatsApp PDF dispatch, and automated patient retention.',
-        highlights: [
-            'Branded online clinic storefront',
-            'Pathologist peer-review verification gatekeeper',
-            '1-Click NABL PDF WhatsApp dispatch',
-            '80% drop in status phone calls',
-            '2+ hours daily operational time saved',
-            'Automated follow-up health reminders',
-        ],
-        cta: 'Launch Medilife Demo',
-        path: '/projects/medilife',
+        path: '/packages/custom',
     },
 ];
 

@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /portal
 
 Sitemap: https://talos.design/sitemap.xml

@@ -1,35 +1,32 @@
 import { lazy, Suspense, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { Layout } from './components/Layout';
 import { LoadingScreen } from './components/LoadingScreen';
+import { RouteMetadataManager } from './components/RouteMetadataManager';
 
-// ── Eagerly loaded (above-the-fold, critical path) ──────────────────────────
+// ── Public pages — eagerly imported for seamless SSG hydration ─────────────
 import Home from './pages/Home';
-
-// ── Public pages — lazy loaded ───────────────────────────────────────────────
-const Services = lazy(() => import('./pages/Services'));
-const Studio = lazy(() => import('./pages/Studio'));
-const Contact = lazy(() => import('./pages/Contact'));
-const Careers = lazy(() => import('./pages/Careers'));
-const Projects = lazy(() => import('./pages/Projects'));
-
-// ── New Portfolio Pages ───────────────────────────────────────────
-const Expertise = lazy(() => import('./pages/Expertise'));
-const Impact = lazy(() => import('./pages/Impact'));
-const Insights = lazy(() => import('./pages/Insights'));
-
-const ProjectPresence = lazy(() => import('./pages/ProjectPresence'));
-const ProjectAutomation = lazy(() => import('./pages/ProjectAutomation'));
-const ProjectCustom = lazy(() => import('./pages/ProjectCustom'));
-const ProjectMedilife = lazy(() => import('./pages/ProjectMedilife'));
-const ServiceWebDesign = lazy(() => import('./pages/ServiceWebDesign'));
-const ServiceChatbots = lazy(() => import('./pages/ServiceChatbots'));
-const ServiceAutomation = lazy(() => import('./pages/ServiceAutomation'));
-const OfferHospitality = lazy(() => import('./pages/OfferHospitality'));
-const OfferEcommerce = lazy(() => import('./pages/OfferEcommerce'));
-const OfferProfessional = lazy(() => import('./pages/OfferProfessional'));
-const Legal = lazy(() => import('./pages/Legal'));
+import Services from './pages/Services';
+import Studio from './pages/Studio';
+import Contact from './pages/Contact';
+import Careers from './pages/Careers';
+import Projects from './pages/Projects';
+import Expertise from './pages/Expertise';
+import Insights from './pages/Insights';
+import ProjectPresence from './pages/ProjectPresence';
+import ProjectAutomation from './pages/ProjectAutomation';
+import ProjectCustom from './pages/ProjectCustom';
+import SolutionMedilife from './pages/SolutionMedilife';
+import ServiceWebDesign from './pages/ServiceWebDesign';
+import ServiceChatbots from './pages/ServiceChatbots';
+import ServiceAutomation from './pages/ServiceAutomation';
+import SolutionHospitality from './pages/SolutionHospitality';
+import SolutionEcommerce from './pages/SolutionEcommerce';
+import SolutionAppointments from './pages/SolutionAppointments';
+import Solutions from './pages/Solutions';
+import Legal from './pages/Legal';
+import NotFound from './pages/NotFound';
 
 // ── Admin panel — lazy loaded as a group ────────────────────────────────────
 const AdminLayout = lazy(() => import('./admin/components/AdminLayout'));
@@ -55,36 +52,37 @@ const PageFallback = () => (
   <div style={{ minHeight: '60vh' }} aria-hidden="true" />
 );
 
-function App() {
-  const [isInitializing, setIsInitializing] = useState(true);
-
+export function AppRoutes({ isInitializing, onInitComplete }: { isInitializing?: boolean; onInitComplete?: () => void }) {
   return (
-    <BrowserRouter>
-      {isInitializing && <LoadingScreen onComplete={() => setIsInitializing(false)} />}
+    <>
+      <RouteMetadataManager />
+      {isInitializing && onInitComplete && <LoadingScreen onComplete={onInitComplete} />}
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="expertise" element={<Expertise />} />
-            <Route path="impact" element={<Impact />} />
+            <Route path="impact" element={<Navigate to="/services" replace />} />
             <Route path="insights" element={<Insights />} />
             <Route path="services" element={<Services />} />
             <Route path="about" element={<Studio />} />
             <Route path="contact" element={<Contact />} />
             <Route path="careers" element={<Careers />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="projects/presence" element={<ProjectPresence />} />
-            <Route path="projects/automation" element={<ProjectAutomation />} />
-            <Route path="projects/custom" element={<ProjectCustom />} />
-            <Route path="projects/medilife" element={<ProjectMedilife />} />
+            <Route path="packages" element={<Projects />} />
+            <Route path="packages/presence" element={<ProjectPresence />} />
+            <Route path="packages/automation" element={<ProjectAutomation />} />
+            <Route path="packages/custom" element={<ProjectCustom />} />
+            <Route path="solutions" element={<Solutions />} />
+            <Route path="solutions/medilife" element={<SolutionMedilife />} />
             <Route path="services/web-design" element={<ServiceWebDesign />} />
             <Route path="services/chatbots" element={<ServiceChatbots />} />
             <Route path="services/automation" element={<ServiceAutomation />} />
-            <Route path="offers/hospitality" element={<OfferHospitality />} />
-            <Route path="offers/ecommerce" element={<OfferEcommerce />} />
-            <Route path="offers/professional" element={<OfferProfessional />} />
+            <Route path="solutions/hospitality" element={<SolutionHospitality />} />
+            <Route path="solutions/ecommerce" element={<SolutionEcommerce />} />
+            <Route path="solutions/appointments" element={<SolutionAppointments />} />
             <Route path="legal" element={<Legal />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           {/* Client Portal */}
@@ -108,6 +106,16 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
+    </>
+  );
+}
+
+function App() {
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  return (
+    <BrowserRouter>
+      <AppRoutes isInitializing={isInitializing} onInitComplete={() => setIsInitializing(false)} />
     </BrowserRouter>
   );
 }

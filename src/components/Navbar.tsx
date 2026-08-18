@@ -12,8 +12,10 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
     const navigate = useNavigate();
 
     const navLinks = [
+        { name: 'Services', path: '/services' },
+        { name: 'Packages', path: '/packages' },
+        { name: 'Solutions', path: '/solutions' },
         { name: 'Expertise', path: '/expertise' },
-        { name: 'Impact', path: '/impact' },
         { name: 'Insights', path: '/insights' },
     ];
 

@@ -34,16 +34,16 @@ const services = [
         id: 'chatbots',
         number: '02',
         icon: Bot,
-        title: '24/7 AI Sales Assistants',
-        benefit: 'Capture Inquiries 24 Hours A Day',
+        title: 'AI Sales & Inquiry Assistants',
+        benefit: 'Turn Routine Inquiries Into Qualified Leads',
         description:
-            'We deploy custom AI assistants trained on your business data. They answer FAQs, qualify prospective buyers, and book sales calls directly on WhatsApp and web 24/7.',
+            'We configure and deploy AI assistants that answer routine questions, capture prospect details, and route qualified conversations to your human team on WhatsApp and Web.',
         features: [
-            'Trained on your products, price lists & FAQs',
-            'Captures client phone numbers & requirements',
-            'Seamless escalation to your human sales team',
+            'Trained on your actual products, pricing & FAQs',
+            'Captures visitor contact details & project scope',
+            'Seamless escalation to human team members',
             'Direct integration with WhatsApp Business & Web',
-            'Zero extra recurring staff costs',
+            'Automated lead sync to CRM & Google Sheets',
         ],
         to: '/services/chatbots',
         accentColor: 'var(--accent-cyan)',
@@ -144,8 +144,8 @@ export default function Services() {
                         <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)]">
                             Book a Free Call
                         </Link>
-                        <Link to="/projects" className="btn btn-outline py-3 px-8">
-                            See Our Work
+                        <Link to="/packages" className="btn btn-outline py-3 px-8">
+                            Explore Packages
                         </Link>
                     </motion.div>
                 </div>

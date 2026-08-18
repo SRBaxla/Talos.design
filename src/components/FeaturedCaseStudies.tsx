@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../admin/firebase/firebaseConfig';
 import type { CaseStudy } from '../admin/store/adminStore';
@@ -122,6 +123,23 @@ export default function FeaturedCaseStudies() {
                     </motion.div>
                 ))}
             </div>
+
+            {/* CTA — navigate to full impact archive */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="mt-12 flex justify-center"
+            >
+                <Link
+                    to="/services"
+                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-[rgba(245,158,11,0.3)] text-sm font-bold uppercase tracking-wider text-[var(--accent-orange)] hover:bg-[rgba(245,158,11,0.08)] hover:border-[rgba(245,158,11,0.5)] transition-all duration-200 group"
+                >
+                    Explore Our Services
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+            </motion.div>
         </div>
     );
 }

@@ -1,56 +1,113 @@
-import { CheckCircle2, ArrowRight, MessageSquare, Brain, Database, Clock, Globe, Settings } from 'lucide-react';
+import { CheckCircle2, ArrowRight, MessageSquare, Brain, Database, Shield, UserCheck, Smartphone, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const features = [
+const capabilities = [
     {
         icon: MessageSquare,
-        title: 'Natural Conversations',
-        description: 'AI chatbots that understand context, intent, and nuance — not just keyword matching.',
+        title: 'Answer Common Questions',
+        description: 'Answers customer inquiries instantly with verified info on your services, pricing guidelines, business hours, and FAQs.',
+        accent: 'var(--accent-cyan)',
+        bg: 'rgba(0,229,255,0.08)',
+        border: 'rgba(0,229,255,0.2)',
+    },
+    {
+        icon: UserCheck,
+        title: 'Capture Lead Details',
+        description: 'Collects visitor names, phone numbers, emails, service interests, and specific project requirements automatically.',
+        accent: 'var(--accent-orange)',
+        bg: 'rgba(245,158,11,0.08)',
+        border: 'rgba(245,158,11,0.2)',
     },
     {
         icon: Brain,
-        title: 'Custom Knowledge Base',
-        description: 'Train on your business data — products, FAQs, policies — so the bot speaks your language.',
+        title: 'Qualify Inquiries',
+        description: 'Asks predefined qualification questions to identify high-intent prospects and filter out irrelevant or spam messages.',
+        accent: '#c084fc',
+        bg: 'rgba(192,132,252,0.08)',
+        border: 'rgba(192,132,252,0.2)',
     },
     {
-        icon: Clock,
-        title: '24/7 Availability',
-        description: 'Never miss a customer query. Your AI agent works around the clock, every day of the year.',
+        icon: Smartphone,
+        title: 'WhatsApp + Website Deploy',
+        description: 'Operates seamlessly across your website chat widget and your official WhatsApp Business number from a single setup.',
+        accent: 'var(--accent-cyan)',
+        bg: 'rgba(0,229,255,0.08)',
+        border: 'rgba(0,229,255,0.2)',
+    },
+    {
+        icon: Shield,
+        title: 'Human Team Handoff',
+        description: 'Smoothly escalates complex questions, sensitive topics, or custom quote requests directly to your human staff with full chat context.',
+        accent: 'var(--accent-orange)',
+        bg: 'rgba(245,158,11,0.08)',
+        border: 'rgba(245,158,11,0.2)',
     },
     {
         icon: Database,
-        title: 'CRM Integration',
-        description: 'Seamlessly connect with your existing CRM to log conversations, capture leads, and track follow-ups.',
-    },
-    {
-        icon: Globe,
-        title: 'Multi-Channel Deploy',
-        description: 'Deploy across your website, WhatsApp, Instagram, Facebook Messenger — all from one system.',
-    },
-    {
-        icon: Settings,
-        title: 'Easy Management',
-        description: 'Simple dashboard to update responses, view analytics, and fine-tune your bot without code.',
+        title: 'Workflow & CRM Sync',
+        description: 'Automatically routes captured leads into Google Sheets, your CRM, email inbox, or Slack channels in real-time.',
+        accent: '#c084fc',
+        bg: 'rgba(192,132,252,0.08)',
+        border: 'rgba(192,132,252,0.2)',
     },
 ];
 
 const useCases = [
-    { title: 'Customer Support', description: 'Handle FAQs, complaints, and ticket routing automatically.', color: 'var(--accent-cyan)' },
-    { title: 'Lead Generation', description: 'Qualify visitors, capture contact info, and book appointments.', color: 'var(--accent-orange)' },
-    { title: 'E-Commerce Assistant', description: 'Help customers find products, check availability, and track orders.', color: '#c084fc' },
-    { title: 'Internal Tools', description: 'HR bots, IT helpdesks, and knowledge management for your team.', color: 'var(--accent-cyan)' },
+    {
+        title: 'Local Businesses & Clinics',
+        description: 'Answer hours, fee estimates, and service availability while capturing patient booking inquiries around the clock.',
+        color: 'var(--accent-cyan)',
+    },
+    {
+        title: 'Consultancies & B2B Services',
+        description: 'Screen prospect budgets, project scopes, and timelines before booking discovery calls with your team.',
+        color: 'var(--accent-orange)',
+    },
+    {
+        title: 'E-Commerce & Retail Stores',
+        description: 'Help customers check stock availability, return policies, order tracking, and store directions.',
+        color: '#c084fc',
+    },
+    {
+        title: 'Hospitality & Hotels',
+        description: 'Answer room amenities, check-in policies, and capture direct booking inquiries without OTA commission fees.',
+        color: 'var(--accent-cyan)',
+    },
 ];
 
-const techStack = [
-    { name: 'OpenAI GPT', category: 'LLM' },
-    { name: 'LangChain', category: 'Framework' },
-    { name: 'Pinecone', category: 'Vector DB' },
-    { name: 'Firebase', category: 'Backend' },
-    { name: 'WhatsApp API', category: 'Channel' },
-    { name: 'Dialogflow', category: 'NLP' },
-    { name: 'Node.js', category: 'Runtime' },
-    { name: 'Python', category: 'ML Pipeline' },
+const workflowSteps = [
+    {
+        step: '01',
+        title: 'Knowledge Base Setup',
+        description: 'We gather and structure your service catalog, price guidelines, FAQs, and business policies into a clean reference system.',
+    },
+    {
+        step: '02',
+        title: 'Qualification Scripting',
+        description: 'We configure the exact questions the assistant asks to qualify incoming prospects and set rules for when to notify your team.',
+    },
+    {
+        step: '03',
+        title: 'Channel Integration',
+        description: 'We install a lightweight chat widget on your website and connect your WhatsApp Business endpoint with end-to-end routing.',
+    },
+    {
+        step: '04',
+        title: 'Validation & Handover',
+        description: 'Rigorous response testing, staff notification checks, and team training before taking the assistant live.',
+    },
+];
+
+const deliverables = [
+    'Custom-configured AI sales & inquiry assistant',
+    'Knowledge base ingestion (FAQs, price lists, policies)',
+    'Website chat widget with custom branding',
+    'WhatsApp Business API integration',
+    'Automated lead capture to CRM or Google Sheets',
+    'Instant notification alerts for high-priority inquiries',
+    'Seamless escalation to human team members',
+    '30 days of post-launch tuning and support',
 ];
 
 export default function ServiceChatbots() {
@@ -63,28 +120,57 @@ export default function ServiceChatbots() {
                 animate={{ opacity: 1, y: 0 }}
                 className="badge badge-online mb-8 font-mono text-xs border-[rgba(0,229,255,0.3)] shadow-[0_0_15px_rgba(0,229,255,0.1)]"
             >
-                SERVICE_MODULE: AI_CHATBOTS
+                SERVICE_MODULE: AI_SALES_ASSISTANTS
             </motion.div>
 
             <motion.h1
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
-                className="text-5xl md:text-7xl font-display tracking-tight mb-6 text-center"
+                className="text-4xl sm:text-6xl md:text-7xl font-display tracking-tight mb-6 text-center max-w-4xl"
             >
-                AI <span className="text-gradient-cyan drop-shadow-[0_0_20px_rgba(0,229,255,0.2)]">Chatbots</span>
+                AI Sales &amp; <br />
+                <span className="text-gradient-cyan drop-shadow-[0_0_20px_rgba(0,229,255,0.2)]">Inquiry Assistants</span>
             </motion.h1>
 
             <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-lg text-[var(--text-secondary)] text-center max-w-2xl mb-20"
+                className="text-lg md:text-xl text-[var(--text-primary)] font-medium text-center max-w-2xl mb-4"
             >
-                Intelligent conversational agents that handle customer support, generate leads, and automate interactions — 24/7, across every channel.
+                Turn Website &amp; WhatsApp Enquiries Into Qualified Leads.
             </motion.p>
 
-            {/* Features */}
+            <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.25 }}
+                className="text-sm md:text-base text-[var(--text-secondary)] text-center max-w-2xl mb-12 leading-relaxed"
+            >
+                Deploy an AI-powered assistant that answers common questions, captures enquiries, qualifies prospects, and routes conversations to your team — without forcing customers to wait for a response.
+            </motion.p>
+
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-wrap gap-4 justify-center mb-24"
+            >
+                <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2">
+                    Book Discovery Call <ArrowRight size={16} />
+                </Link>
+                <a
+                    href="https://wa.me/918090489112?text=Hello%20Talos.design%2C%20I%20would%20like%20to%20learn%20more%20about%20your%20AI%20Inquiry%20Assistants."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-outline py-3 px-8 flex items-center gap-2"
+                >
+                    <Send size={14} className="text-[#25D366]" /> Chat on WhatsApp
+                </a>
+            </motion.div>
+
+            {/* Core Capabilities */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -93,33 +179,39 @@ export default function ServiceChatbots() {
             >
                 <div className="flex items-center gap-4 mb-2">
                     <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Capabilities</span>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Practical Capabilities</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-12">
-                    Smart <span className="text-[var(--accent-cyan)]">Features</span>
+                    What The Assistant <span className="text-[var(--accent-cyan)]">Does</span>
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {features.map((feature, i) => (
+                    {capabilities.map((cap, i) => (
                         <motion.div
-                            key={feature.title}
+                            key={cap.title}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.05 }}
-                            className="glass-panel p-6 group hover:border-[rgba(0,229,255,0.2)] transition-all"
+                            className="glass-panel p-6 group hover:border-[rgba(0,229,255,0.3)] transition-all flex flex-col justify-between"
+                            style={{ borderColor: cap.border }}
                         >
-                            <div className="w-10 h-10 rounded-lg bg-[rgba(0,229,255,0.08)] flex items-center justify-center mb-4 group-hover:bg-[rgba(0,229,255,0.15)] transition-colors">
-                                <feature.icon size={20} className="text-[var(--accent-cyan)]" />
+                            <div>
+                                <div
+                                    className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 transition-colors"
+                                    style={{ backgroundColor: cap.bg }}
+                                >
+                                    <cap.icon size={20} style={{ color: cap.accent }} />
+                                </div>
+                                <h3 className="text-base font-bold mb-2 tracking-tight">{cap.title}</h3>
+                                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{cap.description}</p>
                             </div>
-                            <h3 className="text-sm font-bold mb-2">{feature.title}</h3>
-                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{feature.description}</p>
                         </motion.div>
                     ))}
                 </div>
             </motion.div>
 
-            {/* Use Cases */}
+            {/* How We Build & Deploy */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -128,10 +220,47 @@ export default function ServiceChatbots() {
             >
                 <div className="flex items-center gap-4 mb-2">
                     <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange-glow)]"></span>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Process</span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-12">
+                    How We <span className="text-[var(--accent-orange)]">Set It Up</span>
+                </h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {workflowSteps.map((step, i) => (
+                        <motion.div
+                            key={step.step}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.08 }}
+                            className="glass-panel p-6 flex flex-col gap-3"
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-mono font-bold text-[var(--accent-orange)] px-2.5 py-1 rounded bg-[rgba(245,158,11,0.1)] border border-[rgba(245,158,11,0.2)]">
+                                    STEP {step.step}
+                                </span>
+                            </div>
+                            <h3 className="text-base font-bold text-[var(--text-primary)]">{step.title}</h3>
+                            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{step.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* Target Use Cases */}
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="w-full max-w-5xl mb-32"
+            >
+                <div className="flex items-center gap-4 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
                     <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Applications</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-12">
-                    Use <span className="text-[var(--accent-orange)]">Cases</span>
+                    Who It Is <span className="text-[var(--accent-cyan)]">For</span>
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -157,38 +286,6 @@ export default function ServiceChatbots() {
                 </div>
             </motion.div>
 
-            {/* Tech Stack */}
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="w-full max-w-5xl mb-32"
-            >
-                <div className="flex items-center gap-4 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan-glow)]"></span>
-                    <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Technology</span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-12">
-                    Tech <span className="text-[var(--accent-cyan)]">Stack</span>
-                </h2>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {techStack.map((tech, i) => (
-                        <motion.div
-                            key={tech.name}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.05 }}
-                            className="glass-panel p-4 text-center hover:border-[rgba(0,229,255,0.2)] transition-all"
-                        >
-                            <div className="text-sm font-bold mb-1">{tech.name}</div>
-                            <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{tech.category}</div>
-                        </motion.div>
-                    ))}
-                </div>
-            </motion.div>
-
             {/* Deliverables */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -201,21 +298,12 @@ export default function ServiceChatbots() {
                     <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Deliverables</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-12">
-                    What You <span className="text-[var(--accent-orange)]">Receive</span>
+                    What We <span className="text-[var(--accent-orange)]">Deliver</span>
                 </h2>
 
                 <div className="glass-panel p-8 md:p-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                            'Custom-trained AI chatbot',
-                            'Knowledge base setup & training',
-                            'Multi-channel deployment',
-                            'Admin dashboard for management',
-                            'Conversation analytics & reports',
-                            'CRM & notification integration',
-                            'Escalation to human agent flow',
-                            'Post-launch support (30 days)',
-                        ].map((item) => (
+                        {deliverables.map((item) => (
                             <div key={item} className="flex items-center gap-3 text-sm text-[var(--text-secondary)]">
                                 <CheckCircle2 size={16} className="text-[var(--accent-cyan)] shrink-0" />
                                 {item}
@@ -234,13 +322,13 @@ export default function ServiceChatbots() {
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,229,255,0.03)] to-transparent pointer-events-none"></div>
                 <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
-                    <h2 className="text-3xl font-display mb-2">Ready to Deploy an AI Agent?</h2>
-                    <p className="text-[var(--text-secondary)]">Let us build a chatbot that works for your business, 24/7.</p>
+                    <h2 className="text-2xl md:text-3xl font-display mb-2">Ready to Respond Faster to Inquiries?</h2>
+                    <p className="text-sm text-[var(--text-secondary)]">Let us configure an assistant that captures leads and handles routine customer questions 24/7.</p>
                 </div>
-                <div className="flex gap-4 relative z-10">
-                    <Link to="/contact" className="btn btn-outline py-3 px-8">Get in Touch</Link>
-                    <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2">
-                        Get Started <ArrowRight size={16} />
+                <div className="flex gap-4 relative z-10 shrink-0">
+                    <Link to="/contact" className="btn btn-outline py-3 px-6 text-xs uppercase tracking-wider">Ask a Question</Link>
+                    <Link to="/contact" className="btn btn-primary py-3 px-6 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2 text-xs uppercase tracking-wider">
+                        Get Started <ArrowRight size={14} />
                     </Link>
                 </div>
             </motion.div>

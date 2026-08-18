@@ -48,16 +48,13 @@ const OFFER_ITEMS = [
     }
 ];
 
-export default function OfferHospitality() {
+export default function SolutionHospitality() {
     const navigate = useNavigate();
     const [selectedItems, setSelectedItems] = useState<string[]>(
         OFFER_ITEMS.filter(item => item.isBase).map(item => item.id)
     );
 
     const toggleItem = (id: string, isBase: boolean) => {
-        // Prevent deselecting base items if we want them to be strictly bare minimum, 
-        // but user prompt says "base items already selected by default". Let's allow them to toggle if they really want, or keep base forced?
-        // Let's force base items to be selected.
         if (isBase) return;
 
         setSelectedItems(prev =>
@@ -83,21 +80,20 @@ export default function OfferHospitality() {
     return (
         <div className="container py-16 flex flex-col flex-grow">
             <motion.div {...fadeUp} className="mb-8">
-                <Link to="/" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors">
-                    <ArrowLeft size={16} /> Back to Home
+                <Link to="/solutions" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors">
+                    <ArrowLeft size={16} /> Back to Solutions
                 </Link>
             </motion.div>
 
             <div className="mb-16">
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-2 mb-6">
-                    <span className="text-[10px] font-mono bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] px-3 py-1 rounded-full border border-[rgba(0,229,255,0.2)]">Hospitality</span>
+                    <span className="text-[10px] font-mono bg-[rgba(0,229,255,0.1)] text-[var(--accent-cyan)] px-3 py-1 rounded-full border border-[rgba(0,229,255,0.2)]">Hospitality Suite</span>
                 </motion.div>
                 <motion.h1 {...fadeUp} transition={{ delay: 0.1 }} className="text-4xl md:text-6xl font-display tracking-tight mb-6">
                     Hotel & Restaurant <span className="text-[var(--accent-cyan)]">Systems.</span>
                 </motion.h1>
                 <motion.p {...fadeUp} transition={{ delay: 0.2 }} className="text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-                    Build your custom digital infrastructure. Select the modules that fit your needs. The base setup
-                    is selected by default to give you a robust starting point.
+                    Configure your modular hospitality software stack. Select the modules that fit your property or venue. Core booking components are active by default.
                 </motion.p>
             </div>
 
@@ -157,7 +153,7 @@ export default function OfferHospitality() {
                             onClick={handleCreateProject}
                             className="w-full btn bg-[var(--accent-cyan)] text-black hover:bg-[var(--accent-cyan-glow)] border-none py-3 px-6 flex items-center justify-center gap-2 font-bold shadow-[0_0_20px_rgba(0,229,255,0.3)]"
                         >
-                            Let's Negotiate <ArrowRight size={16} />
+                            Deploy Hospitality Suite <ArrowRight size={16} />
                         </button>
                         <p className="text-xs text-[var(--text-muted)] mt-4 text-center">
                             This is an initial estimate. Final costs may vary based on specific requirements.

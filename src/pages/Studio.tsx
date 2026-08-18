@@ -75,10 +75,10 @@ const process = [
 ];
 
 const stats = [
-    { value: '1', label: 'Live project delivered' },
-    { value: '6 wks', label: 'Average build time' },
+    { value: '100%', label: 'Custom Engineered' },
+    { value: '2–4 wks', label: 'Target Launch Timeline' },
     { value: '100%', label: 'Remote — serve worldwide' },
-    { value: '🇮🇳', label: 'India-based, global quality' },
+    { value: '🇮🇳', label: 'Engineered in Jhansi, India' },
 ];
 
 export default function Studio() {
@@ -174,19 +174,19 @@ export default function Studio() {
                         <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Our Story</span>
                     </div>
                     <h2 className="text-3xl md:text-4xl font-display uppercase tracking-tight mb-8">
-                        From Idea to <span className="text-[var(--accent-cyan)]">Impact</span>
+                        From Idea to <span className="text-[var(--accent-cyan)]">Reality</span>
                     </h2>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                         <div className="space-y-5">
                             <p className="text-[var(--text-secondary)] leading-relaxed">
-                                <span className="text-[var(--accent-orange)] font-bold font-mono">&gt;&gt;</span> Talos.design was born out of a simple belief: every business — no matter how small — deserves world-class digital infrastructure. We saw small hotels, local shops, and emerging startups struggling with outdated systems and overpriced agencies.
+                                <span className="text-[var(--accent-orange)] font-bold font-mono">&gt;&gt;</span> Talos.design was founded on a straightforward principle: businesses deserve high-quality, dependable digital systems without unnecessary complexity or bloated agency overhead.
                             </p>
                             <p className="text-[var(--text-secondary)] leading-relaxed">
-                                So we built something different. A lean, remote-first studio that combines the precision of modern engineering with the creativity of great design. No fluff, no bloated teams — just sharp minds shipping real products.
+                                We are a lean, engineering-led studio that combines thoughtful design with practical software engineering. No fluff, no buzzword hype — just clear technical execution.
                             </p>
                             <p className="text-[var(--text-secondary)] leading-relaxed">
-                                Today, we build everything from premium websites and booking engines to AI chatbots and custom automation systems — proudly based in India, serving clients around the world.
+                                We build custom websites, AI inquiry assistants, and workflow automation systems — proudly based in Jhansi, India and working with businesses everywhere.
                             </p>
                         </div>
 

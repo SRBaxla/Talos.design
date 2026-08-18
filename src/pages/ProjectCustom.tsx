@@ -57,10 +57,10 @@ export default function ProjectCustom() {
             {/* Back link */}
             <motion.div {...fadeUp} className="mb-8">
                 <Link
-                    to="/projects"
+                    to="/packages"
                     className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors"
                 >
-                    <ArrowLeft size={16} /> Back to Projects
+                    <ArrowLeft size={16} /> Back to Packages
                 </Link>
             </motion.div>
 

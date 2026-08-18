@@ -185,9 +185,9 @@ export default function Legal() {
                         </div>
                         <div>
                             <h3 className="text-white font-bold mb-2 text-base flex items-center gap-2">
-                                <HelpCircle size={18} className="text-[var(--accent-orange)]" /> 4. Infrastructure Resilience & Uptime
+                                <HelpCircle size={18} className="text-[var(--accent-orange)]" /> 4. Infrastructure Resilience &amp; Reliability
                             </h3>
-                            <p>Our automation pipelines and AI servers operate on enterprise-grade cloud infrastructure (AWS & Firebase) featuring automated daily backups, redundant failovers, and 99.9% uptime SLAs.</p>
+                            <p>Our automation pipelines and web services are deployed on established cloud infrastructure providers (AWS, Firebase, and Cloudflare) with automated backups and continuous health monitoring.</p>
                         </div>
                     </div>
                 </motion.section>
@@ -210,7 +210,7 @@ export default function Legal() {
 
                     <div className="glass-panel p-8 md:p-10 space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed rounded-3xl border border-[var(--border-color)]">
                         <p>The information provided on this website is for general informational purposes. While we strive to maintain complete accuracy, Talos.design makes no representations or warranties regarding specific third-party API availability.</p>
-                        <p>All client performance metrics, saved work hours, and conversion results documented across our case studies reflect verified client outcomes but may vary depending on individual market conditions.</p>
+                        <p>All operational projections, estimated time savings, and system capabilities described across our service documentation reflect targeted outcomes based on architectural specifications, and actual results may vary depending on individual operational environments.</p>
                     </div>
                 </motion.section>
 

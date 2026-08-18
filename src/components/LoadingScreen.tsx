@@ -1,19 +1,23 @@
 import { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import logo from '../assets/bitmap.png';
 
 const BOOT_STEPS = [
   'INIT / SYSTEM ARCHITECTURE',
-  'CONNECTING ENTERPRISE PIPELINES',
-  'TALOS ENGINE ONLINE',
+  'LOADING DIGITAL PIPELINES',
+  'TALOS STUDIO ONLINE',
 ];
 
 export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
+  const [mounted, setMounted] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const [bootStep, setBootStep] = useState(0);
   const [logoStyle, setLogoStyle] = useState<React.CSSProperties>({});
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
+    setMounted(true);
+
     // Step progression for boot telemetry
     const t1 = setTimeout(() => setBootStep(1), 500);
     const t2 = setTimeout(() => setBootStep(2), 1050);
@@ -50,7 +54,11 @@ export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
     };
   }, [onComplete]);
 
-  return (
+  if (!mounted || typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none overflow-hidden">
       
       {/* Smooth Ambient Background Dissolve Overlay (No wipe) */}
@@ -107,7 +115,8 @@ export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

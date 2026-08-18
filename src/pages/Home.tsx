@@ -1,14 +1,10 @@
 import { LayoutGrid, Bot, Settings, CheckCircle, Globe, Wrench, Clock, Heart, Zap } from 'lucide-react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { motion, useScroll } from 'framer-motion';
-import { useState, lazy, Suspense } from 'react';
+import { useState } from 'react';
 import { scrollToId } from '../utils/scrollUtils';
 import { ScrollTracker } from '../components/ScrollTracker';
 import OneWayMirrorHero from '../components/OneWayMirrorHero';
-
-
-
-const FeaturedCaseStudies = lazy(() => import('../components/FeaturedCaseStudies'));
 
 
 const SERVICES = [
@@ -28,10 +24,10 @@ const SERVICES = [
     id: 'chatbots',
     number: '02',
     icon: Bot,
-    title: '24/7 AI Sales Assistant',
-    benefit: 'Capture Inquiries & Bookings 24/7',
-    description: 'Intelligent AI assistants trained on your business that qualify leads and respond to clients on WhatsApp and web instantly.',
-    features: ['Trained on your business', 'Instant lead qualification', '24/7 automated customer support', 'Direct WhatsApp integration'],
+    title: 'AI Sales & Inquiry Assistants',
+    benefit: 'Answer Routine Inquiries & Qualify Leads 24/7',
+    description: 'Deploy practical AI assistants trained on your business info to answer customer questions, capture contact details, and route conversations to your team on WhatsApp and Web.',
+    features: ['Answers FAQs & pricing details', 'Captures & qualifies inquiries', 'Direct WhatsApp & Web integration', 'Seamless human team handoff'],
     accentColor: 'var(--accent-cyan)',
     accentBg: 'var(--accent-cyan-glow)',
     accentBorder: 'var(--border-color)',
@@ -41,7 +37,7 @@ const SERVICES = [
     number: '03',
     icon: Settings,
     title: 'Workflow Automation',
-    benefit: 'Save 20+ Hours of Work Weekly',
+    benefit: 'Eliminate Repetitive Manual Admin',
     description: 'Eliminate repetitive manual tasks, automate client invoicing, and sync your business communication channels automatically.',
     features: ['Auto-send invoices & receipts', 'CRM & payment gateway sync', 'Instant WhatsApp notifications', 'Custom operational dashboards'],
     accentColor: 'var(--accent-orange)',
@@ -51,15 +47,15 @@ const SERVICES = [
 ];
 
 const PROJECTS = [
-  { id: 'presence', label: 'PACKAGE 01', title: 'Digital Business Launch', accent: 'orange', icon: Globe, description: 'Establish immediate market credibility and capture qualified online leads with a high-performance web presence.', highlights: ['Custom lead-generation site', 'Google Maps & SEO setup', 'Instant WhatsApp chat button'], path: '/projects/presence' },
-  { id: 'automation', label: 'PACKAGE 02 — MOST POPULAR', title: 'Automated Growth Engine', accent: 'cyan', icon: Bot, description: 'Automate customer follow-ups, sales inquiries, and client bookings without hiring extra staff.', highlights: ['Everything in Digital Launch', '24/7 AI WhatsApp sales bot', 'Automated CRM & billing sync'], path: '/projects/automation' },
-  { id: 'custom', label: 'PACKAGE 03 — ENTERPRISE', title: 'Custom Business Platform', accent: 'orange', icon: Wrench, description: 'Bespoke software architecture, custom operational portals, and specialized workflows tailored for your company.', highlights: ['Tailored workflow architecture', 'Custom web & client portals', 'Dedicated ongoing support'], path: '/projects/custom' },
+  { id: 'presence', label: 'PACKAGE 01', title: 'Digital Business Launch', accent: 'orange', icon: Globe, description: 'Establish immediate market credibility and capture qualified online leads with a high-performance web presence.', highlights: ['Custom lead-generation site', 'Google Maps & SEO setup', 'Instant WhatsApp chat button'], path: '/packages/presence' },
+  { id: 'automation', label: 'PACKAGE 02 — POPULAR', title: 'Automated Growth Engine', accent: 'cyan', icon: Bot, description: 'Automate routine inquiries, customer follow-ups, and booking workflows with integrated AI assistants.', highlights: ['Everything in Digital Launch', 'AI WhatsApp inquiry assistant', 'Automated CRM & billing sync'], path: '/packages/automation' },
+  { id: 'custom', label: 'PACKAGE 03 — CUSTOM BUILD', title: 'Custom Business Platform', accent: 'orange', icon: Wrench, description: 'Tailored software architecture, custom portals, internal dashboards, and specialized workflows built for your business.', highlights: ['Tailored workflow architecture', 'Custom web & client portals', 'Dedicated technical support'], path: '/packages/custom' },
 ];
 
 const STUDIO_VALUES = [
-  { icon: Zap, title: 'Business Growth Focus', description: 'We measure success in clear ROI, time saved, and revenue growth—not confusing tech jargon.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
+  { icon: Zap, title: 'Practical Engineering', description: 'We measure success in reliable software, time saved, and smooth operations — not confusing tech jargon.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
   { icon: Heart, title: 'Transparent Partnership', description: 'Fixed quotes, clear milestone delivery, and zero surprise fees.', color: 'var(--accent-cyan)', bgColor: 'var(--accent-cyan-glow)', borderColor: 'var(--border-color)' },
-  { icon: Globe, title: 'Engineered in Jhansi, India', description: 'Headquartered in UP, India, serving regional MSMEs and global businesses with long-term support.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
+  { icon: Globe, title: 'Engineered in Jhansi, India', description: 'Headquartered in UP, India, serving regional MSMEs and growing businesses with direct engineering collaboration.', color: 'var(--accent-orange)', bgColor: 'var(--accent-orange-glow)', borderColor: 'var(--border-color)' },
 ];
 
 const CONTACT_STEPS = [
@@ -139,15 +135,15 @@ export default function Home() {
 
         <main className="flex flex-col w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
-          {/* ── SECTION 2: SOLUTIONS ────────────────────────────────────── */}
-          <section id="solutions" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
+          {/* ── SECTION 2: SERVICES ─────────────────────────────────────── */}
+          <section id="services" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               className="text-center md:text-left mb-12 sm:mb-16"
             >
-              <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[SOLUTIONS]</div>
+              <div className="badge badge-active mb-4 font-mono text-[clamp(10px,1.5vw,12px)] md:mx-0 mx-auto">[SERVICES]</div>
               <h2 className="text-[clamp(1.5rem,5vw,3rem)] font-display uppercase mb-4">Built for <span className="text-gradient-orange text-glow-orange">Performance</span></h2>
               <p className="text-[var(--text-secondary)] max-w-xl mx-auto md:mx-0 text-[clamp(12px,2vw,15px)]">Solving real operational bottlenecks with high-performance web systems and automation.</p>
             </motion.div>
@@ -197,7 +193,7 @@ export default function Home() {
                       ))}
                     </ul>
                     <Link
-                      to={svc.id === 'chatbots' ? '/ai-agents' : svc.id === 'automation' ? '/systems' : '/designs'}
+                      to={svc.id === 'chatbots' ? '/services/chatbots' : svc.id === 'automation' ? '/services/automation' : '/services/web-design'}
                       className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:gap-3"
                       style={{ color: svc.accentColor }}
                     >
@@ -280,7 +276,7 @@ export default function Home() {
                         className="btn btn-primary flex-1 text-center text-xs py-3 rounded-xl font-bold uppercase tracking-widest shadow-xl"
                         style={{ background: `linear-gradient(135deg, ${a.color} 0%, rgba(210, 193, 182, 0.8) 100%)` }}
                       >
-                        Book Now
+                        Get Started
                       </button>
                     </div>
                   </motion.div>
@@ -289,9 +285,7 @@ export default function Home() {
             </motion.div>
           </section>
 
-          <Suspense fallback={<div className="min-h-[200px]" />}>
-            <FeaturedCaseStudies />
-          </Suspense>
+
 
 
           {/* ── SECTION 4: STUDIO (WHO WE ARE & FOUNDERS) ────────────────── */}
@@ -306,7 +300,7 @@ export default function Home() {
                 <div className="badge badge-online mb-6 shadow-[0_0_15px_rgba(34,197,94,0.2)]">Who We Are</div>
                 <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">Engineered in <span className="text-gradient-orange text-glow-orange">Jhansi, India</span></h2>
                 <p className="text-[clamp(0.9rem,2vw,1.25rem)] text-[var(--text-secondary)] mb-8 leading-relaxed opacity-90">
-                  Headquartered in <strong>Jhansi, Uttar Pradesh, India</strong>, Talos.design is built by engineers dedicated to providing transparent, highly reliable digital systems and AI automation for MSMEs and growing enterprises.
+                  Headquartered in <strong>Jhansi, Uttar Pradesh, India</strong>, Talos.design is built by engineers dedicated to delivering clean, reliable digital systems, custom websites, and practical automation for growing businesses.
                 </p>
 
                 <motion.div
@@ -382,10 +376,10 @@ export default function Home() {
               className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-[clamp(2rem,5vw,6rem)] w-full items-start"
             >
               <div>
-                <div className="badge badge-active mb-6 font-mono text-xs">[TRANSMISSION]</div>
-                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">Let's start your <br /><span className="text-gradient-orange text-glow-orange">Digital Ascent</span></h2>
+                <div className="badge badge-active mb-6 font-mono text-xs">[START A PROJECT]</div>
+                <h2 className="text-[clamp(1.5rem,4vw,3.5rem)] font-display uppercase mb-6 leading-tight tracking-tight">Let's build your <br /><span className="text-gradient-orange text-glow-orange">Digital System</span></h2>
                 <p className="text-[var(--text-secondary)] mb-12 max-w-md leading-relaxed opacity-90">
-                  Ready to automate? Send us a briefing and we'll get back to you with a custom roadmap.
+                  Tell us what you're trying to build. We'll review your requirements and respond with a practical technical proposal and fixed quote.
                 </p>
 
                 <motion.div
@@ -437,8 +431,8 @@ export default function Home() {
                     <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
                       <CheckCircle className="text-green-500" size={40} />
                     </div>
-                    <h3 className="text-2xl font-display font-bold mb-2">Message Transmitted</h3>
-                    <p className="text-[var(--text-secondary)]">We'll respond within the next orbital cycle.</p>
+                    <h3 className="text-2xl font-display font-bold mb-2">Inquiry Received</h3>
+                    <p className="text-[var(--text-secondary)]">We'll review your project details and get back to you within 24 hours.</p>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -496,10 +490,10 @@ export default function Home() {
                       {isTransmitting ? (
                         <div className="flex items-center gap-3 justify-center">
                           <Clock className="animate-spin text-accent-orange" size={18} />
-                          <span>Transmitting...</span>
+                          <span>Sending...</span>
                         </div>
                       ) : (
-                        <span>Initiate Contact</span>
+                        <span>Send Project Inquiry</span>
                       )}
 
                       {!isTransmitting && (
@@ -513,7 +507,7 @@ export default function Home() {
 
             {/* ── Inline Footer ─────────────────────────────────────────── */}
             <div className="w-full mt-12 pt-6 pb-12 flex flex-col md:flex-row items-center justify-between border-t border-[var(--border-color)] gap-4">
-              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-secondary)] font-bold">© 2026 TALOS DESIGN — FUTURE PROOF SYSTEMS</div>
+              <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--text-secondary)] font-bold">© 2026 TALOS.DESIGN — DIGITAL SYSTEMS &amp; AUTOMATION</div>
               <div className="flex gap-8">
                 <button
                   onClick={() => scrollToId('hero')}
@@ -521,7 +515,7 @@ export default function Home() {
                 >
                   Back to Top
                 </button>
-                <Link to="/admin" className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors tracking-widest">Orbital Portal</Link>
+                <Link to="/admin" className="text-[10px] font-mono uppercase text-[var(--text-muted)] hover:text-[var(--accent-orange)] transition-colors tracking-widest">Admin Portal</Link>
               </div>
             </div>
           </section>

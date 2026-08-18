@@ -62,7 +62,7 @@ export default function MedilifeClinicDemo() {
     const [copiedKey, setCopiedKey] = useState<string | null>(null);
     const [selectedRoleIndex, setSelectedRoleIndex] = useState(0);
 
-    const demoUrl = 'https://timely-rolypoly-3a7789.netlify.app/';
+    const demoUrl = 'https://medlife-three.vercel.app/';
     const activeAccount = DEMO_ACCOUNTS[selectedRoleIndex];
 
     const copyToClipboard = (text: string, key: string) => {

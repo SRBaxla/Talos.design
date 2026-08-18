@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import AIAgents from './AIAgents';
@@ -14,15 +14,9 @@ const TABS = [
 export default function Expertise() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState(() => {
-        if (typeof window !== 'undefined' && window.location.hash) {
-            const hashId = window.location.hash.replace('#', '');
-            if (TABS.some(t => t.id === hashId)) return hashId;
-        }
-        return TABS[0].id;
-    });
+    const [activeTab, setActiveTab] = useState(TABS[0].id);
 
-    // Sync tab with URL hash (handle external changes/back button)
+    // Sync tab with URL hash on client mount and navigation
     useEffect(() => {
         const hashId = location.hash.replace('#', '');
         if (hashId && TABS.some(t => t.id === hashId) && hashId !== activeTab) {
@@ -30,9 +24,11 @@ export default function Expertise() {
         }
     }, [location.hash, activeTab]);
 
-    // Scroll to top when tab changes
-    useLayoutEffect(() => {
-        window.scrollTo(0, 0);
+    // Scroll to top when tab changes on client
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.scrollTo(0, 0);
+        }
     }, [activeTab]);
 
     const handleTabChange = (tabId: string) => {

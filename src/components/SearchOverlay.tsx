@@ -1,26 +1,44 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Command, ArrowRight, BookOpen, Cpu, Globe, Rocket, Zap } from 'lucide-react';
+import { Search, X, Command, ArrowRight, Cpu, Globe, Bot, Settings, Wrench, Shield, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { ARTICLES } from '../pages/Insights';
-import { CASE_STUDIES } from '../pages/Impact';
 
 interface SearchResult {
   id: string;
   title: string;
   description: string;
-  category: 'Service' | 'Project' | 'Insight';
+  category: 'Service' | 'Package' | 'Solution' | 'Insight' | 'Company';
   path: string;
   icon: any;
   color: string;
 }
 
-// Base static pages 
+// Base static pages & routes
 const STATIC_DATA: SearchResult[] = [
-  { id: 'ai-agents', title: 'AI Agents', description: 'Autonomous agents for business automation and support.', category: 'Service', path: '/expertise#ai', icon: Rocket, color: 'var(--accent-orange)' },
-  { id: 'systems', title: 'Systems', description: 'Deep infrastructure and workflow automation.', category: 'Service', path: '/expertise#systems', icon: Zap, color: 'var(--accent-cyan)' },
-  { id: 'designs', title: 'Designs', description: 'Premium web design and brand identity.', category: 'Service', path: '/expertise#designs', icon: Globe, color: '#f06292' },
+  // Services
+  { id: 'web-design', title: 'High-Converting Web Design', description: 'Sub-second, mobile-first websites designed for lead generation.', category: 'Service', path: '/services/web-design', icon: Globe, color: 'var(--accent-orange)' },
+  { id: 'chatbots', title: 'AI Sales & Inquiry Assistants', description: '24/7 AI assistants that answer routine questions and qualify leads on Web & WhatsApp.', category: 'Service', path: '/services/chatbots', icon: Bot, color: 'var(--accent-cyan)' },
+  { id: 'automation', title: 'Workflow Automation', description: 'Automated invoicing, CRM sync, and operational pipelines.', category: 'Service', path: '/services/automation', icon: Settings, color: 'var(--accent-orange)' },
+  
+  // Packages
+  { id: 'pkg-presence', title: 'Digital Business Launch', description: 'Custom website, branding, SEO, and WhatsApp setup in 2-4 weeks.', category: 'Package', path: '/packages/presence', icon: Globe, color: 'var(--accent-orange)' },
+  { id: 'pkg-automation', title: 'Automated Growth Engine', description: 'Complete stack: 24/7 AI assistant + automated CRM/billing sync.', category: 'Package', path: '/packages/automation', icon: Bot, color: 'var(--accent-cyan)' },
+  { id: 'pkg-custom', title: 'Custom Business Platform', description: 'Bespoke software architectures, internal portals, and custom pipelines.', category: 'Package', path: '/packages/custom', icon: Wrench, color: 'var(--accent-orange)' },
+  
+  // Solutions
+  { id: 'sol-hospitality', title: 'Hospitality & Booking Platform', description: 'Direct booking engines, room galleries, and WhatsApp reservations.', category: 'Solution', path: '/solutions/hospitality', icon: Globe, color: 'var(--accent-orange)' },
+  { id: 'sol-ecommerce', title: 'E-Commerce & Retail Solution', description: 'Sub-second catalog storefronts and multi-channel inventory sync.', category: 'Solution', path: '/solutions/ecommerce', icon: Globe, color: 'var(--accent-cyan)' },
+  { id: 'sol-appointments', title: 'Appointment & Booking Platform', description: 'Automated scheduling and customer management for clinics and salons.', category: 'Solution', path: '/solutions/appointments', icon: Globe, color: 'var(--accent-orange)' },
+  { id: 'sol-medilife', title: 'MediLife Diagnostic Platform', description: 'Pre-built diagnostic lab software with online booking and PDF reports.', category: 'Solution', path: '/solutions/medilife', icon: Shield, color: 'var(--accent-cyan)' },
+  
+  // Expertise & Company
+  { id: 'expertise-ai', title: 'AI Assistants Expertise', description: 'Conversational assistant design, RAG knowledge bases, and escalation logic.', category: 'Service', path: '/expertise#ai', icon: Bot, color: 'var(--accent-cyan)' },
+  { id: 'expertise-systems', title: 'Systems Architecture', description: 'PostgreSQL, APIs, event-driven pipelines, and cloud infrastructure.', category: 'Service', path: '/expertise#systems', icon: Cpu, color: 'var(--accent-cyan)' },
+  { id: 'expertise-designs', title: 'Frontend & Visual Engineering', description: 'Design tokens, fluid typography, WebGL shaders, and performance.', category: 'Service', path: '/expertise#designs', icon: Globe, color: '#f06292' },
+  { id: 'about', title: 'About Talos Studio', description: 'Remote-first digital engineering studio based in Jhansi, India.', category: 'Company', path: '/about', icon: Heart, color: 'var(--accent-orange)' },
+  { id: 'contact', title: 'Contact & Free Discovery Call', description: 'Start your project with a free 30-minute discovery consultation.', category: 'Company', path: '/contact', icon: Globe, color: 'var(--accent-orange)' },
 ];
 
 // Dynamically generate the full index on load
@@ -35,17 +53,7 @@ const getDynamicSearchData = (): SearchResult[] => {
     color: article.color || 'var(--accent-cyan)'
   }));
 
-  const dynamicImpact: SearchResult[] = CASE_STUDIES.map((study: any, idx: number) => ({
-    id: `impact-${idx}`,
-    title: study.title,
-    description: study.challenge,
-    category: 'Project',
-    path: '/impact',
-    icon: BookOpen,
-    color: study.color || 'var(--accent-orange)'
-  }));
-
-  return [...STATIC_DATA, ...dynamicImpact, ...dynamicInsights];
+  return [...STATIC_DATA, ...dynamicInsights];
 };
 
 const SEARCH_DATA = getDynamicSearchData();

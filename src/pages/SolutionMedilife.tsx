@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import {
     ArrowLeft, Globe, Layers, Zap, ShieldCheck,
     Clock, TrendingUp, ExternalLink,
-    AlertTriangle, CheckSquare, PhoneOff, Sparkles, ArrowRight
+    AlertTriangle, CheckSquare, Sparkles, ArrowRight
 } from 'lucide-react';
 import MedilifeClinicDemo from '../components/medilife/MedilifeClinicDemo';
 
-const METRICS_ROI = [
-    { value: '2+ Hours', label: 'Daily Time Saved', icon: Clock, color: 'text-amber-400' },
-    { value: '80% Drop', label: 'In Status Phone Calls', icon: PhoneOff, color: 'text-emerald-400' },
-    { value: '3.4x Higher', label: 'Patient Retention', icon: TrendingUp, color: 'text-sky-400' }
+const PLATFORM_CAPABILITIES = [
+    { value: 'Instant', label: 'WhatsApp PDF Report Dispatch', icon: Clock, color: 'text-amber-400' },
+    { value: 'Verified', label: 'Pathologist Peer Review Gate', icon: ShieldCheck, color: 'text-emerald-400' },
+    { value: '100% Direct', label: 'Zero Aggregator Commissions', icon: Zap, color: 'text-sky-400' }
 ];
 
 const COMPARISONS = [
@@ -35,16 +35,16 @@ const COMPARISONS = [
     }
 ];
 
-export default function ProjectMedilife() {
+export default function SolutionMedilife() {
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [activeDrawerTab, setActiveDrawerTab] = useState<'architecture' | 'hardware' | 'roi'>('architecture');
+    const [activeDrawerTab, setActiveDrawerTab] = useState<'architecture' | 'hardware' | 'capabilities'>('architecture');
 
     return (
         <div className="container py-12 flex flex-col flex-grow text-white">
             {/* Back Navigation */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-                <Link to="/projects" className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-white transition-colors">
-                    <ArrowLeft size={14} /> Back to Projects Showcase
+                <Link to="/solutions" className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-white transition-colors">
+                    <ArrowLeft size={14} /> Back to Solutions
                 </Link>
             </motion.div>
 
@@ -52,22 +52,22 @@ export default function ProjectMedilife() {
             <div className="mb-12">
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                     <span className="badge font-mono text-xs text-emerald-400 border-emerald-500/30 bg-emerald-500/10 px-3 py-1 rounded-full flex items-center gap-1.5 font-bold uppercase tracking-wider">
-                        <Sparkles size={12} className="animate-pulse" /> DEMO READY — DIAGNOSTIC CLINIC PLATFORM
+                        <Sparkles size={12} className="animate-pulse" /> REFERENCE BUILD — DIAGNOSTIC CLINIC PLATFORM
                     </span>
                 </div>
 
                 <h1 className="text-3xl md:text-6xl font-display font-bold tracking-tight uppercase leading-[0.98] mb-4">
-                    Transform Your Lab Into a <span className="text-gradient-orange">Digital Powerhouse.</span>
+                    Diagnostic Lab &amp; <span className="text-gradient-orange">Patient Report Platform.</span>
                 </h1>
 
                 <p className="text-base md:text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-6">
-                    Branded online test booking, pathologist peer-reviewed reports, and instant 1-click WhatsApp PDF delivery.
+                    Pre-built diagnostic clinic software platform engineered by TALOS.DESIGN. Deployable to your laboratory with custom domain branding, pathologist verification, instant WhatsApp PDF delivery, and ongoing technical support.
                 </p>
 
                 {/* Hero Actions */}
                 <div className="flex flex-wrap items-center gap-4">
                     <a
-                        href="https://timely-rolypoly-3a7789.netlify.app/"
+                        href="https://medlife-three.vercel.app/"
                         target="_blank"
                         rel="noreferrer"
                         className="px-6 py-3 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]"
@@ -80,6 +80,17 @@ export default function ProjectMedilife() {
                     >
                         <Layers size={14} /> Tech Specs Drawer
                     </button>
+                    <Link
+                        to="/contact"
+                        state={{
+                            bundleType: 'MediLife Diagnostic Clinic Platform',
+                            estimatedValue: 'Custom Clinic Deployment',
+                            modules: ['Branded Storefront', 'Pathologist Peer Review', 'WhatsApp PDF Dispatch', 'Ongoing IT & Platform Support']
+                        }}
+                        className="px-5 py-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-emerald-500/30 transition-all"
+                    >
+                        Deploy For Your Clinic <ArrowRight size={14} />
+                    </Link>
                 </div>
             </div>
 
@@ -90,7 +101,7 @@ export default function ProjectMedilife() {
 
             {/* Sleek Stats Strip */}
             <div className="mb-12 p-6 rounded-2xl glass-panel border border-white/10 bg-black/40 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                {METRICS_ROI.map((m) => (
+                {PLATFORM_CAPABILITIES.map((m) => (
                     <div key={m.label} className="flex flex-col items-center">
                         <div className={`text-3xl md:text-4xl font-black font-mono tracking-tight ${m.color} mb-1 flex items-center gap-2`}>
                             <m.icon size={20} />
@@ -166,6 +177,26 @@ export default function ProjectMedilife() {
                 </div>
             </div>
 
+            {/* Turnkey Deployment Callout Banner */}
+            <div className="mb-12 p-8 rounded-2xl glass-panel border border-emerald-500/20 bg-emerald-950/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">TURNKEY CLINICAL SOFTWARE DEPLOYMENT</span>
+                    <h3 className="text-xl md:text-2xl font-display font-bold text-white mt-1">Deploy MediLife for Your Diagnostic Practice</h3>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">We handle domain setup, test catalog migration, analyzer machine data parser connectivity, and ongoing infrastructure maintenance.</p>
+                </div>
+                <Link
+                    to="/contact"
+                    state={{
+                        bundleType: 'MediLife Diagnostic Clinic Platform',
+                        estimatedValue: 'Custom Clinic Deployment',
+                        modules: ['Branded Storefront', 'Pathologist Peer Review', 'WhatsApp PDF Dispatch', 'Ongoing IT & Platform Support']
+                    }}
+                    className="btn btn-primary whitespace-nowrap px-6 py-3 text-xs uppercase tracking-wider font-bold shrink-0 flex items-center gap-2"
+                >
+                    Deploy MediLife Platform <ArrowRight size={14} />
+                </Link>
+            </div>
+
             {/* Slide-over Architecture Drawer Modal */}
             <AnimatePresence>
                 {drawerOpen && (
@@ -199,8 +230,8 @@ export default function ProjectMedilife() {
                                     <button onClick={() => setActiveDrawerTab('hardware')} className={`flex-1 py-2 rounded-lg font-bold transition-all ${activeDrawerTab === 'hardware' ? 'bg-[var(--accent-cyan)] text-black' : 'text-white/70'}`}>
                                         Hardware Bridge
                                     </button>
-                                    <button onClick={() => setActiveDrawerTab('roi')} className={`flex-1 py-2 rounded-lg font-bold transition-all ${activeDrawerTab === 'roi' ? 'bg-emerald-400 text-black' : 'text-white/70'}`}>
-                                        Clinic ROI
+                                    <button onClick={() => setActiveDrawerTab('capabilities')} className={`flex-1 py-2 rounded-lg font-bold transition-all ${activeDrawerTab === 'capabilities' ? 'bg-emerald-400 text-black' : 'text-white/70'}`}>
+                                        Key Highlights
                                     </button>
                                 </div>
 
@@ -222,9 +253,9 @@ export default function ProjectMedilife() {
                                     </div>
                                 )}
 
-                                {activeDrawerTab === 'roi' && (
+                                {activeDrawerTab === 'capabilities' && (
                                     <div className="space-y-3">
-                                        {METRICS_ROI.map((m) => (
+                                        {PLATFORM_CAPABILITIES.map((m) => (
                                             <div key={m.label} className="p-4 rounded-xl bg-white/5 border border-white/10">
                                                 <div className="text-lg font-bold font-mono text-emerald-400">{m.value}</div>
                                                 <div className="text-xs font-bold text-white uppercase">{m.label}</div>
@@ -236,7 +267,7 @@ export default function ProjectMedilife() {
 
                             <div className="pt-6 border-t border-white/10 flex justify-between items-center">
                                 <span className="text-[10px] font-mono text-[var(--text-muted)]">MEDILIFE CLINIC EDITION</span>
-                                <a href="https://timely-rolypoly-3a7789.netlify.app/" target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider">
+                                <a href="https://medlife-three.vercel.app/" target="_blank" rel="noreferrer" className="px-4 py-2 rounded-xl bg-[var(--accent-orange)] text-[#07090E] font-bold text-xs uppercase tracking-wider">
                                     Launch Live Portal →
                                 </a>
                             </div>

@@ -67,10 +67,10 @@ export default function ProjectPresence() {
             {/* Back link */}
             <motion.div {...fadeUp} className="mb-8">
                 <Link
-                    to="/projects"
-                    className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors"
+                    to="/packages"
+                    className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 >
-                    <ArrowLeft size={16} /> Back to Projects
+                    <ArrowLeft size={16} /> Back to Packages
                 </Link>
             </motion.div>
 
@@ -177,7 +177,7 @@ export default function ProjectPresence() {
                             }}
                             className="btn btn-primary inline-flex items-center gap-2 text-sm font-bold tracking-widest"
                         >
-                            Initialize Project <ArrowRight size={16} />
+                            Initialize Package <ArrowRight size={16} />
                         </Link>
                         <p className="text-[var(--text-muted)] text-xs font-mono mt-6">
                             → Average deployment: 2–4 weeks

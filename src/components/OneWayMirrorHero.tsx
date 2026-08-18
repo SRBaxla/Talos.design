@@ -42,7 +42,7 @@ export const OneWayMirrorHero: React.FC = () => {
           </span>
         </h1>
         <p className="hero-description">
-          We build custom software and automated workflows that eliminate manual work, capture qualified leads, and scale your business operations predictably.
+          We engineer custom websites, 24/7 AI sales &amp; inquiry assistants, and automated workflows that turn visitors into qualified leads and streamline daily business operations.
         </p>
 
         <div className="hero-actions flex flex-wrap gap-4 items-center justify-center mt-4">
