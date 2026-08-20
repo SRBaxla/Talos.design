@@ -65,6 +65,137 @@ const CONTACT_STEPS = [
   { label: 'Build & Scale Operations', sub: 'Phased delivery with full team training and launch' },
 ];
 
+const MAP_PROVIDERS = [
+  {
+    id: 'google',
+    name: 'Google Maps',
+    url: 'https://www.google.com/maps/search/?api=1&query=Jhansi,+Uttar+Pradesh,+India',
+    icon: '📍',
+  },
+  {
+    id: 'apple',
+    name: 'Apple Maps',
+    url: 'https://maps.apple.com/?q=Jhansi,+Uttar+Pradesh,+India&ll=25.4484,78.5685',
+    icon: '🍎',
+  },
+  {
+    id: 'osm',
+    name: 'OpenStreetMap',
+    url: 'https://www.openstreetmap.org/search?query=Jhansi%20Uttar%20Pradesh#map=13/25.4484/78.5685',
+    icon: '🗺️',
+  },
+];
+
+function JhansiNeonMapCard() {
+  const handleDefaultClick = () => {
+    window.open(MAP_PROVIDERS[0].url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <div className="relative glass-card rounded-2xl sm:rounded-[2.5rem] overflow-hidden p-6 sm:p-8 flex flex-col justify-between border border-[var(--border-color)] hover:border-[var(--accent-orange)]/40 transition-all group shadow-xl">
+      {/* Background Neon Grid & Glow */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+      <div className="absolute -top-12 -right-12 w-48 h-48 bg-[var(--accent-orange)] opacity-[0.08] blur-[60px] rounded-full pointer-events-none group-hover:opacity-[0.15] transition-opacity" />
+      <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-[var(--accent-cyan)] opacity-[0.06] blur-[60px] rounded-full pointer-events-none" />
+
+      {/* Header telemetry badge */}
+      <div className="relative z-10 flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[10px] font-mono uppercase tracking-widest text-[var(--accent-orange)] font-bold shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-orange)] shadow-[0_0_8px_var(--accent-orange)] animate-ping" />
+          Jhansi Node [25.44°N, 78.56°E]
+        </div>
+        <span className="text-[10px] font-mono uppercase text-[var(--text-muted)] tracking-wider font-semibold">
+          HQ / INDIA 🇮🇳
+        </span>
+      </div>
+
+      {/* Main Interactive Neon Outline Map Graphic */}
+      <div 
+        onClick={handleDefaultClick}
+        className="relative z-10 cursor-pointer w-full py-2 flex flex-col items-center justify-center group/map"
+        title="Click to open Jhansi on Google Maps (Default)"
+      >
+        {/* Neon Vector Map Outline of India with glowing Jhansi node */}
+        <div className="relative w-full max-w-[280px] h-[170px] flex items-center justify-center">
+          <svg
+            viewBox="0 0 300 320"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-full filter drop-shadow-[0_0_15px_rgba(245,158,11,0.35)] transition-transform duration-500 group-hover/map:scale-105"
+          >
+            {/* Background Grid Lines */}
+            <pattern id="neon-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--border-color)" strokeWidth="0.5" opacity="0.4" />
+            </pattern>
+            <rect width="300" height="320" fill="url(#neon-grid)" opacity="0.5" />
+
+            {/* Stylized Futuristic Outline Map of India */}
+            <path
+              d="M 125,25 L 140,28 L 155,20 L 165,30 L 175,45 L 195,50 L 210,65 L 235,75 L 245,90 L 230,105 L 240,120 L 255,125 L 270,135 L 260,150 L 245,155 L 230,145 L 215,160 L 205,175 L 195,190 L 180,215 L 165,240 L 150,270 L 142,295 L 138,295 L 130,265 L 120,240 L 105,215 L 90,195 L 80,180 L 70,170 L 55,165 L 45,150 L 50,135 L 60,125 L 75,120 L 85,105 L 95,95 L 100,75 L 110,60 L 115,40 Z"
+              stroke="var(--accent-orange)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="rgba(245, 158, 11, 0.04)"
+              className="transition-all duration-300 group-hover/map:stroke-[var(--accent-cyan)]"
+            />
+
+            {/* Tactical Grid / Lat-Long Lines */}
+            <line x1="40" y1="130" x2="260" y2="130" stroke="var(--accent-orange)" strokeWidth="0.75" strokeDasharray="3 3" opacity="0.3" />
+            <line x1="138" y1="30" x2="138" y2="290" stroke="var(--accent-orange)" strokeWidth="0.75" strokeDasharray="3 3" opacity="0.3" />
+
+            {/* Jhansi Pulsing Beacon Node */}
+            <g transform="translate(138, 130)">
+              <circle r="22" fill="none" stroke="var(--accent-cyan)" strokeWidth="1" opacity="0.2" />
+              <circle r="14" fill="none" stroke="var(--accent-orange)" strokeWidth="1.5" opacity="0.5" className="animate-ping" />
+              <circle r="8" fill="var(--accent-orange)" opacity="0.3" />
+              <circle r="4" fill="var(--accent-orange)" className="shadow-[0_0_12px_var(--accent-orange)]" />
+              
+              <g transform="translate(12, -8)">
+                <rect x="0" y="-12" width="76" height="18" rx="4" fill="var(--bg-surface-elevated)" stroke="var(--accent-orange)" strokeWidth="1" opacity="0.95" />
+                <text x="6" y="0" fill="var(--text-primary)" fontSize="9" fontFamily="monospace" fontWeight="bold">JHANSI HQ ↗</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        {/* Action Callout Prompt */}
+        <div className="mt-2 text-center">
+          <div className="text-xs font-mono uppercase tracking-[0.25em] text-[var(--text-primary)] font-bold group-hover/map:text-[var(--accent-orange)] transition-colors flex items-center justify-center gap-1.5">
+            Jhansi, UP, India <span className="text-[var(--accent-orange)] transition-transform group-hover/map:translate-x-1">↗</span>
+          </div>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mt-1">
+            Serving Indian MSMEs &amp; Global Clients
+          </div>
+        </div>
+      </div>
+
+      {/* Map Provider Selection Bar */}
+      <div className="relative z-20 mt-4 pt-4 border-t border-[var(--border-color)] flex flex-col gap-2">
+        <div className="flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
+          <span>Open Map In:</span>
+          <span className="text-[var(--accent-orange)] font-bold">Default: Google Maps</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {MAP_PROVIDERS.map((provider) => (
+            <a
+              key={provider.id}
+              href={provider.url}
+              target="_blank"
+              rel="noreferrer"
+              className="px-2 py-2 rounded-xl bg-[var(--bg-surface-elevated)] hover:bg-[var(--accent-orange)] hover:text-white border border-[var(--border-color)] text-[10px] font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all text-[var(--text-primary)] shadow-sm hover:shadow-[0_0_12px_var(--accent-orange-glow)]"
+              title={`Open Jhansi in ${provider.name}`}
+            >
+              <span>{provider.icon}</span>
+              <span className="truncate">{provider.name.split(' ')[0]}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const accentMap: Record<string, { color: string; glow: string; bg: string; border: string }> = {
   orange: { color: 'var(--accent-orange)', glow: 'var(--accent-orange-glow)', bg: 'var(--accent-orange-glow)', border: 'var(--border-color)' },
   cyan: { color: 'var(--accent-cyan)', glow: 'var(--accent-cyan-glow)', bg: 'var(--accent-cyan-glow)', border: 'var(--border-color)' },
@@ -349,20 +480,7 @@ export default function Home() {
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full relative mt-8 lg:mt-0"
               >
-                <div className="relative glass-card rounded-2xl sm:rounded-[3rem] overflow-hidden flex items-center justify-center p-8 sm:p-12 aspect-auto sm:aspect-[4/3] min-h-[240px]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-orange-glow)] to-transparent opacity-20" />
-                  <div className="relative z-10 text-center">
-                    <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                      className="text-5xl sm:text-7xl mb-4 sm:mb-6"
-                    >
-                      🇮🇳
-                    </motion.div>
-                    <div className="text-xs font-mono uppercase tracking-[0.3em] text-[var(--text-primary)] font-bold">Jhansi, UP, India</div>
-                    <div className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mt-2">Serving Indian MSMEs & Global Clients</div>
-                  </div>
-                </div>
+                <JhansiNeonMapCard />
               </motion.div>
             </div>
           </section>

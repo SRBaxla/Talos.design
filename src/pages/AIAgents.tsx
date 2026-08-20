@@ -115,7 +115,7 @@ function InteractiveChatDemo() {
                         </div>
                     </div>
                 </div>
-                <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 border border-white/10">
+                <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--bg-surface-elevated)] border border-[var(--border-color)]">
                     Concept Preview
                 </span>
             </div>
@@ -129,8 +129,8 @@ function InteractiveChatDemo() {
                         <div
                             className={`p-3 rounded-2xl ${
                                 msg.sender === 'user'
-                                    ? 'bg-[var(--accent-orange)] text-[#07090E] font-medium rounded-tr-none'
-                                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] rounded-tl-none border border-[var(--border-color)]'
+                                    ? 'bg-[var(--accent-orange)] text-white font-semibold rounded-tr-none shadow-sm'
+                                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] rounded-tl-none border border-[var(--border-color)]'
                             }`}
                         >
                             {msg.text}
@@ -147,7 +147,7 @@ function InteractiveChatDemo() {
                     placeholder="Ask about packages, hours, or process..."
                     className="flex-grow text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] bg-transparent px-2 outline-none"
                 />
-                <button type="submit" className="p-2 bg-[var(--accent-orange)] text-[#07090E] rounded-lg font-bold hover:brightness-110 transition-all">
+                <button type="submit" className="p-2 bg-[var(--accent-orange)] text-white rounded-lg font-bold hover:brightness-110 transition-all">
                     <Zap size={14} />
                 </button>
             </form>

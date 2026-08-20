@@ -100,7 +100,7 @@ export default function Systems() {
             </div>
 
             {/* Vertical Solution Callout: MediLife Reference */}
-            <div className="glass-panel p-8 md:p-12 rounded-3xl border border-[var(--accent-orange)]/30 bg-black/40 relative overflow-hidden mb-16 shadow-xl">
+            <div className="glass-panel p-8 md:p-12 rounded-3xl border border-[var(--accent-orange)]/30 relative overflow-hidden mb-16 shadow-xl">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
                     <div className="max-w-2xl space-y-3">
                         <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">

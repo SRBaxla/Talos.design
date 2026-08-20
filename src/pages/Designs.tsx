@@ -88,7 +88,7 @@ export default function Designs() {
                                 <div className="w-12 h-12 rounded-2xl bg-[rgba(245,158,11,0.08)] flex items-center justify-center mb-6 border border-[rgba(245,158,11,0.1)] group-hover:scale-110 transition-transform">
                                     <d.icon size={26} className="text-[var(--accent-orange)]" />
                                 </div>
-                                <h3 className="text-lg font-bold mb-3 uppercase tracking-tight text-white">{d.title}</h3>
+                                <h3 className="text-lg font-bold mb-3 uppercase tracking-tight text-[var(--text-primary)]">{d.title}</h3>
                                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                                     {d.description}
                                 </p>
@@ -100,12 +100,12 @@ export default function Designs() {
 
             {/* Frontend Architecture & Standards Matrix */}
             <div className="mb-24 md:mb-36">
-                <div className="glass-panel p-8 md:p-12 rounded-3xl border border-[var(--border-color)] bg-black/40">
+                <div className="glass-panel p-8 md:p-12 rounded-3xl border border-[var(--border-color)]">
                     <div className="max-w-2xl mb-8">
                         <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent-cyan)] font-bold">
                             ENGINEERING FOUNDATION
                         </span>
-                        <h3 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-white mt-1">
+                        <h3 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-[var(--text-primary)] mt-1">
                             Design as a Deterministic System
                         </h3>
                         <p className="text-xs md:text-sm text-[var(--text-secondary)] leading-relaxed mt-2">
@@ -115,11 +115,11 @@ export default function Designs() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {ARCHITECTURE_STANDARDS.map((item) => (
-                            <div key={item.label} className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1">
+                            <div key={item.label} className="p-4 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] space-y-1">
                                 <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--accent-orange)] font-bold">
                                     {item.label}
                                 </div>
-                                <div className="text-xs font-semibold text-white">
+                                <div className="text-xs font-semibold text-[var(--text-primary)]">
                                     {item.value}
                                 </div>
                             </div>
