@@ -1,5 +1,5 @@
 import { motion, useMotionValueEvent, MotionValue, AnimatePresence, useSpring } from 'framer-motion';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { scrollToId } from '../utils/scrollUtils';
 
 const SECTIONS = [
@@ -69,24 +69,140 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     if (isMobile) setIsMobileOpen(false);
   }, [isMobile]);
 
+  const orbButtonRef = useRef<HTMLDivElement>(null);
+  const dragHoveredIndexRef = useRef<number | null>(null);
+  const isMobileOpenRef = useRef(isMobileOpen);
+  const wasOpenOnPointerDownRef = useRef(false);
+
+  useEffect(() => {
+    isMobileOpenRef.current = isMobileOpen;
+  }, [isMobileOpen]);
+
+  const updateDragHoverIndex = useCallback((e: React.PointerEvent) => {
+    // 1. Check elementFromPoint first
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (el) {
+      const idxStr = el.getAttribute('data-section-index') || el.closest('[data-section-index]')?.getAttribute('data-section-index');
+      if (idxStr !== null && idxStr !== undefined) {
+        const parsed = parseInt(idxStr, 10);
+        if (!isNaN(parsed)) {
+          dragHoveredIndexRef.current = parsed;
+          setDragHoveredIndex(parsed);
+          return parsed;
+        }
+      }
+    }
+
+    // 2. Geometric angle math fallback relative to orb center
+    if (orbButtonRef.current) {
+      const rect = orbButtonRef.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+
+      // Within orb button radius or dragging downward below orb -> clear hover
+      if (dist < 35 || dy > 40) {
+        dragHoveredIndexRef.current = null;
+        setDragHoveredIndex(null);
+        return null;
+      }
+
+      // Angle relative to center: Math.PI (Left) to 2 * Math.PI (Right)
+      let angle = Math.atan2(dy, dx);
+      if (angle < 0) angle += 2 * Math.PI;
+
+      let t = (angle - Math.PI) / Math.PI;
+      if (t < 0) t = 0;
+      if (t > 1) t = 1;
+
+      const idx = Math.round(t * (SECTIONS.length - 1));
+      dragHoveredIndexRef.current = idx;
+      setDragHoveredIndex(idx);
+      return idx;
+    }
+
+    dragHoveredIndexRef.current = null;
+    setDragHoveredIndex(null);
+    return null;
+  }, []);
+
   const radius = 120;
   const pathLength = Math.PI * radius;
 
-  // Drive arc progress from activeIndex — the most reliable source of truth.
-  // activeIndex is already computed from actual DOM section positions,
-  // so it perfectly tracks snap-scroll behavior without overshoot.
-  const arcMotionValue = useSpring(0, { stiffness: 60, damping: 18, restDelta: 0.001 });
+  // Spring for smooth, responsive arc tracking
+  const arcMotionValue = useSpring(0, { stiffness: 100, damping: 20, restDelta: 0.001 });
   const [strokeDashoffset, setStrokeDashoffset] = useState(pathLength);
+  const sectionTopsRef = useRef<number[]>([]);
 
-  // Update the spring target whenever activeIndex changes
+  // Update section tops on mount, resize, and scroll
   useEffect(() => {
-    const targetProgress = activeIndex / (SECTIONS.length - 1);
-    arcMotionValue.set(targetProgress);
-  }, [activeIndex, arcMotionValue]);
+    const updateSectionTops = () => {
+      sectionTopsRef.current = SECTIONS.map(s => {
+        const el = document.getElementById(s.id);
+        if (!el) return 0;
+        return el.getBoundingClientRect().top + window.scrollY;
+      });
+    };
+
+    updateSectionTops();
+    // Re-check tops after initial rendering/font loads
+    const timer = setTimeout(updateSectionTops, 500);
+    window.addEventListener('resize', updateSectionTops);
+
+    const handleScroll = () => {
+      const tops = sectionTopsRef.current;
+      if (tops.length < SECTIONS.length) {
+        updateSectionTops();
+      }
+
+      const currentScrollY = window.scrollY;
+      const numSegments = SECTIONS.length - 1;
+
+      if (numSegments <= 0 || tops.length === 0) return;
+
+      const firstTop = tops[0];
+      const lastTop = tops[tops.length - 1];
+
+      if (currentScrollY <= firstTop) {
+        arcMotionValue.set(0);
+        return;
+      }
+
+      if (currentScrollY >= lastTop) {
+        arcMotionValue.set(1);
+        return;
+      }
+
+      // Find which segment the scroll is currently in
+      for (let i = 0; i < numSegments; i++) {
+        const topCurrent = tops[i];
+        const topNext = tops[i + 1];
+
+        if (currentScrollY >= topCurrent && currentScrollY <= topNext) {
+          const segmentDistance = topNext - topCurrent;
+          const segmentProgress = segmentDistance > 0 ? (currentScrollY - topCurrent) / segmentDistance : 0;
+          const totalProgress = (i + segmentProgress) / numSegments;
+          arcMotionValue.set(totalProgress);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateSectionTops);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [arcMotionValue]);
 
   // Subscribe to the spring value and compute strokeDashoffset
   useMotionValueEvent(arcMotionValue, 'change', (v) => {
-    setStrokeDashoffset(pathLength - v * pathLength);
+    setStrokeDashoffset(pathLength - Math.max(0, Math.min(1, v)) * pathLength);
   });
 
 
@@ -307,41 +423,78 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
             </AnimatePresence>
 
             {/* Central Orb Button Hit Area Wrapper */}
-            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 pointer-events-auto z-10 touch-none"
+            <div
+              ref={orbButtonRef}
+              className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 pointer-events-auto z-10 touch-none"
               onPointerDown={(e) => {
                 e.stopPropagation();
+                wasOpenOnPointerDownRef.current = isMobileOpenRef.current;
                 setIsMobileOpen(true);
+                isMobileOpenRef.current = true;
+                dragHoveredIndexRef.current = null;
                 setDragHoveredIndex(null);
-                (e.target as HTMLElement).setPointerCapture(e.pointerId);
-              }}
-              onPointerMove={(e) => {
-                if (!isMobileOpen) return;
-                // Use elementFromPoint to see if hovering over a section dot
-                const el = document.elementFromPoint(e.clientX, e.clientY);
-                if (el) {
-                  const idx = el.getAttribute('data-section-index') || el.closest('[data-section-index]')?.getAttribute('data-section-index');
-                  if (idx !== null && idx !== undefined) {
-                    setDragHoveredIndex(parseInt(idx, 10));
-                  } else {
-                    setDragHoveredIndex(null);
+                const target = (e.currentTarget || orbButtonRef.current) as HTMLElement;
+                if (target && target.setPointerCapture) {
+                  try {
+                    target.setPointerCapture(e.pointerId);
+                  } catch {
+                    // capture fallback
                   }
                 }
               }}
+              onPointerMove={(e) => {
+                if (!isMobileOpenRef.current) return;
+                updateDragHoverIndex(e);
+              }}
               onPointerUp={(e) => {
-                (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-                if (dragHoveredIndex !== null) {
-                  handleDotClick(dragHoveredIndex);
-                } else if (!isMobileOpen) {
-                  // If it was just a quick tap and menu was closed, open it
-                  setIsMobileOpen(true);
-                  return;
+                const target = (e.currentTarget || orbButtonRef.current) as HTMLElement;
+                if (target && target.releasePointerCapture) {
+                  try {
+                    target.releasePointerCapture(e.pointerId);
+                  } catch {
+                    // ignore if already released
+                  }
                 }
-                setIsMobileOpen(false);
+                const targetIndex = dragHoveredIndexRef.current;
+                if (targetIndex !== null) {
+                  handleDotClick(targetIndex);
+                  setIsMobileOpen(false);
+                  isMobileOpenRef.current = false;
+                } else {
+                  if (wasOpenOnPointerDownRef.current) {
+                    setIsMobileOpen(false);
+                    isMobileOpenRef.current = false;
+                  } else {
+                    setIsMobileOpen(true);
+                    isMobileOpenRef.current = true;
+                  }
+                }
+                dragHoveredIndexRef.current = null;
                 setDragHoveredIndex(null);
               }}
               onPointerCancel={(e) => {
-                (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+                const target = (e.currentTarget || orbButtonRef.current) as HTMLElement;
+                if (target && target.releasePointerCapture) {
+                  try {
+                    target.releasePointerCapture(e.pointerId);
+                  } catch {
+                    // ignore if already released
+                  }
+                }
                 setIsMobileOpen(false);
+                isMobileOpenRef.current = false;
+                dragHoveredIndexRef.current = null;
+                setDragHoveredIndex(null);
+              }}
+              onLostPointerCapture={() => {
+                // If system releases capture mid-drag, navigate if target was selected
+                const targetIndex = dragHoveredIndexRef.current;
+                if (targetIndex !== null) {
+                  handleDotClick(targetIndex);
+                }
+                setIsMobileOpen(false);
+                isMobileOpenRef.current = false;
+                dragHoveredIndexRef.current = null;
                 setDragHoveredIndex(null);
               }}
             >
