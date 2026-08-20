@@ -6,24 +6,46 @@ import { Background } from './Background';
 import { Navbar } from './Navbar';
 import { SearchOverlay } from './SearchOverlay';
 
+const STORAGE_KEY = 'talos-dark-mode-unlocked';
+
 export function Layout() {
     const location = useLocation();
     const isHome = location.pathname === '/';
     const isExpertise = location.pathname === '/expertise';
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-    // Enforce dark theme and scroll-snap management
-    useEffect(() => {
-        document.documentElement.classList.remove('light-theme');
-        updateMetaThemeColor();
+    // Default is light (false). Dark is the hidden easter-egg.
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+        try {
+            return localStorage.getItem(STORAGE_KEY) === 'true';
+        } catch {
+            return false;
+        }
+    });
 
-        // Apply scroll-snap only on Home page
+    // Apply / remove .dark-theme on <html> and persist
+    useEffect(() => {
+        const html = document.documentElement;
+        if (isDarkMode) {
+            html.classList.add('dark-theme');
+            html.classList.remove('light-theme');
+        } else {
+            html.classList.remove('dark-theme');
+            html.classList.remove('light-theme');
+        }
+        try {
+            localStorage.setItem(STORAGE_KEY, String(isDarkMode));
+        } catch { /* ignore */ }
+        updateMetaThemeColor(isDarkMode);
+    }, [isDarkMode]);
+
+    // Apply scroll-snap only on Home page
+    useEffect(() => {
         if (isHome) {
             document.documentElement.classList.add('home-snap-active');
         } else {
             document.documentElement.classList.remove('home-snap-active');
         }
-
         return () => {
             document.documentElement.classList.remove('home-snap-active');
         };
@@ -41,24 +63,26 @@ export function Layout() {
         return () => window.removeEventListener('keydown', handleCmdK);
     }, []);
 
-    const updateMetaThemeColor = () => {
+    const updateMetaThemeColor = (dark: boolean) => {
         let metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (!metaThemeColor) {
             metaThemeColor = document.createElement('meta');
             metaThemeColor.setAttribute('name', 'theme-color');
             document.head.appendChild(metaThemeColor);
         }
-        metaThemeColor.setAttribute('content', '#07090E');
+        metaThemeColor.setAttribute('content', dark ? '#07090E' : '#FFFFFF');
     };
 
+    const toggleTheme = () => setIsDarkMode(prev => !prev);
+
     return (
-        <div className="flex flex-col min-h-dvh relative bg-transparent dark">
-            <Background isDarkMode={true} />
+        <div className="flex flex-col min-h-dvh relative bg-transparent">
+            <Background isDarkMode={isDarkMode} />
 
             <div className="flex flex-col min-h-dvh w-full relative z-10 bg-transparent">
-                <Navbar isDarkMode={true} onSearchClick={() => setIsSearchOpen(true)} />
+                <Navbar isDarkMode={isDarkMode} onSearchClick={() => setIsSearchOpen(true)} onThemeToggle={toggleTheme} />
                 <main className={`flex-grow flex flex-col bg-transparent ${isHome || isExpertise ? '' : 'pt-24'}`}>
-                    <Outlet context={{ isDarkMode: true }} />
+                    <Outlet context={{ isDarkMode, toggleTheme }} />
                 </main>
                 {!isHome && <Footer />}
             </div>

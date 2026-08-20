@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Search, Command } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,10 +6,38 @@ import { scrollToId } from '../utils/scrollUtils';
 import logo from '../assets/bitmap.png';
 import logoLight from '../assets/logo- light-side.png';
 
-export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onSearchClick?: () => void }) {
+interface NavbarProps {
+    isDarkMode: boolean;
+    onSearchClick?: () => void;
+    onThemeToggle?: () => void;
+}
+
+export function Navbar({ isDarkMode, onSearchClick, onThemeToggle }: NavbarProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+
+    // ── Easter egg: triple-click on logo unlocks dark mode ──────────────────
+    const clickCountRef = useRef(0);
+    const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleLogoClick = useCallback((e: React.MouseEvent) => {
+        // Handle normal home navigation
+        if (location.pathname === '/') {
+            e.preventDefault();
+            scrollToId('hero');
+        }
+
+        // Track rapid clicks for easter egg
+        clickCountRef.current += 1;
+        if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+        clickTimerRef.current = setTimeout(() => {
+            if (clickCountRef.current >= 3 && onThemeToggle) {
+                onThemeToggle();
+            }
+            clickCountRef.current = 0;
+        }, 600);
+    }, [location.pathname, onThemeToggle]);
 
     const navLinks = [
         { name: 'Services', path: '/services' },
@@ -38,18 +66,17 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
         );
     };
 
+    // Search KBD hint — adapts background for light vs dark
+    const kbdBg = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(15,23,42,0.06)';
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-x-0 border-t-0 border-b border-b-[var(--border-color)]" style={{ borderRadius: 0, padding: '1rem 0' }}>
             <div className="container flex items-center justify-between">
                 <NavLink
                     to="/"
                     className="flex items-center gap-2"
-                    onClick={(e) => {
-                        if (location.pathname === '/') {
-                            e.preventDefault();
-                            scrollToId('hero');
-                        }
-                    }}
+                    onClick={handleLogoClick}
+                    title={isDarkMode ? 'Click × 3 to return to light mode' : 'Click × 3 for a surprise'}
                 >
                     <img id="navbar-logo" src={isDarkMode ? logo : logoLight} alt="Talos.design" width="120" height="32" className="h-8 w-auto" />
                 </NavLink>
@@ -63,12 +90,16 @@ export function Navbar({ isDarkMode, onSearchClick }: { isDarkMode: boolean, onS
                     {/* Search Trigger */}
                     <button 
                         onClick={onSearchClick}
-                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[rgba(255,255,255,0.05)] border border-transparent hover:border-[var(--border-color)] transition-colors"
+                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg border border-transparent hover:border-[var(--border-color)] transition-colors"
+                        style={{ background: 'transparent' }}
                         aria-label="Search"
                         title="Search (CMD+K)"
                     >
                         <Search size={18} className="text-[var(--text-muted)] group-hover:text-[var(--accent-orange)] transition-colors" />
-                        <div className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 rounded bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)]">
+                        <div
+                            className="hidden lg:flex items-center gap-1 px-1.5 py-0.5 rounded border border-[var(--border-color)]"
+                            style={{ background: kbdBg }}
+                        >
                             <Command size={10} className="text-[var(--text-muted)]" />
                             <span className="text-[9px] font-mono text-[var(--text-muted)]">K</span>
                         </div>

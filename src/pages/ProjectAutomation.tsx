@@ -62,7 +62,7 @@ export default function ProjectAutomation() {
             <motion.div {...fadeUp} className="mb-8">
                 <Link
                     to="/packages"
-                    className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors"
+                    className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                     <ArrowLeft size={16} /> Back to Packages
                 </Link>
@@ -104,7 +104,7 @@ export default function ProjectAutomation() {
             >
                 <AlertTriangle size={18} className="text-[var(--accent-cyan)] shrink-0 mt-0.5" />
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                    <span className="text-white font-semibold">Digital-only automation.</span> We handle everything that can be automated digitally — bookings, queries, inventory tracking, notifications, dashboards. Physical task management (e.g., deliveries, on-site work) is outside our scope.
+                    <span className="text-[var(--text-primary)] font-semibold">Digital-only automation.</span> We handle everything that can be automated digitally — bookings, queries, inventory tracking, notifications, dashboards. Physical task management (e.g., deliveries, on-site work) is outside our scope.
                 </p>
             </motion.div>
 

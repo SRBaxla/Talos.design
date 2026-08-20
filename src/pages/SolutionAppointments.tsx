@@ -79,7 +79,7 @@ export default function SolutionAppointments() {
     return (
         <div className="container py-16 flex flex-col flex-grow">
             <motion.div {...fadeUp} className="mb-8">
-                <Link to="/solutions" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors">
+                <Link to="/solutions" className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
                     <ArrowLeft size={16} /> Back to Solutions
                 </Link>
             </motion.div>

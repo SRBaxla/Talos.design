@@ -106,7 +106,7 @@ export default function Services() {
         <div className="flex flex-col flex-grow w-full">
 
             {/* ── HERO ─────────────────────────────────────────────────────── */}
-            <div className="relative w-full py-24 flex flex-col items-center justify-center border-b border-[rgba(255,255,255,0.05)]">
+            <div className="relative w-full py-24 flex flex-col items-center justify-center border-b border-[var(--border-color)]">
                 <div className="container flex flex-col items-center text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

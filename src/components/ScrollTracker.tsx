@@ -4,7 +4,7 @@ import { scrollToId } from '../utils/scrollUtils';
 
 const SECTIONS = [
   { id: 'hero', label: 'Home', progress: 0.0 },
-  { id: 'solutions', label: 'Solutions', progress: 0.25 },
+  { id: 'services', label: 'Services', progress: 0.25 },
   { id: 'packages', label: 'Packages', progress: 0.5 },
   { id: 'studio', label: 'Studio', progress: 0.75 },
   { id: 'contact', label: 'Contact', progress: 1.0 },
@@ -178,12 +178,13 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
                   <span
-                    className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.15em] px-3 py-1.5 rounded-md"
+                    className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.15em] px-3 py-1.5 rounded-md font-semibold"
                     style={{
-                      color: isActive ? 'var(--accent-orange)' : 'var(--text-secondary)',
-                      background: isActive ? 'var(--accent-orange-glow)' : 'rgba(10, 15, 25, 0.7)',
+                      color: isActive ? 'var(--accent-orange)' : 'var(--text-primary)',
+                      background: isActive ? 'var(--accent-orange-glow)' : 'var(--bg-surface-elevated)',
                       border: `1px solid ${isActive ? 'var(--accent-orange)' : 'var(--border-color)'}`,
                       backdropFilter: 'blur(12px)',
+                      boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
                     }}
                   >
                     {section.label}
@@ -383,8 +384,8 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
       {!isMobile && (
         <div className="fixed bottom-6 right-6 z-50">
           <span
-            className="text-xs font-mono tabular-nums tracking-wider"
-            style={{ color: 'var(--text-muted)', opacity: 0.6 }}
+            className="text-xs font-mono tabular-nums tracking-wider font-semibold"
+            style={{ color: 'var(--text-secondary)', opacity: 0.9 }}
           >
             {String(Math.round(progress * 100)).padStart(3, '0')}%
           </span>

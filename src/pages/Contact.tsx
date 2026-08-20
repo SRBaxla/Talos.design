@@ -94,50 +94,50 @@ export default function Contact() {
                         <form className="relative z-10 flex flex-col gap-6" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">Your Name</label>
+                                    <label className="block text-[10px] font-mono text-[var(--text-secondary)] font-semibold uppercase tracking-widest mb-2">Your Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="John Smith"
-                                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">Email Address</label>
+                                    <label className="block text-[10px] font-mono text-[var(--text-secondary)] font-semibold uppercase tracking-widest mb-2">Email Address</label>
                                     <input
                                         type="email"
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="name@company.com"
-                                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">Company / Business Name</label>
+                                <label className="block text-[10px] font-mono text-[var(--text-secondary)] font-semibold uppercase tracking-widest mb-2">Company / Business Name</label>
                                 <input
                                     type="text"
                                     required
                                     value={company}
                                     onChange={(e) => setCompany(e.target.value)}
                                     placeholder="Your business name"
-                                    className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)]"
+                                    className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2">Tell us about your project</label>
+                                <label className="block text-[10px] font-mono text-[var(--text-secondary)] font-semibold uppercase tracking-widest mb-2">Tell us about your project</label>
                                 <textarea
                                     required
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder="What do you need built? What problem are you trying to solve? Any timeline or budget in mind?"
                                     rows={6}
-                                    className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder-[var(--text-muted)] resize-none"
+                                    className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none"
                                 />
                             </div>
 

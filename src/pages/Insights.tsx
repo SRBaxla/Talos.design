@@ -226,7 +226,7 @@ export default function Insights() {
                                     <div className="absolute top-6 right-8 flex gap-2">
                                         <button 
                                             onClick={(e) => toggleBookmark(article.id, e)}
-                                            className={`p-2 rounded-lg transition-colors ${bookmarks.includes(article.id) ? 'text-[var(--accent-cyan)] bg-[rgba(0,229,255,0.1)]' : 'text-[var(--text-muted)] hover:text-white'}`}
+                                            className={`p-2 rounded-lg transition-colors ${bookmarks.includes(article.id) ? 'text-[var(--accent-cyan)] bg-[rgba(0,229,255,0.1)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                                         >
                                             <Bookmark size={16} fill={bookmarks.includes(article.id) ? "currentColor" : "none"} />
                                         </button>

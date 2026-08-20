@@ -134,7 +134,7 @@ export default function Studio() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
-                        className="flex flex-col items-center text-[10px] text-[var(--accent-orange)] font-mono uppercase tracking-widest gap-2 opacity-70"
+                        className="flex flex-col items-center text-[10px] text-[var(--accent-orange)] font-mono uppercase tracking-widest gap-2 font-bold"
                     >
                         Scroll to learn more
                         <span className="animate-bounce">↓</span>
@@ -143,7 +143,7 @@ export default function Studio() {
             </div>
 
             {/* ── SCROLLING BODY ───────────────────────────────────────────── */}
-            <div className="relative z-20 bg-[var(--bg-base)] w-full flex flex-col items-center pb-24 border-t border-[var(--border-color)] shadow-[0_-20px_50px_rgba(0,0,0,0.8)] pt-24">
+            <div className="relative z-20 bg-[var(--bg-base)] w-full flex flex-col items-center pb-24 border-t border-[var(--border-color)] shadow-[0_-20px_50px_rgba(0,0,0,0.05)] pt-24">
 
                 {/* Stats strip */}
                 <motion.div
@@ -156,7 +156,7 @@ export default function Studio() {
                         {stats.map((stat) => (
                             <div key={stat.label} className="glass-panel p-6 flex flex-col items-center text-center">
                                 <div className="text-3xl font-display font-bold mb-2 text-gradient-orange">{stat.value}</div>
-                                <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">{stat.label}</div>
+                                <div className="text-[10px] font-mono text-[var(--text-secondary)] font-semibold uppercase tracking-widest">{stat.label}</div>
                             </div>
                         ))}
                     </div>

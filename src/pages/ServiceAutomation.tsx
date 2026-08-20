@@ -151,7 +151,7 @@ export default function ServiceAutomation() {
                             transition={{ delay: i * 0.1 }}
                             className="glass-panel p-6 relative overflow-hidden"
                         >
-                            <div className="text-4xl font-display font-bold text-[rgba(0,229,255,0.1)] absolute top-4 right-4">{step.step}</div>
+                            <div className="text-4xl font-display font-bold text-[var(--accent-cyan)] opacity-25 absolute top-4 right-4">{step.step}</div>
                             <div className="relative z-10">
                                 <h3 className="text-sm font-bold uppercase tracking-widest mb-3 text-[var(--accent-cyan)]">{step.title}</h3>
                                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{step.description}</p>

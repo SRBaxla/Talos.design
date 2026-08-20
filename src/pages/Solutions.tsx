@@ -156,7 +156,7 @@ export default function Solutions() {
               </div>
 
               {/* Title */}
-              <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 tracking-tight text-white">
+              <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 tracking-tight text-[var(--text-primary)]">
                 {item.title}
               </h2>
 
@@ -211,7 +211,7 @@ export default function Solutions() {
             CUSTOM VERTICAL DEPLOYMENTS
           </span>
         </div>
-        <h3 className="text-xl md:text-2xl font-display font-bold mb-3 text-white">
+        <h3 className="text-xl md:text-2xl font-display font-bold mb-3 text-[var(--text-primary)]">
           Operating in a different industry?
         </h3>
         <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-xl mb-6">

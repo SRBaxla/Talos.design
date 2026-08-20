@@ -58,7 +58,7 @@ const INFRASTRUCTURE_PILLARS = [
 
 export default function Systems() {
     return (
-        <div className="container py-16 flex flex-col flex-grow text-white">
+        <div className="container py-16 flex flex-col flex-grow">
             {/* Header */}
             <div className="mb-16 text-center max-w-3xl mx-auto">
                 <span className="badge font-mono text-xs text-[var(--accent-cyan)] border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/10 px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block font-bold">
@@ -92,7 +92,7 @@ export default function Systems() {
                                     {pillar.badge}
                                 </span>
                             </div>
-                            <h3 className="text-base font-bold uppercase tracking-tight text-white mb-2">{pillar.title}</h3>
+                            <h3 className="text-base font-bold uppercase tracking-tight text-[var(--text-primary)] mb-2">{pillar.title}</h3>
                             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{pillar.description}</p>
                         </div>
                     </motion.div>
@@ -106,7 +106,7 @@ export default function Systems() {
                         <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">
                             <Sparkles size={12} className="animate-pulse" /> PRODUCTION DEPLOYMENT EXAMPLE
                         </span>
-                        <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-white">
+                        <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-[var(--text-primary)]">
                             Vertical Software in Practice: <span className="text-gradient-orange">MediLife Clinic Engine</span>
                         </h2>
                         <p className="text-xs md:text-sm text-[var(--text-secondary)] leading-relaxed">
@@ -115,7 +115,7 @@ export default function Systems() {
                     </div>
                     <Link
                         to="/solutions/medilife"
-                        className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/15 transition-all shrink-0 hover:border-[var(--accent-orange)]"
+                        className="px-6 py-3 rounded-xl bg-[var(--bg-surface-elevated)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-[var(--border-color)] transition-all shrink-0 hover:border-[var(--accent-orange)]"
                     >
                         Inspect MediLife Solution <ArrowRight size={14} />
                     </Link>

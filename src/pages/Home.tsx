@@ -438,47 +438,47 @@ export default function Home() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Your Name</label>
+                        <label className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold ml-1">Your Name</label>
                         <input
                           type="text"
                           required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                           placeholder="John Smith"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Email Address</label>
+                        <label className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold ml-1">Email Address</label>
                         <input
                           type="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                          className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                           placeholder="name@company.com"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Company / Business Name</label>
+                      <label className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold ml-1">Company / Business Name</label>
                       <input
                         type="text"
                         required
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                         placeholder="Your business name"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] ml-1">Tell us about your project</label>
+                      <label className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] font-semibold ml-1">Tell us about your project</label>
                       <textarea
                         required
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         rows={5}
-                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none resize-none"
+                        className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-sm focus:border-[var(--accent-orange)] transition-all outline-none resize-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
                         placeholder="What do you need built? What problem are you trying to solve?"
                       />
                     </div>

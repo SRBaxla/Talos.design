@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background-color: #07090F;
+  background-color: #FFFFFF;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -11,17 +11,25 @@
   --y: 50%;
 }
 
+.dark-theme .hero-wrapper {
+  background-color: #07090F;
+}
+
 /* Frosted Bubbling Glassmorphic Background Layer */
 .frosted-glass-hero-bg {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background-color: #07090F;
+  background-color: #FFFFFF;
   overflow: hidden;
 }
 
-/* Dramatic Ray of Light from Top-Right to Bottom-Left (Highlighting CTA) */
+.dark-theme .frosted-glass-hero-bg {
+  background-color: #07090F;
+}
+
+/* Dramatic Ray of Light — light mode: warm amber/blue tones */
 .hero-light-ray {
   position: absolute;
   top: -25%;
@@ -30,9 +38,9 @@
   height: 650px;
   background: linear-gradient(
     220deg,
-    rgba(212, 175, 55, 0.35) 0%,
-    rgba(56, 189, 248, 0.20) 35%,
-    rgba(212, 175, 55, 0.12) 65%,
+    rgba(180, 83, 9, 0.18) 0%,
+    rgba(7, 89, 133, 0.10) 35%,
+    rgba(180, 83, 9, 0.05) 65%,
     transparent 100%
   );
   transform: rotate(-30deg);
@@ -42,6 +50,17 @@
   mask-image: radial-gradient(ellipse 90% 70% at 80% 20%, black 20%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 80% 20%, black 20%, transparent 80%);
   animation: lightRayShimmer 7s ease-in-out infinite alternate;
+}
+
+/* Dark mode: gold/cyan dramatic ray */
+.dark-theme .hero-light-ray {
+  background: linear-gradient(
+    220deg,
+    rgba(212, 175, 55, 0.35) 0%,
+    rgba(56, 189, 248, 0.20) 35%,
+    rgba(212, 175, 55, 0.12) 65%,
+    transparent 100%
+  );
 }
 
 @keyframes lightRayShimmer {
@@ -68,13 +87,20 @@
   z-index: 2;
 }
 
+/* Gold Dust Particles — amber-bronze in light mode */
 .gold-particle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, #FFF7D6 0%, #D4AF37 50%, #B45309 100%);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.9), 0 0 16px rgba(245, 158, 11, 0.5);
+  background: radial-gradient(circle, #F5E6C8 0%, #B45309 50%, #78350F 100%);
+  box-shadow: 0 0 6px rgba(180, 83, 9, 0.7), 0 0 12px rgba(180, 83, 9, 0.4);
   will-change: transform, opacity;
   animation: goldDustDrift 12s linear infinite;
+}
+
+/* Dark mode: original gold/yellow particles */
+.dark-theme .gold-particle {
+  background: radial-gradient(circle, #FFF7D6 0%, #D4AF37 50%, #B45309 100%);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.9), 0 0 16px rgba(245, 158, 11, 0.5);
 }
 
 .p1 { width: 4px; height: 4px; top: 10%; right: 15%; animation-duration: 11s; animation-delay: 0s; }
@@ -106,9 +132,31 @@
 }
 
 /* Shiny 3D Specular Glassmorphic Bubbles */
+/* Glassmorphic Bubbles — light mode: pearl-white with subtle depth */
 .glass-bubble {
   position: absolute;
   border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(241, 245, 249, 0.75) 30%,
+    rgba(226, 232, 240, 0.50) 70%,
+    rgba(203, 213, 225, 0.30) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset 3px 3px 12px rgba(255, 255, 255, 0.9),
+    inset -4px -4px 15px rgba(148, 163, 184, 0.25),
+    0 10px 30px rgba(15, 23, 42, 0.08),
+    0 0 20px rgba(180, 83, 9, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: transform, opacity;
+  animation: bubbleFloat 16s ease-in-out infinite alternate;
+}
+
+/* Dark mode: original dark glass bubbles */
+.dark-theme .glass-bubble {
   background: radial-gradient(
     circle at 32% 28%,
     rgba(255, 255, 255, 0.35) 0%,
@@ -117,15 +165,11 @@
     rgba(7, 9, 15, 0.6) 100%
   );
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 15px rgba(255, 255, 255, 0.3),
     inset -6px -6px 20px rgba(0, 0, 0, 0.6),
     0 12px 36px rgba(0, 0, 0, 0.5),
     0 0 25px rgba(197, 160, 89, 0.15);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  will-change: transform, opacity;
-  animation: bubbleFloat 16s ease-in-out infinite alternate;
 }
 
 /* Shiny specular arc reflection overlay */
@@ -217,13 +261,17 @@
 .hero-headline {
   font-family: var(--font-display, 'Outfit', sans-serif);
   font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 800; /* Bold/Black weight */
-  line-height: 1.05; /* Tight line height */
-  letter-spacing: -0.03em; /* Tight letter spacing */
-  color: #F8FAFC;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #0F172A;
   margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
+}
+
+.dark-theme .hero-headline {
+  color: #F8FAFC;
 }
 
 /* Mask Reveal Containers */
@@ -244,8 +292,14 @@
 }
 
 .mask-text.line-2 {
-  opacity: 0.6;
+  color: var(--text-secondary);
+  opacity: 0.95;
   animation-delay: 0.35s;
+}
+
+.dark-theme .mask-text.line-2 {
+  color: #F8FAFC;
+  opacity: 0.75;
 }
 
 @keyframes maskUp {
@@ -260,13 +314,17 @@
 .hero-description {
   font-family: var(--font-sans, 'Inter', sans-serif);
   font-size: clamp(1rem, 1.8vw, 1.125rem);
-  color: #A1A1AA; /* Muted secondary color */
+  color: #334155;
   max-width: 580px;
   margin: 0 auto 3.5rem;
   line-height: 1.6;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.8s ease-out 0.6s forwards;
+}
+
+.dark-theme .hero-description {
+  color: #A1A1AA;
 }
 
 @keyframes fadeInUp {
@@ -295,15 +353,16 @@
   pointer-events: auto;
 }
 
+/* Primary hero button — amber in light mode */
 .btn-hero-primary {
   padding: 0.875rem 2rem;
   border-radius: 9999px;
   font-weight: 700;
   font-size: 0.95rem;
-  background: linear-gradient(135deg, #D4AF37 0%, #E5C158 100%);
-  color: #07090E;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+  background: linear-gradient(135deg, #B45309 0%, #D97706 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(180, 83, 9, 0.3);
+  box-shadow: 0 4px 20px rgba(180, 83, 9, 0.25);
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -315,18 +374,32 @@
 
 .btn-hero-primary:hover {
   transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(180, 83, 9, 0.4);
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+}
+
+/* Dark mode: gold gradient */
+.dark-theme .btn-hero-primary {
+  background: linear-gradient(135deg, #D4AF37 0%, #E5C158 100%);
+  color: #07090E;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+}
+
+.dark-theme .btn-hero-primary:hover {
   box-shadow: 0 8px 30px rgba(212, 175, 55, 0.55);
   background: linear-gradient(135deg, #E5C158 0%, #F5D77F 100%);
 }
 
+/* Secondary hero button — light mode: frosted white */
 .btn-hero-secondary {
   padding: 0.875rem 2rem;
   border-radius: 9999px;
   font-weight: 700;
   font-size: 0.95rem;
-  background: rgba(14, 19, 31, 0.7);
-  color: #F8FAFC;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0F172A;
+  border: 1px solid rgba(15, 23, 42, 0.15);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
@@ -340,106 +413,38 @@
 
 .btn-hero-secondary:hover {
   transform: translateY(-2px) scale(1.02);
-  background: rgba(22, 29, 47, 0.9);
-  border-color: rgba(37, 211, 102, 0.5);
-}
-
-/* Light Theme Button Overrides */
-.light-theme .btn-hero-primary {
-  background: linear-gradient(135deg, #B45309 0%, #D97706 100%);
-  color: #FFFFFF;
-  box-shadow: 0 4px 20px rgba(180, 83, 9, 0.25);
-  border: 1px solid rgba(180, 83, 9, 0.3);
-}
-
-.light-theme .btn-hero-primary:hover {
-  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
-  box-shadow: 0 8px 25px rgba(180, 83, 9, 0.4);
-}
-
-.light-theme .btn-hero-secondary {
-  background: rgba(255, 255, 255, 0.9);
-  color: #0F172A;
-  border: 1px solid rgba(15, 23, 42, 0.15);
-}
-
-.light-theme .btn-hero-secondary:hover {
   background: #FFFFFF;
   border-color: rgba(37, 211, 102, 0.6);
 }
 
-@media (max-width: 768px) {
-  .hero-actions {
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-  .btn-premium {
-    width: 100%;
-  }
+/* Dark mode: dark glass */
+.dark-theme .btn-hero-secondary {
+  background: rgba(14, 19, 31, 0.7);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* ── Light Theme Overrides for Hero Section ───────────────────────────── */
-.light-theme .hero-wrapper,
-.light-theme .frosted-glass-hero-bg {
-  background-color: #FFFFFF;
+.dark-theme .btn-hero-secondary:hover {
+  background: rgba(22, 29, 47, 0.9);
+  border-color: rgba(37, 211, 102, 0.5);
 }
 
-.light-theme .radial-light-spot {
+
+/* ── Radial light spot — light mode default */
+.radial-light-spot {
   background: radial-gradient(
     circle 450px at var(--x) var(--y),
     rgba(180, 83, 9, 0.08) 0%,
-    rgba(2, 132, 199, 0.05) 40%,
+    rgba(7, 89, 133, 0.05) 40%,
     transparent 75%
   );
 }
 
-.light-theme .hero-light-ray {
-  background: linear-gradient(
-    220deg,
-    rgba(180, 83, 9, 0.18) 0%,
-    rgba(2, 132, 199, 0.10) 35%,
-    rgba(180, 83, 9, 0.05) 65%,
-    transparent 100%
-  );
-}
-
-.light-theme .glass-bubble {
+.dark-theme .radial-light-spot {
   background: radial-gradient(
-    circle at 32% 28%,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(241, 245, 249, 0.75) 30%,
-    rgba(226, 232, 240, 0.5) 70%,
-    rgba(203, 213, 225, 0.3) 100%
+    circle 450px at var(--x) var(--y),
+    rgba(212, 175, 55, 0.12) 0%,
+    rgba(56, 189, 248, 0.06) 40%,
+    transparent 75%
   );
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
-    inset 3px 3px 12px rgba(255, 255, 255, 0.9),
-    inset -4px -4px 15px rgba(148, 163, 184, 0.25),
-    0 10px 30px rgba(15, 23, 42, 0.08),
-    0 0 20px rgba(180, 83, 9, 0.08);
-}
-
-.light-theme .glass-bubble::before {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-.light-theme .hero-headline {
-  color: #0F172A;
-}
-
-.light-theme .hero-description {
-  color: #334155;
-}
-
-.light-theme .btn-primary-mirror {
-  background: #B45309;
-  color: #FFFFFF;
-}
-
-.light-theme .btn-ghost-mirror {
-  background: rgba(241, 245, 249, 0.8);
-  color: #0F172A;
-  border: 1px solid rgba(15, 23, 42, 0.15);
 }

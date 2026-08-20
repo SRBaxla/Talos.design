@@ -147,14 +147,14 @@ function ImpactChart() {
                 <div className="flex-1 w-full grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                     {IMPACT_DATA.map((item, i) => (
                         <div key={item.label} className="flex flex-col items-center group/chart">
-                            <div className="h-48 md:h-64 w-full relative flex items-end justify-center gap-1 md:gap-2 px-3 md:px-4 bg-[rgba(255,255,255,0.02)] rounded-2xl md:rounded-3xl border border-[rgba(255,255,255,0.05)] overflow-hidden">
+                            <div className="h-48 md:h-64 w-full relative flex items-end justify-center gap-1 md:gap-2 px-3 md:px-4 bg-[var(--bg-surface-elevated)] rounded-2xl md:rounded-3xl border border-[var(--border-color)] overflow-hidden">
                                 {/* Before Bar */}
                                 <motion.div 
                                     initial={{ height: 0 }}
                                     whileInView={{ height: `${item.before}%` }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1, delay: i * 0.1 }}
-                                    className="w-2 md:w-4 bg-[rgba(255,255,255,0.05)] rounded-t-sm md:rounded-t-lg border border-[var(--border-color)] relative"
+                                    className="w-2 md:w-4 bg-[var(--bg-surface)] rounded-t-sm md:rounded-t-lg border border-[var(--border-color)] relative"
                                 />
                                 {/* After Bar */}
                                 <motion.div 
@@ -248,7 +248,7 @@ export default function Impact() {
                 </div>
 
                 {/* Senior Design Director Tab Structure */}
-                <div className="flex flex-wrap gap-2 md:gap-3 mb-12 md:mb-16 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
+                <div className="flex flex-wrap gap-2 md:gap-3 mb-12 md:mb-16 p-2 rounded-2xl bg-[var(--text-muted)/5] border border-[var(--border-color)] backdrop-blur-xl">
                     {[
                         { id: 'all', label: 'ALL ARCHITECTURES', count: '5', desc: 'Complete System Ecosystem' },
                         { id: 'deployments', label: 'LIVE CLIENT DEPLOYMENTS', count: '2', desc: 'Client Frontends & Web Builds' },
@@ -261,13 +261,13 @@ export default function Impact() {
                             className={`relative px-4 md:px-6 py-3 rounded-xl font-mono text-xs text-left transition-all duration-200 flex-1 min-w-[200px] flex flex-col justify-between ${
                                 activeShowcaseTab === tab.id
                                     ? 'bg-[var(--accent-orange)] text-[#07090E] font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                                    : 'text-[var(--text-muted)] hover:text-white hover:bg-white/5'
+                                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)]'
                             }`}
                             style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
                         >
                             <div className="flex items-center justify-between gap-2 mb-1">
                                 <span className="uppercase font-bold tracking-wider">{tab.label}</span>
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeShowcaseTab === tab.id ? 'bg-[#07090E] text-[var(--accent-orange)]' : 'bg-white/10 text-white/70'}`}>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeShowcaseTab === tab.id ? 'bg-[var(--bg-base)] text-[var(--accent-orange)]' : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)]'}`}>
                                     {tab.count}
                                 </span>
                             </div>
@@ -332,7 +332,7 @@ export default function Impact() {
                                             </div>
                                             <div className="bg-[rgba(245,158,11,0.03)] p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-[rgba(245,158,11,0.05)] self-start">
                                                 <h4 className="text-[9px] md:text-[10px] font-mono uppercase tracking-widest text-[var(--accent-orange)] mb-4 block underline underline-offset-4">Technical Outcome</h4>
-                                                <p className="text-white text-base md:text-lg font-medium leading-snug italic tracking-tight">
+                                                <p className="text-[var(--text-primary)] text-base md:text-lg font-medium leading-snug italic tracking-tight">
                                                     "{study.outcome}"
                                                 </p>
                                             </div>
@@ -351,7 +351,7 @@ export default function Impact() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {study.tags.map(tag => (
-                                            <span key={tag} className="text-[8px] md:text-[9px] font-mono uppercase tracking-[0.2em] px-4 md:px-5 py-2 md:py-2.5 rounded-full bg-[rgba(255,255,255,0.03)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--accent-orange)] hover:text-white transition-colors">
+                                            <span key={tag} className="text-[8px] md:text-[9px] font-mono uppercase tracking-[0.2em] px-4 md:px-5 py-2 md:py-2.5 rounded-full bg-[rgba(255,255,255,0.03)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--accent-orange)] hover:text-[var(--text-primary)] transition-colors">
                                                 {tag}
                                             </span>
                                         ))}

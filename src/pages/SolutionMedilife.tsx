@@ -40,10 +40,10 @@ export default function SolutionMedilife() {
     const [activeDrawerTab, setActiveDrawerTab] = useState<'architecture' | 'hardware' | 'capabilities'>('architecture');
 
     return (
-        <div className="container py-12 flex flex-col flex-grow text-white">
+        <div className="container py-12 flex flex-col flex-grow">
             {/* Back Navigation */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-                <Link to="/solutions" className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-white transition-colors">
+                <Link to="/solutions" className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
                     <ArrowLeft size={14} /> Back to Solutions
                 </Link>
             </motion.div>
@@ -76,7 +76,7 @@ export default function SolutionMedilife() {
                     </a>
                     <button
                         onClick={() => setDrawerOpen(true)}
-                        className="px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/10 transition-all"
+                        className="px-5 py-3 rounded-xl bg-[var(--bg-surface-elevated)] hover:bg-[var(--bg-surface)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-[var(--border-color)] transition-all"
                     >
                         <Layers size={14} /> Tech Specs Drawer
                     </button>
@@ -116,7 +116,7 @@ export default function SolutionMedilife() {
             <div className="mb-12">
                 <div className="text-center max-w-xl mx-auto mb-8">
                     <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[var(--accent-orange)] font-bold">Why Labs Upgrade</span>
-                    <h2 className="text-2xl md:text-4xl font-display font-bold uppercase tracking-tight text-white mt-1">
+                    <h2 className="text-2xl md:text-4xl font-display font-bold uppercase tracking-tight text-[var(--text-primary)] mt-1">
                         Problem vs Medilife Solution
                     </h2>
                 </div>
@@ -153,25 +153,25 @@ export default function SolutionMedilife() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
                         <Globe size={20} className="text-[var(--accent-orange)] mb-3" />
-                        <h3 className="text-sm font-bold text-white mb-1">Branded Storefront</h3>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">Branded Storefront</h3>
                         <p className="text-xs text-[var(--text-secondary)]">Your lab's custom website for online test booking under your domain.</p>
                     </div>
 
                     <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
                         <ShieldCheck size={20} className="text-emerald-400 mb-3" />
-                        <h3 className="text-sm font-bold text-white mb-1">Pathologist Peer Review</h3>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">Pathologist Peer Review</h3>
                         <p className="text-xs text-[var(--text-secondary)]">Mandatory senior doctor verification before releasing reports.</p>
                     </div>
 
                     <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
                         <Zap size={20} className="text-[var(--accent-cyan)] mb-3" />
-                        <h3 className="text-sm font-bold text-white mb-1">WhatsApp PDF Dispatch</h3>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">WhatsApp PDF Dispatch</h3>
                         <p className="text-xs text-[var(--text-secondary)]">Instant NABL PDF delivery straight to patient WhatsApp inbox.</p>
                     </div>
 
                     <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
                         <TrendingUp size={20} className="text-purple-400 mb-3" />
-                        <h3 className="text-sm font-bold text-white mb-1">Patient Retention</h3>
+                        <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">Patient Retention</h3>
                         <p className="text-xs text-[var(--text-secondary)]">Automated reminders for 3-month and 6-month blood test follow-ups.</p>
                     </div>
                 </div>
@@ -181,7 +181,7 @@ export default function SolutionMedilife() {
             <div className="mb-12 p-8 rounded-2xl glass-panel border border-emerald-500/20 bg-emerald-950/10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">TURNKEY CLINICAL SOFTWARE DEPLOYMENT</span>
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-white mt-1">Deploy MediLife for Your Diagnostic Practice</h3>
+                    <h3 className="text-xl md:text-2xl font-display font-bold text-[var(--text-primary)] mt-1">Deploy MediLife for Your Diagnostic Practice</h3>
                     <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-xl">We handle domain setup, test catalog migration, analyzer machine data parser connectivity, and ongoing infrastructure maintenance.</p>
                 </div>
                 <Link
@@ -209,7 +209,7 @@ export default function SolutionMedilife() {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="w-full max-w-xl h-full glass-panel border-l border-[var(--border-color)] bg-[#07090E] p-8 overflow-y-auto flex flex-col justify-between shadow-2xl text-white"
+                            className="w-full max-w-xl h-full border-l border-[var(--border-color)] bg-[#07090E] p-8 overflow-y-auto flex flex-col justify-between shadow-2xl text-white"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="space-y-6">

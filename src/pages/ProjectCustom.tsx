@@ -58,7 +58,7 @@ export default function ProjectCustom() {
             <motion.div {...fadeUp} className="mb-8">
                 <Link
                     to="/packages"
-                    className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-white transition-colors"
+                    className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                     <ArrowLeft size={16} /> Back to Packages
                 </Link>

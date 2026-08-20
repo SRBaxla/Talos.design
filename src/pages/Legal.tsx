@@ -54,14 +54,14 @@ export default function Legal() {
 
             {/* Anchor Navigation Bar */}
             <div className="flex flex-wrap justify-center gap-3 mb-16 px-4">
-                <a href="#terms" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent-orange)] transition-all flex items-center gap-2">
+                <a href="#terms" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-orange)] transition-all flex items-center gap-2">
                     <FileText size={14} className="text-[var(--accent-orange)]" /> Terms of Service
                 </a>
-                <a href="#privacy" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent-cyan)] transition-all flex items-center gap-2">
+                <a href="#privacy" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-cyan)] transition-all flex items-center gap-2">
                     <Lock size={14} className="text-[var(--accent-cyan)]" /> Privacy Policy
                 </a>
-                <a href="#security" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent-orange)] transition-all flex items-center gap-2">
-                    <ShieldCheck size={14} className="text-[var(--accent-orange)]" /> Security & Governance
+                <a href="#security" className="px-4 py-2 rounded-xl glass-panel border border-[var(--border-color)] text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-orange)] transition-all flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-[var(--accent-orange)]" /> Security &amp; Governance
                 </a>
             </div>
 
@@ -86,27 +86,27 @@ export default function Legal() {
 
                     <div className="glass-panel p-8 md:p-10 space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed rounded-3xl border border-[var(--border-color)]">
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">1. Agreement to Terms</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">1. Agreement to Terms</h3>
                             <p>By accessing or using the digital systems and services provided by Talos.design, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not utilize our digital platform.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">2. Scope of Services</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">2. Scope of Services</h3>
                             <p>Talos.design provides custom software solutions including web design, 24/7 AI chatbots, and workflow automation systems. All deliverables, timelines, and budgets are executed according to individual signed proposals.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">3. Payment Terms & Milestones</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">3. Payment Terms & Milestones</h3>
                             <p>Project payments follow the milestone schedule outlined in your agreement. Deposits are required before engineering begins. Payments correspond to verified deliverable approvals.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">4. Intellectual Property & Ownership</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">4. Intellectual Property & Ownership</h3>
                             <p>Upon final payment, clients receive 100% full ownership of custom source code, design assets, and database schemas created for their specific business project.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">5. Revisions & Modifications</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">5. Revisions & Modifications</h3>
                             <p>Each project proposal includes standard revision cycles. Scope additions or custom features requested outside the initial proposal are evaluated under clear change requests.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">6. Limitation of Liability</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">6. Limitation of Liability</h3>
                             <p>Talos.design shall not be liable for indirect, incidental, or consequential damages arising from third-party API downtime. Our maximum liability is capped at the fees paid for the specific service module.</p>
                         </div>
                     </div>
@@ -130,19 +130,19 @@ export default function Legal() {
 
                     <div className="glass-panel p-8 md:p-10 space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed rounded-3xl border border-[var(--border-color)]">
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">1. Information We Collect</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">1. Information We Collect</h3>
                             <p>We collect essential operational information provided directly by clients, including contact names, company emails, phone numbers, and business documentation required for AI model training.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">2. Purpose of Processing</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">2. Purpose of Processing</h3>
                             <p>Information is used exclusively to build, configure, and maintain your custom AI agents, website analytics, and automated workflow pipelines. We strictly do not sell client data.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">3. Data Retention & Privacy Rights</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">3. Data Retention & Privacy Rights</h3>
                             <p>You reserve full rights to request complete deletion or retrieval of your stored client data at any time by emailing <a href="mailto:hello@talos.design" className="text-[var(--accent-cyan)] font-bold hover:underline">hello@talos.design</a>.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base">4. Cookies & Analytics</h3>
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base">4. Cookies & Analytics</h3>
                             <p>We use essential cookies strictly for system performance and session security. No cross-site advertising or third-party tracking pixels are deployed.</p>
                         </div>
                     </div>
