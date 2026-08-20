@@ -135,15 +135,15 @@ export default function Designs() {
                 viewport={{ once: true }}
                 className="p-8 md:p-16 glass-panel rounded-[2.5rem] md:rounded-[4rem] text-center relative overflow-hidden border border-[var(--accent-orange-glow)] mb-24"
             >
-                <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+                <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(245,158,11,0.05)] to-transparent pointer-events-none" />
-                <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 uppercase tracking-tight leading-[1.05]">
+                <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 uppercase tracking-tight leading-[1.05] relative z-10">
                     Collaborate on <br /><span className="text-gradient-orange">Frontend Architecture</span>
                 </h2>
-                <p className="text-[var(--text-secondary)] mb-10 max-w-xl mx-auto text-base leading-relaxed opacity-90 px-4">
+                <p className="text-[var(--text-secondary)] mb-10 max-w-xl mx-auto text-base leading-relaxed opacity-90 px-4 relative z-10">
                     From complex interactive WebGL canvas modules to scalable React component systems, we engineer high-fidelity user interfaces and modern frontend architecture.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
                     <Link to="/contact" className="btn btn-primary py-3.5 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] inline-flex items-center justify-center gap-2 text-xs uppercase tracking-wider font-bold">
                         Discuss Technical Collaboration <ArrowRight size={16} />
                     </Link>

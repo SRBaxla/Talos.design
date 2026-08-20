@@ -80,7 +80,7 @@ export function Layout() {
             <Background isDarkMode={isDarkMode} />
 
             <div className="flex flex-col min-h-dvh w-full relative z-10 bg-transparent">
-                <Navbar isDarkMode={isDarkMode} onSearchClick={() => setIsSearchOpen(true)} onThemeToggle={toggleTheme} />
+                <Navbar isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />
                 <main className={`flex-grow flex flex-col bg-transparent ${isHome || isExpertise ? '' : 'pt-24'}`}>
                     <Outlet context={{ isDarkMode, toggleTheme }} />
                 </main>

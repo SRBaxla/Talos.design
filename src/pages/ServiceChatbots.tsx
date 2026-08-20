@@ -325,9 +325,8 @@ export default function ServiceChatbots() {
                     <h2 className="text-2xl md:text-3xl font-display mb-2">Ready to Respond Faster to Inquiries?</h2>
                     <p className="text-sm text-[var(--text-secondary)]">Let us configure an assistant that captures leads and handles routine customer questions 24/7.</p>
                 </div>
-                <div className="flex gap-4 relative z-10 shrink-0">
-                    <Link to="/contact" className="btn btn-outline py-3 px-6 text-xs uppercase tracking-wider">Ask a Question</Link>
-                    <Link to="/contact" className="btn btn-primary py-3 px-6 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2 text-xs uppercase tracking-wider">
+                <div className="relative z-10 shrink-0">
+                    <Link to="/contact" className="btn btn-primary py-3 px-8 shadow-[0_0_20px_var(--accent-orange-glow)] flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
                         Get Started <ArrowRight size={14} />
                     </Link>
                 </div>

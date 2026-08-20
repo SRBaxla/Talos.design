@@ -159,7 +159,7 @@ export default function Home() {
                   transition: { staggerChildren: 0.1 }
                 }
               }}
-              className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+              className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8"
             >
               {SERVICES.map((svc) => (
                 <motion.div
@@ -169,7 +169,7 @@ export default function Home() {
                     visible: { opacity: 1, y: 0 }
                   }}
                   whileHover={{ y: -5 }}
-                  className="glass-card p-6 sm:p-8 lg:p-10 rounded-3xl flex flex-col h-full overflow-hidden transition-all duration-300"
+                  className="glass-card p-6 sm:p-7 lg:p-8 rounded-3xl flex flex-col h-full overflow-hidden transition-all duration-300"
                   style={{ borderColor: svc.accentBorder }}
                 >
                   <div className="flex items-center gap-4 mb-4">
@@ -184,7 +184,7 @@ export default function Home() {
                   <p className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: svc.accentColor }}>{svc.benefit}</p>
                   <p className="text-[var(--text-secondary)] text-[0.8rem] leading-relaxed mb-6 opacity-80">{svc.description}</p>
 
-                  <div className="mt-auto pt-5 border-t border-[var(--border-color)]">
+                  <div className="mt-auto pt-5 border-t border-[var(--border-color)] flex flex-col justify-between flex-grow">
                     <ul className="grid grid-cols-1 gap-y-2 mb-6">
                       {svc.features.map(f => (
                         <li key={f} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
@@ -194,10 +194,10 @@ export default function Home() {
                     </ul>
                     <Link
                       to={svc.id === 'chatbots' ? '/services/chatbots' : svc.id === 'automation' ? '/services/automation' : '/services/web-design'}
-                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all hover:gap-3"
-                      style={{ color: svc.accentColor }}
+                      className="btn btn-outline w-full text-center text-xs py-3 px-4 rounded-xl font-bold uppercase tracking-wider whitespace-nowrap min-w-0 flex items-center justify-center gap-2 group transition-all"
+                      style={{ color: svc.accentColor, borderColor: svc.accentBorder }}
                     >
-                      Explore Service <span>→</span>
+                      Explore Service <span className="transition-transform group-hover:translate-x-1">→</span>
                     </Link>
                   </div>
                 </motion.div>
@@ -228,7 +228,7 @@ export default function Home() {
                   transition: { staggerChildren: 0.15 }
                 }
               }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl"
             >
               {PROJECTS.map((project) => {
                 const a = accentMap[project.accent];
@@ -240,7 +240,7 @@ export default function Home() {
                       visible: { opacity: 1, y: 0 }
                     }}
                     whileHover={{ scale: 1.02 }}
-                    className="glass-card p-6 sm:p-8 lg:p-10 flex flex-col group h-full justify-between rounded-3xl"
+                    className="glass-card p-6 sm:p-7 lg:p-8 flex flex-col group h-full justify-between rounded-3xl"
                     style={{ borderColor: a.border }}
                   >
                     <div>
@@ -263,17 +263,17 @@ export default function Home() {
                       </ul>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-2.5 sm:gap-3 mt-auto">
                       <Link
                         to={project.path}
-                        className="btn btn-outline flex-1 text-center text-xs py-3 rounded-xl font-bold uppercase tracking-widest"
+                        className="btn btn-outline flex-1 text-center text-xs py-3 px-3 rounded-xl font-bold uppercase tracking-wider whitespace-nowrap min-w-0 flex items-center justify-center"
                         style={{ color: a.color, borderColor: a.border }}
                       >
                         Details
                       </Link>
                       <button
                         onClick={() => scrollToId('contact')}
-                        className="btn btn-primary flex-1 text-center text-xs py-3 rounded-xl font-bold uppercase tracking-widest shadow-xl"
+                        className="btn btn-primary flex-1 text-center text-xs py-3 px-3 rounded-xl font-bold uppercase tracking-wider shadow-xl whitespace-nowrap min-w-0 flex items-center justify-center"
                         style={{ background: `linear-gradient(135deg, ${a.color} 0%, rgba(210, 193, 182, 0.8) 100%)` }}
                       >
                         Get Started
@@ -368,7 +368,7 @@ export default function Home() {
           </section>
 
           {/* ── SECTION 5: CONTACT + FOOTER ─────────────────────────────────────── */}
-          <section id="contact" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-12">
+          <section id="contact" className="container flex flex-col items-center md:items-start w-full min-h-[100dvh] justify-start pt-20 sm:pt-32 lg:pt-40 pb-32 md:pb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -417,6 +417,7 @@ export default function Home() {
               </div>
 
               <motion.div
+                id="contact-card"
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}

@@ -55,19 +55,24 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
   });
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1280);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkWidth = () => setWindowWidth(window.innerWidth);
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
   }, []);
+
+  const isDesktop = windowWidth >= 1024;
+  const isTablet = windowWidth >= 768 && windowWidth < 1024;
+  const isLargePhone = windowWidth >= 430 && windowWidth < 768;
+  const isOrbTracker = !isDesktop;
 
   const handleDotClick = useCallback((index: number) => {
     scrollToId(SECTIONS[index].id);
-    if (isMobile) setIsMobileOpen(false);
-  }, [isMobile]);
+    if (isOrbTracker) setIsMobileOpen(false);
+  }, [isOrbTracker]);
 
   const orbButtonRef = useRef<HTMLDivElement>(null);
   const dragHoveredIndexRef = useRef<number | null>(null);
@@ -128,7 +133,8 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     return null;
   }, []);
 
-  const radius = 120;
+  const desktopRadius = windowWidth >= 1280 ? 120 : 95;
+  const radius = desktopRadius;
   const pathLength = Math.PI * radius;
 
   // Spring for smooth, responsive arc tracking
@@ -139,9 +145,14 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
   // Update section tops on mount, resize, and scroll
   useEffect(() => {
     const updateSectionTops = () => {
+      const isOrb = typeof window !== 'undefined' && window.innerWidth < 1024;
       sectionTopsRef.current = SECTIONS.map(s => {
-        const el = document.getElementById(s.id);
+        let el = document.getElementById(s.id);
         if (!el) return 0;
+        if (isOrb && s.id === 'contact') {
+          const card = document.getElementById('contact-card') || el.querySelector('form');
+          if (card) el = card as HTMLElement;
+        }
         return el.getBoundingClientRect().top + window.scrollY;
       });
     };
@@ -150,6 +161,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     // Re-check tops after initial rendering/font loads
     const timer = setTimeout(updateSectionTops, 500);
     window.addEventListener('resize', updateSectionTops);
+    window.addEventListener('orientationchange', updateSectionTops);
 
     const handleScroll = () => {
       const tops = sectionTopsRef.current;
@@ -196,6 +208,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateSectionTops);
+      window.removeEventListener('orientationchange', updateSectionTops);
       window.removeEventListener('scroll', handleScroll);
     };
   }, [arcMotionValue]);
@@ -206,8 +219,8 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
   });
 
 
-  // Mobile constants
-  const mobileRadius = 100; // Refined for a tighter, more compact feel
+  // Mobile / Tablet responsive constants
+  const mobileRadius = isTablet ? 125 : isLargePhone ? 110 : 90;
   const mobileArcStart = Math.PI; // Starts at 9 o'clock (180 deg)
   const mobileArcSpan = Math.PI; // Full semi-circle sweep (180 deg fanned over the top)
 
@@ -215,8 +228,12 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
     <>
 
       {/* ── Desktop Semi-Circle Scroll Tracker (right edge) ─────────────────── */}
-      {!isMobile && (
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end pointer-events-none hidden md:flex"
+      {isDesktop && (
+        <motion.div
+          layout
+          layoutId="scroll-tracker-container"
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-end pointer-events-none hidden lg:flex"
           style={{ width: `${radius + 80}px`, height: `${radius * 2 + 80}px` }}
         >
           {/* SVG Semi-Circle Track */}
@@ -328,12 +345,17 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
               </div>
             );
           })}
-        </div>
+        </motion.div>
       )}
 
-      {/* ── Mobile Expanding Bottom Orb Tracker ────────────────────────────── */}
-      {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 z-[60] flex items-end justify-center pointer-events-none pb-10 overflow-visible">
+      {/* ── Mobile & Tablet Expanding Bottom Orb Tracker ────────────────────────────── */}
+      {isOrbTracker && (
+        <motion.div
+          layout
+          layoutId="scroll-tracker-container"
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          className="fixed bottom-0 left-0 right-0 z-[60] flex items-end justify-center pointer-events-none pb-14 overflow-visible"
+        >
           {/* Transparent hit area overlay for closing when clicking outside the expanded menu */}
           <AnimatePresence>
             {isMobileOpen && (
@@ -386,6 +408,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
 
                     const xOffset = mobileRadius + mobileRadius * Math.cos(angle);
                     const yOffset = mobileRadius + mobileRadius * Math.sin(angle);
+                    const nodeWidth = isTablet ? '96px' : isLargePhone ? '84px' : '76px';
 
                     return (
                       <div
@@ -396,8 +419,8 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
                           left: `${xOffset}px`,
                           top: `${yOffset}px`,
                           transform: 'translate(-50%, -50%)',
-                          width: '80px',
-                          height: '80px'
+                          width: nodeWidth,
+                          height: nodeWidth
                         }}
                         onClick={(e) => { e.stopPropagation(); handleDotClick(i); }}
                       >
@@ -411,7 +434,7 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
                             boxShadow: (isActive || dragHoveredIndex === i) ? '0 0 15px var(--accent-orange)' : 'none'
                           }}
                         />
-                        <span className="text-[10px] font-mono tracking-widest uppercase transition-colors duration-200 text-center whitespace-nowrap"
+                        <span className="text-[10px] sm:text-xs font-mono tracking-widest uppercase transition-colors duration-200 text-center whitespace-nowrap"
                           style={{ color: (isActive || dragHoveredIndex === i) ? 'var(--text-primary)' : 'var(--text-muted)', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
                           {section.label}
                         </span>
@@ -530,11 +553,11 @@ export function ScrollTracker({ scrollProgress, isDarkMode }: ScrollTrackerProps
               </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* ── Scroll % indicator (bottom-right Desktop Only) ─────────── */}
-      {!isMobile && (
+      {isDesktop && (
         <div className="fixed bottom-6 right-6 z-50">
           <span
             className="text-xs font-mono tabular-nums tracking-wider font-semibold"
