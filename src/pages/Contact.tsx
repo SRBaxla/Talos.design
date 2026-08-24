@@ -25,7 +25,8 @@ export default function Contact() {
     useEffect(() => {
         if (location.state && location.state.bundleType) {
             const { bundleType, estimatedValue, modules = [] } = location.state;
-            const prefilledMessage = `Project Enquiry: ${bundleType}\n\nEstimated Value: ~$${estimatedValue}\n\nSelected Modules:\n${modules.map((m: string) => `- ${m}`).join('\n')}\n\nAdditional Details:\n`;
+            const formattedVal = String(estimatedValue || '').startsWith('$') ? String(estimatedValue) : `$${estimatedValue || ''}`;
+            const prefilledMessage = `Project Enquiry: ${bundleType}\n\nEstimated Value: ~${formattedVal}\n\nSelected Modules:\n${modules.map((m: string) => `- ${m}`).join('\n')}\n\nAdditional Details:\n`;
             setMessage(prefilledMessage);
         }
     }, [location]);

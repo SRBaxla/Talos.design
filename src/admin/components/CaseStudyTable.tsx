@@ -10,13 +10,7 @@ interface CaseStudyTableProps {
     onRowClick?: (study: CaseStudy) => void;
 }
 
-const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-    draft: { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
-    research: { bg: 'rgba(0,229,255,0.12)', text: '#00e5ff' },
-    writing: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
-    review: { bg: 'rgba(192,132,252,0.12)', text: '#c084fc' },
-    published: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
-};
+import AdminBadge from './AdminBadge';
 
 export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStudyTableProps) {
     const [search, setSearch] = useState('');
@@ -145,21 +139,12 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
                                         {s.industry || '—'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border"
-                                            style={{
-                                                backgroundColor: STATUS_COLORS[s.status]?.bg || 'rgba(255,255,255,0.1)',
-                                                color: STATUS_COLORS[s.status]?.text || '#fff',
-                                                borderColor: STATUS_COLORS[s.status]?.bg || 'rgba(255,255,255,0.2)'
-                                            }}
-                                        >
-                                            {s.status}
-                                        </span>
+                                        <AdminBadge status={s.status} />
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-mono">
+                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-mono whitespace-nowrap">
                                         {s.publishDate || '—'}
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-6 py-4 text-right whitespace-nowrap">
                                         <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                                             <button
                                                 onClick={() => setPreviewStudy(s)}
@@ -170,15 +155,15 @@ export default function CaseStudyTable({ studies, onEdit, onRowClick }: CaseStud
                                             </button>
                                             <button
                                                 onClick={(e) => handleToggleVisibility(e, s.id, s.showOnWebsite)}
-                                                className={`px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                                                className={`whitespace-nowrap shrink-0 px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all border ${
                                                     s.showOnWebsite !== false
-                                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
-                                                        : 'bg-zinc-800/80 text-zinc-400 border border-zinc-700 hover:text-white hover:border-zinc-500'
+                                                        ? 'bg-emerald-600 text-white dark:bg-emerald-500 dark:text-black border-emerald-600 dark:border-emerald-500 shadow-sm'
+                                                        : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-[var(--accent-orange)] hover:text-[var(--accent-orange)] shadow-sm'
                                                 }`}
                                                 title={s.showOnWebsite !== false ? "Pushed to Public Showcase (Click to Hide)" : "Add to Public Showcase (Click to Push Live)"}
                                             >
-                                                {s.showOnWebsite !== false ? <Eye size={13} /> : <EyeOff size={13} />}
-                                                <span className="hidden sm:inline">
+                                                {s.showOnWebsite !== false ? <Eye size={14} className="shrink-0" /> : <EyeOff size={14} className="shrink-0" />}
+                                                <span className="whitespace-nowrap">
                                                     {s.showOnWebsite !== false ? 'Showcase: ON' : 'Add to Showcase'}
                                                 </span>
                                             </button>

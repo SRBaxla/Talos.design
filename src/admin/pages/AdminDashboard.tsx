@@ -3,15 +3,17 @@ import StatsCards from '../components/StatsCards';
 import { FolderKanban, BookOpen, ArrowRight, DollarSign, TrendingUp, Activity, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import AdminBadge from '../components/AdminBadge';
+
 const STATUS_COLORS: Record<string, string> = {
     'lead': '#71717a',
-    'in-progress': '#00e5ff',
-    'review': '#f59e0b',
-    'completed': '#22c55e',
-    'published': '#c084fc',
+    'in-progress': '#0284c7',
+    'review': '#d97706',
+    'completed': '#16a34a',
+    'published': '#9333ea',
     'draft': '#71717a',
-    'research': '#00e5ff',
-    'writing': '#f59e0b',
+    'research': '#0284c7',
+    'writing': '#d97706',
 };
 
 export default function AdminDashboard() {
@@ -84,16 +86,7 @@ export default function AdminDashboard() {
                                             <span className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">{p.client || 'Unassigned Identifier'}</span>
                                         </div>
                                     </div>
-                                    <span
-                                        className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded border whitespace-nowrap hidden sm:block"
-                                        style={{
-                                            backgroundColor: `${STATUS_COLORS[p.status]}15`,
-                                            color: STATUS_COLORS[p.status],
-                                            borderColor: `${STATUS_COLORS[p.status]}30`
-                                        }}
-                                    >
-                                        {p.status.replace('-', ' ')}
-                                    </span>
+                                    <AdminBadge status={p.status} className="hidden sm:inline-flex" />
                                 </Link>
                             ))
                         )}
@@ -133,16 +126,7 @@ export default function AdminDashboard() {
                                             <span className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">{s.industry || 'General Matrix'}</span>
                                         </div>
                                     </div>
-                                    <span
-                                        className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded border whitespace-nowrap hidden sm:block"
-                                        style={{
-                                            backgroundColor: `${STATUS_COLORS[s.status]}15`,
-                                            color: STATUS_COLORS[s.status],
-                                            borderColor: `${STATUS_COLORS[s.status]}30`
-                                        }}
-                                    >
-                                        {s.status}
-                                    </span>
+                                    <AdminBadge status={s.status} className="hidden sm:inline-flex" />
                                 </Link>
                             ))
                         )}

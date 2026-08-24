@@ -211,8 +211,8 @@ export default function AdminInquiries() {
                             <div key={col.title} className="w-[380px] flex flex-col h-full max-h-full">
                                 {/* Column Header */}
                                 <div className="flex items-center justify-between mb-4 px-1">
-                                    <h3 className="font-display font-bold text-sm text-[var(--text-secondary)]">{col.title}</h3>
-                                    <span className="text-[10px] font-mono bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] px-2 py-0.5 rounded-full">
+                                    <h3 className="font-display font-bold text-sm text-[var(--text-primary)]">{col.title}</h3>
+                                    <span className="text-[10px] font-mono bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-secondary)] font-bold px-2 py-0.5 rounded-full">
                                         {colInquiries.length}
                                     </span>
                                 </div>
@@ -220,7 +220,7 @@ export default function AdminInquiries() {
                                 {/* Column Track */}
                                 <div className="flex-1 overflow-y-auto space-y-3 pb-8 pr-2 custom-scrollbar">
                                     {colInquiries.length === 0 ? (
-                                        <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono">
+                                        <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono bg-[var(--bg-surface-elevated)]/40">
                                             Empty
                                         </div>
                                     ) : (
@@ -233,7 +233,7 @@ export default function AdminInquiries() {
                                                 {showArchived && (
                                                     <button
                                                         onClick={() => toggleSelect(inquiry.id)}
-                                                        className={`absolute top-4 left-4 z-10 p-1 rounded-md transition-all ${selectedIds.has(inquiry.id) ? 'bg-[var(--accent-orange)] text-black shadow-lg scale-110' : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 border border-[var(--border-color)] hover:border-[var(--accent-orange)]'}`}
+                                                        className={`absolute top-4 left-4 z-10 p-1 rounded-md transition-all ${selectedIds.has(inquiry.id) ? 'bg-[var(--accent-orange)] text-white shadow-lg scale-110' : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 border border-[var(--border-color)] hover:border-[var(--accent-orange)]'}`}
                                                     >
                                                         {selectedIds.has(inquiry.id) ? <CheckSquare size={14} /> : <Square size={14} />}
                                                     </button>
@@ -246,7 +246,7 @@ export default function AdminInquiries() {
                                                         style={{ backgroundColor: STATUS_COLORS[inquiry.status] || '#71717a' }}
                                                     />
 
-                                                    <h4 className="font-bold text-[15px] mb-1 pr-6 truncate">{inquiry.company || inquiry.name}</h4>
+                                                    <h4 className="font-bold text-[15px] mb-1 pr-6 truncate text-[var(--text-primary)]">{inquiry.company || inquiry.name}</h4>
                                                     <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] mb-4 font-mono">
                                                         <span>{inquiry.name}</span>
                                                         <span>•</span>

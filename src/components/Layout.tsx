@@ -11,7 +11,7 @@ const STORAGE_KEY = 'talos-dark-mode-unlocked';
 export function Layout() {
     const location = useLocation();
     const isHome = location.pathname === '/';
-    const isExpertise = location.pathname === '/expertise';
+    const isExpertise = location.pathname.startsWith('/expertise');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     // Default is light (false). Dark is the hidden easter-egg.

@@ -46,7 +46,7 @@ const ARCHITECTURE_STANDARDS = [
 
 export default function Designs() {
     return (
-        <div className="container py-24 min-h-screen">
+        <div className="container pt-8 sm:pt-10 md:pt-14 pb-12 sm:pb-16 min-h-screen">
             {/* Hero Section */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}

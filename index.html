@@ -75,6 +75,28 @@
       }
     }(window.location))
   </script>
+
+  <!-- Prevent flash of prerendered content on initial cold load before splash screen mounts -->
+  <script type="text/javascript">
+    (function () {
+      try {
+        var isClientOnly = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/portal');
+        var splashShown = sessionStorage.getItem('talos_splash_shown');
+        if (!isClientOnly && !splashShown) {
+          document.documentElement.classList.add('splash-pending');
+          var isDark = localStorage.getItem('talos-dark-mode-unlocked') === 'true';
+          if (isDark) {
+            document.documentElement.classList.add('dark-theme');
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    html.splash-pending #root {
+      visibility: hidden;
+    }
+  </style>
 </head>
 
 <body>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Lock, Eye, EyeOff, CheckCircle, User } from 'lucide-react';
+import { ArrowLeft, Lock, Eye, EyeOff, CheckCircle, User, BookOpen } from 'lucide-react';
 import { onClientAuthChange, changeClientPassword } from './portalStore';
 
 function StrengthBar({ password }: { password: string }) {
@@ -89,7 +89,7 @@ export default function PortalProfile() {
                     >
                         <ArrowLeft size={16} /> Back to Dashboard
                     </button>
-                    <span className="text-xs font-mono text-[var(--text-muted)]">Profile</span>
+                    <span className="text-xs font-mono text-[var(--text-muted)]">Profile & Unified Access</span>
                 </div>
             </header>
 
@@ -99,15 +99,35 @@ export default function PortalProfile() {
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-2xl p-6 mb-6 flex items-center gap-4"
+                    className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-2xl p-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
-                    <div className="w-14 h-14 rounded-full bg-[rgba(210,193,182,0.1)] border border-[rgba(210,193,182,0.2)] flex items-center justify-center">
-                        <User size={24} className="text-[var(--accent-orange)]" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-full bg-[rgba(210,193,182,0.1)] border border-[rgba(210,193,182,0.2)] flex items-center justify-center">
+                            <User size={24} className="text-[var(--accent-orange)]" />
+                        </div>
+                        <div>
+                            <div className="font-display font-bold">Talos Unified Account</div>
+                            <div className="text-sm text-[var(--text-muted)] font-mono mt-0.5">{clientEmail}</div>
+                            
+                            {/* Active Overlappable Roles */}
+                            <div className="flex flex-wrap gap-2 mt-2.5">
+                                <span className="text-[9px] font-mono font-bold bg-[var(--accent-orange)]/15 text-[var(--accent-orange)] px-2 py-0.5 rounded border border-[var(--accent-orange)]/30">
+                                    Client Portal Active
+                                </span>
+                                <span className="text-[9px] font-mono font-bold bg-[var(--accent-cyan)]/15 text-[var(--accent-cyan)] px-2 py-0.5 rounded border border-[var(--accent-cyan)]/30">
+                                    Reader Privileges Active
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div className="font-display font-bold">Client Account</div>
-                        <div className="text-sm text-[var(--text-muted)] font-mono mt-0.5">{clientEmail}</div>
-                    </div>
+
+                    <Link
+                        to="/insights"
+                        className="self-start sm:self-center px-4 py-2 rounded-xl bg-[var(--accent-cyan)]/15 border border-[var(--accent-cyan)]/30 text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/25 text-xs font-bold font-mono inline-flex items-center gap-1.5 transition-all"
+                    >
+                        <BookOpen size={13} />
+                        <span>Explore Insights</span>
+                    </Link>
                 </motion.div>
 
                 {/* Change password card */}

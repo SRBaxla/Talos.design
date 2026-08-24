@@ -10,20 +10,7 @@ interface ProjectTableProps {
     onRowClick?: (project: Project) => void;
 }
 
-const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-    'lead': { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
-    'in-progress': { bg: 'rgba(0,229,255,0.12)', text: '#00e5ff' },
-    'review': { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
-    'completed': { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
-    'published': { bg: 'rgba(192,132,252,0.12)', text: '#c084fc' },
-};
-
-const PRIORITY_COLORS: Record<string, { bg: string; text: string }> = {
-    'low': { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
-    'medium': { bg: 'rgba(0,229,255,0.12)', text: '#00e5ff' },
-    'high': { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
-    'urgent': { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' },
-};
+import AdminBadge from './AdminBadge';
 
 const TYPE_LABELS: Record<string, string> = {
     'web-design': 'Web Design',
@@ -168,45 +155,27 @@ export default function ProjectTable({ projects, onEdit, onRowClick }: ProjectTa
                                         {TYPE_LABELS[p.type] || p.type}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border"
-                                            style={{
-                                                backgroundColor: STATUS_COLORS[p.status]?.bg || 'rgba(255,255,255,0.1)',
-                                                color: STATUS_COLORS[p.status]?.text || '#fff',
-                                                borderColor: STATUS_COLORS[p.status]?.bg || 'rgba(255,255,255,0.2)'
-                                            }}
-                                        >
-                                            {p.status.replace('-', ' ')}
-                                        </span>
+                                        <AdminBadge status={p.status} />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border"
-                                            style={{
-                                                backgroundColor: PRIORITY_COLORS[p.priority]?.bg || 'rgba(255,255,255,0.1)',
-                                                color: PRIORITY_COLORS[p.priority]?.text || '#fff',
-                                                borderColor: PRIORITY_COLORS[p.priority]?.bg || 'rgba(255,255,255,0.2)'
-                                            }}
-                                        >
-                                            {p.priority}
-                                        </span>
+                                        <AdminBadge priority={p.priority} />
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-mono">
+                                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-mono whitespace-nowrap">
                                         {p.startDate ? new Date(p.startDate).toLocaleDateString() : '—'}
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-6 py-4 text-right whitespace-nowrap">
                                         <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                                             <button
                                                 onClick={(e) => handleToggleVisibility(e, p.id, p.showOnWebsite, p.status)}
-                                                className={`px-2 py-1 rounded text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                                                className={`whitespace-nowrap shrink-0 px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all border ${
                                                     p.showOnWebsite === true || p.status === 'published'
-                                                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30'
-                                                        : 'bg-zinc-800/80 text-zinc-400 border border-zinc-700 hover:text-white hover:border-zinc-500'
+                                                        ? 'bg-emerald-600 text-white dark:bg-emerald-500 dark:text-black border-emerald-600 dark:border-emerald-500 shadow-sm'
+                                                        : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-[var(--accent-orange)] hover:text-[var(--accent-orange)] shadow-sm'
                                                 }`}
                                                 title={p.showOnWebsite === true || p.status === 'published' ? "Pushed to Public Showcase (Click to Hide)" : "Add to Public Showcase (Click to Push Live)"}
                                             >
-                                                {p.showOnWebsite === true || p.status === 'published' ? <Eye size={13} /> : <EyeOff size={13} />}
-                                                <span className="hidden sm:inline">
+                                                {p.showOnWebsite === true || p.status === 'published' ? <Eye size={14} className="shrink-0" /> : <EyeOff size={14} className="shrink-0" />}
+                                                <span className="whitespace-nowrap">
                                                     {p.showOnWebsite === true || p.status === 'published' ? 'Showcase: ON' : 'Add to Showcase'}
                                                 </span>
                                             </button>

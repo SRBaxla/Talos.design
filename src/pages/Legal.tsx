@@ -166,25 +166,25 @@ export default function Legal() {
 
                     <div className="glass-panel p-8 md:p-10 space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed rounded-3xl border border-[var(--accent-orange)]/30 shadow-[0_0_30px_rgba(212,175,55,0.08)]">
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base flex items-center gap-2">
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base flex items-center gap-2">
                                 <ShieldCheck size={18} className="text-[var(--accent-orange)]" /> 1. Data Encryption Standards
                             </h3>
                             <p>All data transmitted through our web interfaces and automated API webhooks is encrypted in transit using TLS 1.3 protocols. Stored data and vector embeddings are encrypted at rest using AES-256 encryption.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base flex items-center gap-2">
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base flex items-center gap-2">
                                 <Lock size={18} className="text-[var(--accent-orange)]" /> 2. AI Model Governance & Data Isolation
                             </h3>
                             <p>Your proprietary business data, catalogs, and PDFs are strictly isolated. We implement dedicated vector memory databases so your business knowledge is never shared across clients or used to train public LLM foundation models.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base flex items-center gap-2">
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base flex items-center gap-2">
                                 <FileText size={18} className="text-[var(--accent-orange)]" /> 3. Access Control & Authentication
                             </h3>
                             <p>System dashboards and administrative panels enforce multi-factor authentication (MFA), role-based access control (RBAC), and strict principle-of-least-privilege access for all team members.</p>
                         </div>
                         <div>
-                            <h3 className="text-white font-bold mb-2 text-base flex items-center gap-2">
+                            <h3 className="text-[var(--text-primary)] font-bold mb-2 text-base flex items-center gap-2">
                                 <HelpCircle size={18} className="text-[var(--accent-orange)]" /> 4. Infrastructure Resilience &amp; Reliability
                             </h3>
                             <p>Our automation pipelines and web services are deployed on established cloud infrastructure providers (AWS, Firebase, and Cloudflare) with automated backups and continuous health monitoring.</p>

@@ -44,9 +44,9 @@ export default function Expertise() {
     const ActiveComponent = TABS[activeIndex > -1 ? activeIndex : 0].component;
 
     return (
-        <div className="w-full min-h-screen pt-24 bg-[var(--bg-base)] flex flex-col">
+        <div className="w-full min-h-screen pt-[65px] bg-[var(--bg-base)] flex flex-col">
             {/* Top Bar for Navigation */}
-            <div className="w-full border-b border-[var(--border-color)] bg-[var(--bg-surface)]/90 backdrop-blur-xl z-40 sticky top-[72px] shadow-sm">
+            <div className="w-full border-b border-[var(--border-color)] bg-[var(--bg-surface)]/90 backdrop-blur-xl z-40 sticky top-[65px] shadow-sm">
                 <div className="container flex items-center justify-center gap-4 md:gap-8 py-2">
                     {TABS.map((tab) => (
                         <button

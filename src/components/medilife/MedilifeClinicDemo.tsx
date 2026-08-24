@@ -72,17 +72,17 @@ export default function MedilifeClinicDemo() {
     };
 
     return (
-        <div className="glass-panel rounded-[2rem] border border-[var(--accent-cyan)]/40 p-6 md:p-10 bg-gradient-to-br from-[#07090E] via-[#0E131F] to-[#07090E] shadow-2xl relative overflow-hidden text-white">
+        <div className="glass-panel rounded-[2rem] border border-[var(--border-color)] p-6 md:p-10 shadow-2xl relative overflow-hidden text-[var(--text-primary)]">
             {/* Background Glow */}
             <div className="absolute -top-20 -right-20 w-80 h-80 bg-[var(--accent-cyan)] opacity-[0.05] blur-[80px] pointer-events-none" />
 
             {/* Top Bar Header */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-6 border-b border-[var(--border-color)]">
                 <div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 border border-[var(--accent-cyan)]/30 font-bold uppercase tracking-wider mb-2">
                         <ShieldCheck size={14} /> Live Demo Portal Credentials
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-white">
+                    <h2 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-tight text-[var(--text-primary)]">
                         Access Live Platform Accounts
                     </h2>
                 </div>
@@ -91,7 +91,7 @@ export default function MedilifeClinicDemo() {
                     href={demoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-6 py-3 rounded-xl bg-[var(--accent-cyan)] text-[#07090E] font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_rgba(56,189,248,0.3)] shrink-0 w-fit"
+                    className="px-6 py-3 rounded-xl bg-[var(--accent-cyan)] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all shadow-[0_0_20px_rgba(56,189,248,0.3)] shrink-0 w-fit"
                 >
                     Launch Live Demo Portal <ExternalLink size={14} />
                 </a>
@@ -108,14 +108,14 @@ export default function MedilifeClinicDemo() {
                             onClick={() => setSelectedRoleIndex(idx)}
                             className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 font-mono text-xs ${
                                 isSelected
-                                    ? `${acc.bgColor} ${acc.borderColor} text-white shadow-md ring-1 ring-white/20`
-                                    : 'bg-white/5 border-white/10 text-[var(--text-muted)] hover:text-white'
+                                    ? 'bg-[var(--accent-orange)] text-white border-[var(--accent-orange)] shadow-md font-bold'
+                                    : 'bg-[var(--bg-surface-elevated)] border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                             }`}
                         >
-                            <IconComp size={16} className={isSelected ? acc.color : ''} />
+                            <IconComp size={16} className={isSelected ? 'text-white' : 'text-[var(--text-muted)]'} />
                             <div className="min-w-0">
                                 <div className="font-bold truncate">{acc.role}</div>
-                                <div className="text-[10px] text-[var(--text-muted)] truncate">{acc.badge}</div>
+                                <div className={`text-[10px] truncate ${isSelected ? 'text-white/80' : 'text-[var(--text-muted)]'}`}>{acc.badge}</div>
                             </div>
                         </button>
                     );
@@ -123,43 +123,43 @@ export default function MedilifeClinicDemo() {
             </div>
 
             {/* Active Account Credentials Highlight Card */}
-            <div className="p-5 md:p-6 rounded-2xl bg-black/60 border border-white/15 mb-8">
+            <div className="p-5 md:p-6 rounded-2xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] mb-8">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-2.5">
-                        <div className={`w-8 h-8 rounded-lg ${activeAccount.bgColor} border ${activeAccount.borderColor} flex items-center justify-center ${activeAccount.color}`}>
+                        <div className="w-8 h-8 rounded-lg bg-[var(--accent-orange)]/10 border border-[var(--accent-orange)]/30 flex items-center justify-center text-[var(--accent-orange)]">
                             <activeAccount.icon size={18} />
                         </div>
                         <div>
-                            <div className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                            <div className="text-xs font-mono font-bold text-[var(--text-primary)] flex items-center gap-2">
                                 <span>{activeAccount.role} Credentials</span>
-                                <span className={`text-[10px] px-2 py-0.5 rounded-full border ${activeAccount.bgColor} ${activeAccount.borderColor} ${activeAccount.color}`}>
+                                <span className="text-[10px] px-2 py-0.5 rounded-full border bg-[var(--accent-orange)]/10 border-[var(--accent-orange)]/30 text-[var(--accent-orange)] font-bold">
                                     {activeAccount.badge}
                                 </span>
                             </div>
-                            <div className="text-[11px] text-[var(--text-muted)]">{activeAccount.desc}</div>
+                            <div className="text-[11px] text-[var(--text-secondary)]">{activeAccount.desc}</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {/* User Email */}
-                    <div className="flex items-center justify-between gap-2 bg-white/5 p-3 rounded-xl border border-white/10 text-xs font-mono">
+                    <div className="flex items-center justify-between gap-2 bg-[var(--bg-base)] p-3 rounded-xl border border-[var(--border-color)] text-xs font-mono">
                         <div className="flex items-center gap-2 min-w-0">
                             <Mail size={14} className="text-[var(--text-muted)] shrink-0" />
                             <div className="min-w-0">
-                                <div className="text-[9px] text-[var(--text-muted)] uppercase">User Email</div>
-                                <div className="font-bold text-white truncate">{activeAccount.email}</div>
+                                <div className="text-[9px] text-[var(--text-muted)] uppercase font-bold">User Email</div>
+                                <div className="font-bold text-[var(--text-primary)] truncate">{activeAccount.email}</div>
                             </div>
                         </div>
                         <button
                             onClick={() => copyToClipboard(activeAccount.email, `${activeAccount.role}-email`)}
-                            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 active:scale-95"
+                            className="px-3 py-1.5 rounded-lg bg-[var(--bg-surface-elevated)] hover:bg-[var(--border-color)] text-[var(--text-primary)] font-mono text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 active:scale-95 border border-[var(--border-color)]"
                             title="Copy Email"
                         >
                             {copiedKey === `${activeAccount.role}-email` ? (
                                 <>
-                                    <Check size={12} className="text-emerald-400" />
-                                    <span className="text-emerald-400">Copied</span>
+                                    <Check size={12} className="text-emerald-500" />
+                                    <span className="text-emerald-500">Copied</span>
                                 </>
                             ) : (
                                 <>
@@ -171,23 +171,23 @@ export default function MedilifeClinicDemo() {
                     </div>
 
                     {/* Password */}
-                    <div className="flex items-center justify-between gap-2 bg-white/5 p-3 rounded-xl border border-white/10 text-xs font-mono">
+                    <div className="flex items-center justify-between gap-2 bg-[var(--bg-base)] p-3 rounded-xl border border-[var(--border-color)] text-xs font-mono">
                         <div className="flex items-center gap-2 min-w-0">
                             <Key size={14} className="text-[var(--accent-orange)] shrink-0" />
                             <div className="min-w-0">
-                                <div className="text-[9px] text-[var(--text-muted)] uppercase">Password</div>
+                                <div className="text-[9px] text-[var(--text-muted)] uppercase font-bold">Password</div>
                                 <div className="font-bold text-[var(--accent-orange)] truncate">{activeAccount.password}</div>
                             </div>
                         </div>
                         <button
                             onClick={() => copyToClipboard(activeAccount.password, `${activeAccount.role}-pass`)}
-                            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 active:scale-95"
+                            className="px-3 py-1.5 rounded-lg bg-[var(--bg-surface-elevated)] hover:bg-[var(--border-color)] text-[var(--text-primary)] font-mono text-[11px] font-bold flex items-center gap-1 transition-all shrink-0 active:scale-95 border border-[var(--border-color)]"
                             title="Copy Password"
                         >
                             {copiedKey === `${activeAccount.role}-pass` ? (
                                 <>
-                                    <Check size={12} className="text-emerald-400" />
-                                    <span className="text-emerald-400">Copied</span>
+                                    <Check size={12} className="text-emerald-500" />
+                                    <span className="text-emerald-500">Copied</span>
                                 </>
                             ) : (
                                 <>
@@ -202,20 +202,20 @@ export default function MedilifeClinicDemo() {
 
             {/* Concise Workflow Pipeline */}
             <div>
-                <div className="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold mb-3">
+                <div className="text-xs font-mono uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-3">
                     Demo Testing Roadmap
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     {WORKFLOW_STEPS.map((step) => {
                         const IconComp = step.icon;
                         return (
-                            <div key={step.id} className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center shrink-0 ${step.color}`}>
+                            <div key={step.id} className="p-3.5 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-lg bg-[var(--bg-base)] border border-[var(--border-color)] flex items-center justify-center shrink-0 ${step.color}`}>
                                     <IconComp size={16} />
                                 </div>
                                 <div className="min-w-0">
-                                    <div className="text-xs font-bold text-white truncate">{step.title}</div>
-                                    <div className="text-[10px] text-[var(--text-muted)] truncate">{step.desc}</div>
+                                    <div className="text-xs font-bold text-[var(--text-primary)] truncate">{step.title}</div>
+                                    <div className="text-[10px] text-[var(--text-secondary)] truncate">{step.desc}</div>
                                 </div>
                             </div>
                         );

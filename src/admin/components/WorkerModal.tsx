@@ -150,7 +150,7 @@ export default function WorkerModal({ open, onClose, worker }: WorkerModalProps)
                         type="submit"
                         form="worker-form"
                         disabled={loading}
-                        className="px-6 py-2 text-sm bg-[var(--accent-cyan)] text-black font-bold rounded-lg hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50 shadow-sm uppercase tracking-wider"
+                        className="px-6 py-2 text-sm bg-[var(--accent-cyan)] text-white font-bold rounded-lg hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50 shadow-sm uppercase tracking-wider"
                     >
                         {loading ? 'Saving...' : (
                             <>

@@ -47,20 +47,20 @@ export default function AdminProjects() {
                 <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
                     <div className="flex bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-lg p-1">
                         <button
-                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'table' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono font-bold rounded transition-colors ${view === 'table' ? 'bg-[var(--accent-orange)] text-white shadow-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                             onClick={() => setView('table')}
                         >
                             <Table size={14} /> Table
                         </button>
                         <button
-                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded transition-colors ${view === 'kanban' ? 'bg-[var(--accent-orange)] text-black' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono font-bold rounded transition-colors ${view === 'kanban' ? 'bg-[var(--accent-orange)] text-white shadow-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                             onClick={() => setView('kanban')}
                         >
                             <Columns3 size={14} /> Kanban
                         </button>
                     </div>
                     <button
-                        className="bg-[var(--accent-orange)] text-[var(--bg-base)] hover:bg-[var(--accent-orange-hover)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold shadow-sm"
+                        className="bg-[var(--accent-orange)] text-white hover:bg-[var(--accent-orange-hover)] transition-colors px-4 py-2 rounded-lg flex items-center gap-2 text-xs font-bold shadow-sm"
                         onClick={handleNew}
                     >
                         <Plus size={14} /> New Project

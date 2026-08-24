@@ -12,13 +12,7 @@ import {
     ArrowLeft, Edit2, Trash2, ExternalLink, Calendar, DollarSign, Tag, Users, CheckSquare, List, Clock, Send, MessageSquare, KeyRound, Copy, RefreshCw, X, Monitor
 } from 'lucide-react';
 
-const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-    'lead': { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
-    'in-progress': { bg: 'rgba(0,229,255,0.12)', text: '#00e5ff' },
-    'review': { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
-    'completed': { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
-    'published': { bg: 'rgba(192,132,252,0.12)', text: '#c084fc' },
-};
+import AdminBadge from '../components/AdminBadge';
 
 const TYPE_LABELS: Record<string, string> = {
     'web-design': 'Web Design',
@@ -244,8 +238,6 @@ export default function ProjectDetail() {
         );
     }
 
-    const sc = STATUS_COLORS[project.status] || { bg: 'rgba(255,255,255,0.1)', text: '#fff' };
-
     return (
         <div className="min-h-[calc(100vh-64px)] flex flex-col font-sans w-full">
             {/* Header Area */}
@@ -258,9 +250,7 @@ export default function ProjectDetail() {
 
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-3 flex-wrap">
-                                <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded border" style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.bg }}>
-                                    {project.status.replace('-', ' ')}
-                                </span>
+                                <AdminBadge status={project.status} size="sm" pill={false} />
                                 <span className="px-3 py-1 text-[10px] uppercase font-bold tracking-wider bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] rounded text-[var(--text-secondary)]">
                                     {TYPE_LABELS[project.type] || project.type}
                                 </span>
@@ -332,7 +322,7 @@ export default function ProjectDetail() {
                                         <div className="flex items-center gap-2 text-[var(--text-muted)] text-[10px] font-mono uppercase tracking-widest">
                                             <Calendar size={14} className="text-[#3b82f6]" /> Timeline
                                         </div>
-                                        <div className="text-sm font-bold text-white flex items-center gap-3">
+                                        <div className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-3">
                                             <span>{project.startDate}</span>
                                             {project.endDate && <span className="text-[var(--text-muted)] font-normal">→</span>}
                                             {project.endDate && <span>{project.endDate}</span>}
@@ -344,7 +334,7 @@ export default function ProjectDetail() {
                                         <div className="flex items-center gap-2 text-[var(--text-muted)] text-[10px] font-mono uppercase tracking-widest">
                                             <DollarSign size={14} className="text-[#22c55e]" /> Allocated Budget
                                         </div>
-                                        <div className="text-xl font-bold font-mono text-white">
+                                        <div className="text-xl font-bold font-mono text-[var(--text-primary)]">
                                             {project.budget}
                                         </div>
                                     </div>
@@ -365,61 +355,74 @@ export default function ProjectDetail() {
                                 )}
                             </div>
 
-                            <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8 shadow-sm relative overflow-hidden group">
+                            {/* Project Scope */}
+                            <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent-orange)] opacity-[0.02] rounded-bl-full group-hover:opacity-[0.05] transition-opacity pointer-events-none"></div>
-                                <h3 className="text-sm font-mono uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
-                                    <List size={14} className="text-[var(--accent-orange)]" /> Project Scope
+                                <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-orange)] mb-4 flex items-center gap-2 font-bold">
+                                    <List size={14} className="text-[var(--accent-orange)]" /> Project Scope & Specifications
                                 </h3>
                                 {project.description ? (
-                                    <p className="text-[var(--text-primary)] leading-relaxed text-sm lg:text-base font-light">{project.description}</p>
+                                    <div className="text-[var(--text-primary)] leading-relaxed text-sm whitespace-pre-wrap font-sans space-y-2">
+                                        {project.description.replace(/~\$\$/g, '~$')}
+                                    </div>
                                 ) : (
                                     <p className="text-[var(--text-muted)] text-sm italic font-mono">No description provided.</p>
                                 )}
                             </div>
 
-                            <div className="bg-[#1a1a1a] border border-[var(--border-color)] rounded-2xl p-8 shadow-inner">
-                                <h3 className="text-sm font-mono uppercase tracking-widest text-[var(--text-muted)] mb-4 flex items-center gap-2">
-                                    <Edit2 size={14} /> Admin Notes
+                            {/* Admin Notes */}
+                            <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-6 md:p-8 shadow-sm">
+                                <h3 className="text-xs font-mono uppercase tracking-widest text-[var(--accent-cyan)] mb-4 flex items-center gap-2 font-bold">
+                                    <Edit2 size={14} /> Internal Admin Notes
                                 </h3>
                                 {project.notes ? (
-                                    <p className="text-[var(--text-secondary)] leading-relaxed text-sm whitespace-pre-wrap font-mono relative pl-4 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[var(--border-color)] before:rounded-full">{project.notes}</p>
+                                    <p className="text-[var(--text-primary)] leading-relaxed text-sm whitespace-pre-wrap font-mono relative pl-4 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-[var(--accent-cyan)] before:rounded-full">
+                                        {project.notes}
+                                    </p>
                                 ) : (
-                                    <p className="text-[var(--text-muted)] text-sm italic font-mono">No internal notes.</p>
+                                    <p className="text-[var(--text-muted)] text-sm italic font-mono">No internal notes recorded.</p>
                                 )}
                             </div>
                         </div>
 
-                        {/* Secure Client Chat via Desktop UI rules */}
-                        <div className="w-full lg:w-[450px] xl:w-[500px] flex-shrink-0 flex flex-col h-[700px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl relative">
-                            {/* Glass overlay effect on top edge */}
-                            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--bg-surface-elevated)] to-transparent z-10 pointer-events-none"></div>
-
-                            <div className="flex-none p-5 pb-0 z-20 border-b border-[rgba(255,255,255,0.05)] mb-2">
-                                <h3 className="font-display font-bold text-lg flex items-center justify-between text-white tracking-wide">
-                                    <span className="flex items-center gap-2"><MessageSquare size={18} className="text-[#a855f7]" /> Comm Channel</span>
-                                    <span className="flex h-2 w-2 rounded-full bg-[#22c55e] relative shadow-[0_0_10px_rgba(34,197,94,0.5)]">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75"></span>
+                        {/* Secure Client Chat / Comm Channel */}
+                        <div className="w-full lg:w-[450px] xl:w-[480px] flex-shrink-0 flex flex-col h-[650px] bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-xl relative">
+                            <div className="flex-none p-5 border-b border-[var(--border-color)] bg-[var(--bg-surface)]">
+                                <h3 className="font-display font-bold text-base flex items-center justify-between text-[var(--text-primary)] tracking-wide">
+                                    <span className="flex items-center gap-2">
+                                        <MessageSquare size={16} className="text-[var(--accent-cyan)]" /> Client Comm Channel
+                                    </span>
+                                    <span className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-500 font-bold uppercase tracking-wider bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Live
                                     </span>
                                 </h3>
-                                <p className="text-[10px] text-[var(--text-muted)] mt-1 font-mono uppercase tracking-widest mb-4">Secure End-to-End</p>
+                                <p className="text-[10px] text-[var(--text-muted)] mt-1 font-mono uppercase tracking-wider">
+                                    Direct messages with {project.client || 'Client'}
+                                </p>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 z-0 custom-scrollbar flex flex-col">
+                            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 custom-scrollbar flex flex-col bg-[var(--bg-base)]/40">
                                 {messages.length === 0 ? (
-                                    <div className="text-center text-[var(--text-muted)] text-sm my-auto font-mono bg-[rgba(255,255,255,0.02)] p-4 rounded-xl border border-dashed border-[var(--border-color)]">No messages yet. Open the channel.</div>
+                                    <div className="text-center text-[var(--text-muted)] text-xs my-auto font-mono bg-[var(--bg-surface)] p-6 rounded-xl border border-dashed border-[var(--border-color)]">
+                                        No transmissions yet. Transmit a message below.
+                                    </div>
                                 ) : (
                                     messages.map((msg) => (
                                         <div key={msg.id} className={`flex flex-col relative w-full ${msg.sender === 'admin' ? 'items-end' : 'items-start'}`}>
-                                            <span className={`text-[9px] font-mono text-[var(--text-muted)] mb-1.5 uppercase tracking-widest font-bold ${msg.sender === 'admin' ? 'mr-1 text-[var(--accent-orange)]' : 'ml-1'}`}>
-                                                {msg.sender === 'admin' ? 'Admin' : project.client || 'Client'}
+                                            <span className={`text-[9px] font-mono text-[var(--text-muted)] mb-1 uppercase tracking-widest font-bold ${msg.sender === 'admin' ? 'mr-1 text-[var(--accent-cyan)]' : 'ml-1'}`}>
+                                                {msg.sender === 'admin' ? 'Studio Team (You)' : project.client || 'Client'}
                                             </span>
-                                            <div className={`max-w-[85%] rounded-2xl px-5 py-3.5 text-sm shadow-lg relative ${msg.sender === 'admin'
-                                                ? 'bg-gradient-to-br from-[#2a2a2a] to-[#1f1f1f] border border-[rgba(255,255,255,0.1)] text-white rounded-tr-sm'
-                                                : 'bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-base)] border border-[var(--border-color)] text-[var(--text-secondary)] rounded-tl-sm'
+                                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs shadow-md relative ${
+                                                msg.sender === 'admin'
+                                                    ? 'bg-[var(--accent-cyan)] text-black font-medium rounded-tr-sm'
+                                                    : 'bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-tl-sm'
+                                            }`}>
+                                                <div className="whitespace-pre-wrap leading-relaxed">{msg.text}</div>
+                                                <div className={`flex items-center gap-1 text-[9px] mt-2 font-mono ${
+                                                    msg.sender === 'admin' ? 'justify-end text-black/70' : 'justify-start text-[var(--text-muted)]'
                                                 }`}>
-                                                <div className="whitespace-pre-wrap leading-relaxed relative z-10 font-medium">{msg.text}</div>
-                                                <div className={`flex items-center gap-1 text-[9px] mt-3 font-mono opacity-60 ${msg.sender === 'admin' ? 'justify-end text-[var(--accent-orange)]' : 'justify-start'}`}>
-                                                    <Clock size={10} /> {msg.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    <Clock size={10} /> {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                                                 </div>
                                             </div>
                                         </div>
@@ -427,21 +430,21 @@ export default function ProjectDetail() {
                                 )}
                             </div>
 
-                            <div className="flex-none p-5 bg-[rgba(0,0,0,0.3)] backdrop-blur-md border-t border-[rgba(255,255,255,0.05)] relative z-20">
-                                <form onSubmit={handleSendMessage} className="flex gap-3">
+                            <div className="flex-none p-4 bg-[var(--bg-surface)] border-t border-[var(--border-color)]">
+                                <form onSubmit={handleSendMessage} className="flex gap-2">
                                     <input
                                         type="text"
                                         value={newMessage}
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         placeholder="Type transmission..."
-                                        className="flex-1 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:border-[#a855f7] focus:bg-[rgba(255,255,255,0.08)] transition-all text-white shadow-inner placeholder:text-[var(--text-muted)] font-mono"
+                                        className="flex-1 bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-2.5 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-cyan)] transition-all placeholder:text-[var(--text-muted)] font-mono"
                                     />
                                     <button
                                         type="submit"
                                         disabled={sendingMsg || !newMessage.trim()}
-                                        className="bg-[#a855f7] text-white p-3.5 rounded-xl hover:bg-[#9333ea] disabled:opacity-50 disabled:bg-[#1e1e1e] disabled:text-[var(--text-muted)] transition-colors flex items-center justify-center shadow-lg"
+                                        className="bg-[var(--accent-cyan)] text-black px-4 py-2.5 rounded-xl hover:shadow-[0_0_15px_var(--accent-cyan-glow)] disabled:opacity-40 disabled:hover:shadow-none transition-all flex items-center justify-center font-bold"
                                     >
-                                        <Send size={18} className={sendingMsg ? 'opacity-50' : 'ml-0.5'} />
+                                        <Send size={15} className={sendingMsg ? 'opacity-50' : ''} />
                                     </button>
                                 </form>
                             </div>
@@ -739,7 +742,7 @@ export default function ProjectDetail() {
                                             name={field.name}
                                             type={field.type || "text"}
                                             placeholder={field.placeholder}
-                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
+                                            className="w-full bg-[var(--bg-base)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-orange)] focus:ring-1 focus:ring-[var(--accent-orange)] focus:ring-opacity-30 transition-all font-medium shadow-sm"
                                             required
                                             autoFocus={field.name === promptModal.fields[0].name}
                                         />
@@ -747,8 +750,8 @@ export default function ProjectDetail() {
                                 </div>
                             ))}
                             <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">
-                                <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm font-bold transition-colors">Cancel</button>
-                                <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-black hover:bg-[rgba(245,158,11,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
+                                <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-primary)] hover:brightness-110 rounded-lg text-sm font-bold transition-colors">Cancel</button>
+                                <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-white hover:bg-[var(--accent-orange-hover)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
                             </div>
                         </form>
                     </div>

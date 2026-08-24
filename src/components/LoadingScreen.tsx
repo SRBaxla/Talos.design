@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import logo from '../assets/bitmap.png';
 import logoLight from '../assets/logo- light-side.png';
 
@@ -10,7 +9,6 @@ const BOOT_STEPS = [
 ];
 
 export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
-  const [mounted, setMounted] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const [bootStep, setBootStep] = useState(0);
   const [logoStyle, setLogoStyle] = useState<React.CSSProperties>({});
@@ -27,7 +25,10 @@ export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   const currentLogo = isDarkMode ? logo : logoLight;
 
   useEffect(() => {
-    setMounted(true);
+    // Clear the splash-pending lock on html now that React LoadingScreen is active
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('splash-pending');
+    }
 
     // Step progression for boot telemetry
     const t1 = setTimeout(() => setBootStep(1), 500);
@@ -65,13 +66,8 @@ export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
     };
   }, [onComplete]);
 
-  if (!mounted || typeof document === 'undefined') {
-    return null;
-  }
-
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none overflow-hidden">
-      
+  return (
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center pointer-events-none overflow-hidden" aria-hidden="true">
       {/* Theme-Aware Ambient Background Dissolve Overlay */}
       <div 
         className={`absolute inset-0 transition-opacity duration-1100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -135,10 +131,10 @@ export const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
         </div>
 
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
+
 
 
 

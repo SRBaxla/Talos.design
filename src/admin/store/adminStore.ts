@@ -72,6 +72,16 @@ export interface Project {
 
 export type WorkerRole = 'admin' | 'manager' | 'developer' | 'designer' | 'client';
 
+export interface WorkerPreferences {
+    notifyOnNewInquiry?: boolean;
+    notifyOnNewLead?: boolean;
+    notifyOnTicketAssigned?: boolean;
+    notifyOnComments?: boolean;
+    themePreference?: 'dark' | 'light' | 'system';
+    defaultLandingPage?: string;
+    accentColor?: string;
+}
+
 export interface Worker {
     id: string;
     uid: string; // Firebase Auth UID
@@ -79,6 +89,18 @@ export interface Worker {
     email: string;
     role?: WorkerRole;
     department: string;
+    phone?: string;
+    bio?: string;
+    location?: string;
+    avatarColor?: string;
+    avatarUrl?: string;
+    socialLinks?: {
+        linkedin?: string;
+        twitter?: string;
+        github?: string;
+        website?: string;
+    };
+    preferences?: WorkerPreferences;
     createdAt: Timestamp;
     updatedAt: Timestamp;
 }

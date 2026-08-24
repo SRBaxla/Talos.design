@@ -52,9 +52,9 @@ export default function CaseStudyKanbanBoard({ studies, onEdit, onCardClick }: C
                                     className="w-2 h-2 rounded-full"
                                     style={{ background: col.color }}
                                 />
-                                <h3 className="font-display font-bold text-sm text-[var(--text-secondary)]">{col.label}</h3>
+                                <h3 className="font-display font-bold text-sm text-[var(--text-primary)]">{col.label}</h3>
                             </div>
-                            <span className="text-[10px] font-mono bg-[rgba(255,255,255,0.05)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-muted)]">
+                            <span className="text-[10px] font-mono bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-0.5 rounded-full text-[var(--text-secondary)] font-bold">
                                 {cards.length}
                             </span>
                         </div>
@@ -62,7 +62,7 @@ export default function CaseStudyKanbanBoard({ studies, onEdit, onCardClick }: C
                         {/* Drop Zone / Cards List */}
                         <div className="flex-1 overflow-y-auto space-y-3 pb-8 pr-2 custom-scrollbar min-h-[150px]">
                             {cards.length === 0 ? (
-                                <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono bg-[rgba(255,255,255,0.01)]">
+                                <div className="border border-dashed border-[var(--border-color)] rounded-xl h-24 flex items-center justify-center text-[var(--text-muted)] text-xs font-mono bg-[var(--bg-surface-elevated)]/50">
                                     Drop here
                                 </div>
                             ) : (
@@ -86,8 +86,8 @@ export default function CaseStudyKanbanBoard({ studies, onEdit, onCardClick }: C
                                             <div className="h-3 mb-3" />
                                         )}
 
-                                        <div className="flex items-center justify-between mt-2 pt-3 border-t border-[rgba(255,255,255,0.05)]">
-                                            <span className="text-[10px] font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wide bg-[rgba(255,255,255,0.05)] px-2 py-1 rounded">
+                                        <div className="flex items-center justify-between mt-2 pt-3 border-t border-[var(--border-color)]">
+                                            <span className="text-[10px] font-mono font-medium text-[var(--text-secondary)] uppercase tracking-wide bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] px-2 py-1 rounded">
                                                 {s.industry || 'Unspecified'}
                                             </span>
                                             {s.publishDate && (

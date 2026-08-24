@@ -34,6 +34,9 @@ const AdminDashboard = lazy(() => import('./admin/pages/AdminDashboard'));
 const AdminProjects = lazy(() => import('./admin/pages/AdminProjects'));
 const AdminTeam = lazy(() => import('./admin/pages/AdminTeam'));
 const AdminCaseStudies = lazy(() => import('./admin/pages/AdminCaseStudies'));
+const AdminInsights = lazy(() => import('./admin/pages/AdminInsights'));
+const AdminInsightsEditor = lazy(() => import('./admin/pages/AdminInsightsEditor'));
+const AdminComments = lazy(() => import('./admin/pages/AdminComments'));
 const AdminSettings = lazy(() => import('./admin/pages/AdminSettings'));
 const AdminInquiries = lazy(() => import('./admin/pages/AdminInquiries'));
 const AdminLeads = lazy(() => import('./admin/pages/AdminLeads'));
@@ -93,6 +96,10 @@ export function AppRoutes({ isInitializing, onInitComplete }: { isInitializing?:
           {/* Admin Panel */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="insights" element={<AdminInsights />} />
+            <Route path="insights/editor" element={<AdminInsightsEditor />} />
+            <Route path="insights/editor/:id" element={<AdminInsightsEditor />} />
+            <Route path="comments" element={<AdminComments />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="case-studies" element={<AdminCaseStudies />} />
@@ -110,14 +117,37 @@ export function AppRoutes({ isInitializing, onInitComplete }: { isInitializing?:
   );
 }
 
+function shouldShowSplash(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const isClientOnly =
+      window.location.pathname.startsWith('/admin') ||
+      window.location.pathname.startsWith('/portal');
+    if (isClientOnly) return false;
+    return !sessionStorage.getItem('talos_splash_shown');
+  } catch {
+    return false;
+  }
+}
+
 function App() {
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(shouldShowSplash);
+
+  const handleInitComplete = () => {
+    try {
+      sessionStorage.setItem('talos_splash_shown', 'true');
+    } catch {
+      // ignore storage restrictions
+    }
+    setIsInitializing(false);
+  };
 
   return (
     <BrowserRouter>
-      <AppRoutes isInitializing={isInitializing} onInitComplete={() => setIsInitializing(false)} />
+      <AppRoutes isInitializing={isInitializing} onInitComplete={handleInitComplete} />
     </BrowserRouter>
   );
 }
 
 export default App;
+

@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Command, ArrowRight, Cpu, Globe, Bot, Settings, Wrench, Shield, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { collection, query as firestoreQuery, where, onSnapshot } from 'firebase/firestore';
+import type { QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { db } from '../admin/firebase/firebaseConfig';
 
-import { ARTICLES } from '../pages/Insights';
 
 interface SearchResult {
   id: string;
@@ -41,33 +43,48 @@ const STATIC_DATA: SearchResult[] = [
   { id: 'contact', title: 'Contact & Free Discovery Call', description: 'Start your project with a free 30-minute discovery consultation.', category: 'Company', path: '/contact', icon: Globe, color: 'var(--accent-orange)' },
 ];
 
-// Dynamically generate the full index on load
-const getDynamicSearchData = (): SearchResult[] => {
-  const dynamicInsights: SearchResult[] = ARTICLES.map((article: any) => ({
-    id: `insight-${article.id}`,
-    title: article.title,
-    description: article.excerpt,
-    category: 'Insight',
-    path: '/insights',
-    icon: article.icon || Cpu,
-    color: article.color || 'var(--accent-cyan)'
-  }));
-
-  return [...STATIC_DATA, ...dynamicInsights];
-};
-
-const SEARCH_DATA = getDynamicSearchData();
 
 export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [liveInsights, setLiveInsights] = useState<SearchResult[]>([]);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredResults = SEARCH_DATA.filter(item => 
+  useEffect(() => {
+    try {
+      const q = firestoreQuery(collection(db, 'insights'), where('isPublished', '==', true));
+      const unsub = onSnapshot(q, (snap: QuerySnapshot<DocumentData>) => {
+        const insightsList: SearchResult[] = snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            id: `insight-${d.id}`,
+            title: data.title || 'Technical Insight',
+            description: data.excerpt || '',
+            category: 'Insight',
+            path: '/insights',
+            icon: Cpu,
+            color: data.color || 'var(--accent-cyan)',
+          };
+        });
+        setLiveInsights(insightsList);
+      }, (err: any) => {
+        console.warn('SearchOverlay Firestore listener error:', err);
+      });
+      return unsub;
+    } catch {
+      // ignore
+    }
+  }, []);
+
+
+  const searchData = [...STATIC_DATA, ...liveInsights];
+
+  const filteredResults = searchData.filter(item => 
     item.title.toLowerCase().includes(query.toLowerCase()) || 
     item.description.toLowerCase().includes(query.toLowerCase())
   );
+
 
   useEffect(() => {
     if (isOpen) {

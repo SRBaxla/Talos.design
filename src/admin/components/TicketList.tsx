@@ -144,7 +144,7 @@ export default function TicketList({ tickets, parentCollection, parentId, onRefr
                         </button>
                     )}
                     <button
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-black font-bold text-xs uppercase tracking-widest rounded-lg hover:brightness-110 transition-all shadow-sm"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-orange)] text-white font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-[var(--accent-orange-hover)] transition-all shadow-sm"
                         onClick={() => { resetForm(); setShowForm(true); }}
                     >
                         <Plus size={14} strokeWidth={2.5} /> Add Ticket
@@ -154,13 +154,13 @@ export default function TicketList({ tickets, parentCollection, parentId, onRefr
 
             {/* Filter pills */}
             <div className="px-5 py-4 flex flex-wrap gap-2 border-b border-[var(--border-color)]">
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'all' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)] hover:border-[var(--accent-cyan)]'}`} onClick={() => setFilter('all')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'all' ? 'bg-[var(--accent-cyan)] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)] hover:border-[var(--accent-cyan)]'}`} onClick={() => setFilter('all')}>
                     All ({tickets.length})
                 </button>
                 <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'todo' ? 'bg-[#71717a] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('todo')}>
                     To Do ({todoCount})
                 </button>
-                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'in-progress' ? 'bg-[var(--accent-cyan)] text-black' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('in-progress')}>
+                <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'in-progress' ? 'bg-[var(--accent-cyan)] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('in-progress')}>
                     In Progress ({inProgressCount})
                 </button>
                 <button className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide transition-colors ${filter === 'done' ? 'bg-[#22c55e] text-white' : 'bg-[var(--bg-base)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'}`} onClick={() => setFilter('done')}>
@@ -208,7 +208,7 @@ export default function TicketList({ tickets, parentCollection, parentId, onRefr
                     <div className="flex justify-end gap-3 mt-2">
                         <button className="px-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--bg-surface-elevated)] rounded-lg text-sm font-bold transition-colors" onClick={resetForm}>Cancel</button>
                         <button 
-                            className="px-5 py-2 bg-[var(--accent-cyan)] text-black hover:brightness-110 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50" 
+                            className="px-5 py-2 bg-[var(--accent-cyan)] text-white hover:bg-[var(--accent-cyan-hover)] rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50" 
                             onClick={handleSave}
                             disabled={isSaving}
                         >

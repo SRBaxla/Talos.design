@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hexagon, ArrowRight, Lock, Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react';
+import { Hexagon, ArrowRight, ArrowLeft, Home, Lock, Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react';
 import {
     emailHasProject, createClientAccount, signInClient,
 } from './portalStore';
@@ -113,20 +113,41 @@ export default function PortalLogin() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
+                className="w-full max-w-md space-y-3"
             >
+                {/* Back to Homepage Header */}
+                <div className="flex items-center justify-between px-1">
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors group"
+                    >
+                        <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                        <span>Back to Homepage</span>
+                    </Link>
+                </div>
+
                 {/* Card */}
                 <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl">
 
                     {/* Top brand strip */}
-                    <div className="flex items-center gap-3 px-8 pt-8 pb-6 border-b border-[var(--border-color)]">
-                        <div className="w-10 h-10 flex items-center justify-center bg-[rgba(210,193,182,0.08)] rounded-xl border border-[rgba(210,193,182,0.2)]">
-                            <Hexagon className="text-[var(--accent-orange)]" size={20} />
+                    <div className="flex items-center justify-between px-8 pt-8 pb-6 border-b border-[var(--border-color)]">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 flex items-center justify-center bg-[rgba(210,193,182,0.08)] rounded-xl border border-[rgba(210,193,182,0.2)]">
+                                <Hexagon className="text-[var(--accent-orange)]" size={20} />
+                            </div>
+                            <div>
+                                <div className="font-display font-bold text-sm">Talos.design</div>
+                                <div className="text-[10px] text-[var(--text-muted)] font-mono">Client Portal</div>
+                            </div>
                         </div>
-                        <div>
-                            <div className="font-display font-bold text-sm">Talos.design</div>
-                            <div className="text-[10px] text-[var(--text-muted)] font-mono">Client Portal</div>
-                        </div>
+                        <Link
+                            to="/"
+                            className="text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] px-3 py-1.5 rounded-xl border border-[var(--border-color)] hover:bg-[var(--bg-surface-elevated)] transition-all flex items-center gap-1.5"
+                            title="Return to Main Website"
+                        >
+                            <Home size={13} />
+                            <span className="hidden sm:inline">Home</span>
+                        </Link>
                     </div>
 
                     <div className="p-8">

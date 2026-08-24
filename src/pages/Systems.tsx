@@ -58,7 +58,7 @@ const INFRASTRUCTURE_PILLARS = [
 
 export default function Systems() {
     return (
-        <div className="container py-16 flex flex-col flex-grow">
+        <div className="container pt-8 sm:pt-10 md:pt-14 pb-12 sm:pb-16 flex flex-col flex-grow">
             {/* Header */}
             <div className="mb-16 text-center max-w-3xl mx-auto">
                 <span className="badge font-mono text-xs text-[var(--accent-cyan)] border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/10 px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block font-bold">

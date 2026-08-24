@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     LogOut, FolderKanban, FileText, MessageSquare, ExternalLink,
     Send, Clock, CheckCircle, ChevronRight, Hexagon, User as UserIcon, Download, DollarSign,
-    Monitor, Tablet, Smartphone, X, RefreshCw
+    Monitor, Tablet, Smartphone, X, RefreshCw, BookOpen
 } from 'lucide-react';
 import {
     useProjects, useInvoices, useMessages, sendMessage,
@@ -491,6 +491,13 @@ export default function PortalDashboard() {
                     </div>
                     <div className="flex items-center gap-4">
                         <span className="text-xs text-[var(--text-muted)] hidden md:block truncate max-w-[160px]">{clientEmail}</span>
+                        <Link
+                            to="/insights"
+                            className="flex items-center gap-1.5 text-xs text-[var(--accent-cyan)] hover:underline transition-colors"
+                            title="Read Insights with your unified account"
+                        >
+                            <BookOpen size={13} /> Insights
+                        </Link>
                         <Link
                             to="/portal/profile"
                             className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"

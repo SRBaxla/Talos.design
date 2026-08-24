@@ -8,13 +8,7 @@ import TicketList from '../components/TicketList';
 import CaseStudyModal from '../components/CaseStudyModal';
 import { ArrowLeft, Edit2, Trash2, ExternalLink, Tag, Users, X } from 'lucide-react';
 
-const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-    draft: { bg: 'rgba(113,113,122,0.15)', text: '#a1a1aa' },
-    research: { bg: 'rgba(0,229,255,0.12)', text: '#00e5ff' },
-    writing: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
-    review: { bg: 'rgba(192,132,252,0.12)', text: '#c084fc' },
-    published: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
-};
+import AdminBadge from '../components/AdminBadge';
 
 export default function CaseStudyDetail() {
     const { id } = useParams<{ id: string }>();
@@ -129,8 +123,6 @@ export default function CaseStudyDetail() {
         );
     }
 
-    const sc = STATUS_COLORS[study.status];
-
     return (
         <div className="p-6 md:p-10 w-full max-w-screen-2xl mx-auto space-y-8 animate-fade-in">
             {/* Back + Actions */}
@@ -157,9 +149,7 @@ export default function CaseStudyDetail() {
             <div className="bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] rounded-2xl p-8 shadow-sm">
                 <div>
                     <div className="flex items-center gap-3 mb-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded border text-[10px] font-bold uppercase tracking-wider" style={{ backgroundColor: `${sc?.text}15`, color: sc?.text, borderColor: `${sc?.text}30` }}>
-                            {study.status}
-                        </span>
+                        <AdminBadge status={study.status} size="sm" pill={false} />
                         {study.industry && <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">{study.industry}</span>}
                     </div>
                     <h1 className="font-display text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-primary)]/70 mb-2">{study.title}</h1>
@@ -307,7 +297,7 @@ export default function CaseStudyDetail() {
                             ))}
                             <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">
                                 <button type="button" onClick={() => setPromptModal({ ...promptModal, isOpen: false })} className="px-5 py-2.5 bg-[var(--bg-surface-elevated)] border border-[var(--border-color)] text-[var(--text-primary)] hover:brightness-110 rounded-lg text-sm font-bold transition-colors">Cancel</button>
-                                <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-black hover:bg-[rgba(245,158,11,0.9)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
+                                <button type="submit" className="px-6 py-2.5 bg-[var(--accent-orange)] text-white hover:bg-[var(--accent-orange-hover)] rounded-lg text-sm font-bold shadow-sm transition-colors cursor-pointer">Confirm</button>
                             </div>
                         </form>
                     </div>
