@@ -1,0 +1,99 @@
+# TALOS.DESIGN
+
+> Digital infrastructure, 24/7 AI sales & inquiry assistants, and workflow automation studio engineered in Jhansi, Uttar Pradesh, India, serving regional MSMEs and growing businesses.
+
+TALOS.DESIGN builds high-converting digital presence, bespoke operational platforms, and practical automation pipelines. The studio focuses on measurable business outcomes, speed, and eliminating manual operational bottlenecks.
+
+---
+
+## Core Services
+
+What TALOS.DESIGN builds and deploys for clients:
+
+- **High-Converting Web Design**: Sub-second loading, mobile-first websites designed for brand authority, search discoverability (SEO), and lead generation with direct WhatsApp integration.
+  - URL: https://talos.design/services/web-design
+  - Overview: https://talos.design/services
+- **AI Sales & Inquiry Assistants**: Deployable AI-powered assistants that answer routine customer questions, capture inquiries, qualify prospects, and route conversations to human team members 24 hours a day on web and WhatsApp.
+  - URL: https://talos.design/services/chatbots
+  - Overview: https://talos.design/services
+- **Workflow & Operations Automation**: Operational logic pipelines that connect payment gateways, CRMs, automated invoicing, and communication channels to eliminate repetitive administrative work.
+  - URL: https://talos.design/services/automation
+  - Overview: https://talos.design/services
+
+---
+
+## Engagement Packages
+
+Productized rollout protocols for how clients engage TALOS.DESIGN:
+
+- **Package 01 — Digital Business Launch**: Complete online presence package including custom website engineering, brand identity, SEO setup, and WhatsApp lead capture. Fixed price, 2-4 week delivery.
+  - URL: https://talos.design/packages/presence
+- **Package 02 — Automated Growth Engine**: Complete growth stack adding 24/7 AI WhatsApp sales assistant and automated CRM/billing synchronization. Most popular package.
+  - URL: https://talos.design/packages/automation
+- **Package 03 — Custom Business Platform**: Bespoke software architectures, internal management portals, and custom operational pipelines. Tailored scope, fixed pricing.
+  - URL: https://talos.design/packages/custom
+- **All Packages Overview**: https://talos.design/packages
+
+---
+
+## Specialized Industry Solutions
+
+Pre-built, deployable vertical software platforms that TALOS.DESIGN can customize and deploy for specific industries. These are reusable products, not one-off client projects:
+
+- **Hospitality & Heritage Properties**: Direct booking engines, room galleries, WhatsApp reservations, and OTA commission reduction for hotels and resorts.
+  - URL: https://talos.design/solutions/hospitality
+- **E-Commerce & Retail**: Multi-channel inventory automation, real-time ERP synchronization, and sub-second catalog performance for online stores.
+  - URL: https://talos.design/solutions/ecommerce
+- **Appointment & Slot-Based Businesses**: Automated client booking, inquiry qualification, appointment scheduling, and customer management for clinics, salons, and consultancies.
+  - URL: https://talos.design/solutions/appointments
+- **MediLife — Diagnostic Clinic Platform**: Talos.design's deployable diagnostic lab software featuring branded online test booking, pathologist peer-review verification, and one-click WhatsApp PDF report dispatch. Available for deployment to diagnostic clinics.
+  - URL: https://talos.design/solutions/medilife
+- **All Solutions Overview**: https://talos.design/solutions
+
+---
+
+## Engineering Expertise
+
+How TALOS.DESIGN engineers technology — technical capabilities and demonstrations:
+
+- **AI Assistants & Language Systems**: Conversational assistant design, prompt engineering, RAG pipelines with company knowledge bases, WhatsApp Business API integration, and rule-based human escalation.
+  - Section: https://talos.design/expertise#ai
+- **Systems Architecture**: API design, PostgreSQL with row-level security, event-driven pipelines, RBAC authentication, cloud infrastructure, and background job orchestration.
+  - Section: https://talos.design/expertise#systems
+- **Visual & Frontend Engineering**: Design tokens, fluid typography, physics-based motion, hardware-accelerated WebGL shaders, Core Web Vitals optimization, and semantic TypeScript architecture.
+  - Section: https://talos.design/expertise#designs
+- **Expertise Overview**: https://talos.design/expertise
+
+---
+
+## Engineering Insights
+
+Technical articles and perspectives on AI, automation, and modern engineering:
+
+- **Insights**: https://talos.design/insights
+
+---
+
+## Public Navigation & Architecture Index
+
+- **Home**: https://talos.design/
+- **Services**: https://talos.design/services
+- **Packages**: https://talos.design/packages
+- **Industry Solutions**: https://talos.design/solutions
+- **Engineering Expertise**: https://talos.design/expertise
+- **Engineering Insights**: https://talos.design/insights
+- **About the Studio**: https://talos.design/about
+- **Careers**: https://talos.design/careers
+- **Contact & Strategy Consultation**: https://talos.design/contact
+- **Legal, Privacy & Governance**: https://talos.design/legal
+
+---
+
+## Contact & Studio Information
+
+- **Studio Name**: TALOS.DESIGN
+- **Headquarters**: Jhansi, Uttar Pradesh, India (Remote-first worldwide delivery)
+- **Email**: hello@talos.design
+- **Phone**: +91 80904 89112
+- **Direct WhatsApp Inquiry**: https://wa.me/918090489112
+- **Consultation Booking**: https://talos.design/contact
